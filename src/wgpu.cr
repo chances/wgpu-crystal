@@ -1,10 +1,18 @@
+require "./lib-wgpu"
+
 # TODO: Write documentation for `Wgpu`
-@[Link(ldflags: "-L#{__DIR__}/../vendor/wgpu/target/debug -lwgpu_native")]
-lib LibWGPU
+module WGPU
   VERSION = "0.1.0"
 
-  # TODO: Put your code here
-end
+  class Instance
+    @@instanceId : LibWGPU::WGPUInstanceId?
 
-module WGPU
+    def initialize
+      @@instanceId = LibWGPU.wgpu_create_instance
+    end
+
+    def id
+      @@instanceId
+    end
+  end
 end
