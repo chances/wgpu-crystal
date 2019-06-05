@@ -1,0 +1,9 @@
+name: wgpu-crystal
+version: 0.1.0
+
+authors:
+  - Chance Snow <git@chancesnow.me>
+
+crystal: 0.28.0
+
+license: MIT

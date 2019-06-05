@@ -1,0 +1,3 @@
+[submodule "vendor/wgpu"]
+	path = vendor/wgpu
+	url = https://github.com/gfx-rs/wgpu.git
