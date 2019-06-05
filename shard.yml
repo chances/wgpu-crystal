@@ -1,4 +1,4 @@
-name: wgpu-crystal
+name: wgpu
 version: 0.1.0
 
 authors:
@@ -7,6 +7,9 @@ authors:
 crystal: 0.28.0
 
 license: MIT
+
+scripts:
+  postinstall: make vendor-libs
 
 development_dependencies:
   ameba:
