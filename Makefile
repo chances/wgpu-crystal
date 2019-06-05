@@ -1,4 +1,6 @@
 
+default: all
+
 all: vendor-libs shards
 .PHONY: all
 
