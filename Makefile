@@ -1,9 +1,6 @@
 
 default: all
 
-all: vendor-libs shards
-.PHONY: all
-
 lint:
 	bin/ameba
 	crystal tool format --check
@@ -12,6 +9,14 @@ lint:
 test:
 	crystal spec
 .PHONY: test
+
+clean:
+	rm examples/headless
+	rm examples/*.dwarf
+.PHONY: clean
+
+all: vendor-libs shards
+.PHONY: all
 
 shards: shard.yml
 	shards install
