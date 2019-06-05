@@ -15,6 +15,50 @@ module WGPU
       @@instanceId
     end
   end
+
+  class Adapter
+    @@adapterId : LibWGPU::WGPUAdapterId?
+
+    def initialize(instance : Instance, adapterDescriptor : WGPUAdapterDescriptor)
+      @@adapterId = LibWGPU.wgpu_instance_get_adapter(instance.id, pointerof(adapterDescriptor))
+    end
+
+    def id
+      @@adapterId
+    end
+  end
+
+  class Device
+    @@deviceId : LibWGPU::WGPUDeviceId?
+
+    def initialize(adapter : Adapter, deviceDescriptor : WGPUDeviceDescriptor)
+      @@deviceId = LibWGPU.wgpu_adapter_request_device(adapter.id, pointerof(deviceDescriptor))
+    end
+
+    def id
+      @@deviceId
+    end
+  end
+
+  class Surface
+    @@surfaceId : LibWGPU::WGPUSurfaceId?
+
+    def id
+      @@surfaceId
+    end
+  end
+
+  class SwapChain
+    @@swapchainId : LibWGPU::WGPUSwapChainId?
+
+    def initialize(device : Device, surface : Surface, swapChainDescriptor : WGPUSwapChainDescriptor)
+      @@swapchainId = LibWGPU.wgpu_device_create_swap_chain(device.id, surface.id, pointerof(swapChainDescriptor))
+    end
+
+    def id
+      @@swapchainId
+    end
+  end
 end
 
 module WGPU::Colors
