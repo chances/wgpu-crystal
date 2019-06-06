@@ -5,38 +5,36 @@ module WGPU
   VERSION = "0.1.0"
 
   class Instance
-    @@instanceId : LibWGPU::WGPUInstanceId?
-
     def initialize
-      @@instanceId = LibWGPU.wgpu_create_instance
+      @instanceId = LibWGPU.wgpu_create_instance
     end
 
     def id
-      @@instanceId
+      @instanceId
     end
   end
 
   class Adapter
-    @@adapterId : LibWGPU::WGPUAdapterId?
-
-    def initialize(instance : Instance, adapterDescriptor : WGPUAdapterDescriptor)
-      @@adapterId = LibWGPU.wgpu_instance_get_adapter(instance.id, pointerof(adapterDescriptor))
+    def initialize(instance : Instance, adapterDescriptor : LibWGPU::WGPUAdapterDescriptor)
+      unless instance
+        raise ArgumentError.new(message = "instance must not be nil")
+      else
+        @adapterId = LibWGPU.wgpu_instance_get_adapter(instance.id, pointerof(adapterDescriptor))
+      end
     end
 
     def id
-      @@adapterId
+      @adapterId
     end
   end
 
   class Device
-    @@deviceId : LibWGPU::WGPUDeviceId?
-
-    def initialize(adapter : Adapter, deviceDescriptor : WGPUDeviceDescriptor)
-      @@deviceId = LibWGPU.wgpu_adapter_request_device(adapter.id, pointerof(deviceDescriptor))
+    def initialize(adapter : Adapter, deviceDescriptor : LibWGPU::WGPUDeviceDescriptor)
+      @deviceId = LibWGPU.wgpu_adapter_request_device(adapter.id, pointerof(deviceDescriptor))
     end
 
     def id
-      @@deviceId
+      @deviceId
     end
   end
 
@@ -49,14 +47,12 @@ module WGPU
   end
 
   class SwapChain
-    @@swapchainId : LibWGPU::WGPUSwapChainId?
-
-    def initialize(device : Device, surface : Surface, swapChainDescriptor : WGPUSwapChainDescriptor)
-      @@swapchainId = LibWGPU.wgpu_device_create_swap_chain(device.id, surface.id, pointerof(swapChainDescriptor))
+    def initialize(device : Device, surface : Surface, swapChainDescriptor : LibWGPU::WGPUSwapChainDescriptor)
+      @swapchainId = LibWGPU.wgpu_device_create_swap_chain(device.id, surface.id, pointerof(swapChainDescriptor))
     end
 
     def id
-      @@swapchainId
+      @swapchainId
     end
   end
 end
