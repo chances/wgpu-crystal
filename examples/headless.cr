@@ -5,6 +5,7 @@ puts "Headless WebGPU Instance"
 Signal::INT.trap { exit }
 
 adapter = WGPU::Adapter.new(LibWGPU::RequestAdapterOptions.new power_preference: LibWGPU::PowerPreference::LowPower)
+pp adapter.info
 device = WGPU::Device.new adapter
 
 width : UInt64 = 300
@@ -36,5 +37,47 @@ texture = device.create_texture(LibWGPU::TextureDescriptor.new(
   usage: WGPU::TextureUsage::OutputAttachment | WGPU::TextureUsage::CopySrc,
   label: nil
 ))
+texture_view = texture.create_default_view()
 
-# TODO: Set the background to be red
+# usage = WGPU::TextureUsage::OutputAttachment | WGPU::TextureUsage::CopySrc
+# if (usage & WGPU::TextureUsage::CopySrc) == WGPU::TextureUsage::CopySrc
+#   puts "Source texture has COPY_SRC"
+# end
+
+# Set the background to be red
+encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new label: nil)
+color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
+  attachment: texture_view.id,
+  resolve_target: 0,
+  channel: LibWGPU::PassChannel_Color.new(
+    load_op: LibWGPU::LoadOp::Clear,
+    store_op: LibWGPU::StoreOp::Store,
+    clear_value: WGPU::Colors::RED,
+    read_only: false
+  )
+)
+encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
+  color_attachments: pointerof(color_attachment),
+  depth_stencil_attachment: nil
+))
+# Copy the data from the texture to the buffer
+encoder.copy_texture_to_buffer(LibWGPU::TextureCopyView.new(
+  texture: texture.id,
+  mip_level: 0,
+  origin: WGPU::Origin3d::ZERO
+), LibWGPU::BufferCopyView.new(
+  buffer: output_buffer.id,
+  layout: LibWGPU::TextureDataLayout.new(
+    offset: 0,
+    bytes_per_row: padded_bytes_per_row,
+    rows_per_image: 0
+  ),
+), texture_extent)
+command_buffer = encoder.finish()
+device.queue.submit(command_buffer)
+
+device.poll(force_wait: true)
+
+# TODO: Write a bmp or png of the output
+
+output_buffer.unmap()

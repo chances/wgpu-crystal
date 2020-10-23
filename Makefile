@@ -1,3 +1,4 @@
+CWD := $(shell pwd)
 LIBS = lib/ameba lib/clang
 
 default: all
@@ -43,3 +44,7 @@ vendor-wgpu: vendor/wgpu.h
 # TODO: Execute with --release for release builds
 vendor/wgpu.h:
 	crystal vendor/wgpu.cr
+
+example-headless:
+	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal examples/headless.cr
+.PHONY: example-headless
