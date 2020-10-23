@@ -1,11 +1,11 @@
 @[Link(ldflags: "-L#{__DIR__}/../bin/libs -lwgpu_native")]
 lib LibWGPU
-  WGPUCOPY_BYTES_PER_ROW_ALIGNMENT = 256
-  WGPUDESIRED_NUM_FRAMES = 3
-  WGPUMAX_ANISOTROPY = 16
-  WGPUMAX_COLOR_TARGETS = 4
-  WGPUMAX_MIP_LEVELS = 16
-  WGPUMAX_VERTEX_BUFFERS = 16
+  COPY_BYTES_PER_ROW_ALIGNMENT = 256
+  DESIRED_NUM_FRAMES = 3
+  MAX_ANISOTROPY = 16
+  MAX_COLOR_TARGETS = 4
+  MAX_MIP_LEVELS = 16
+  MAX_VERTEX_BUFFERS = 16
   # WGPUFeatures_MAPPABLE_PRIMARY_BUFFERS = ( uint64_t)65536
   # WGPUFeatures_SAMPLED_TEXTURE_BINDING_ARRAY = ( uint64_t)131072
   # WGPUFeatures_SAMPLED_TEXTURE_ARRAY_DYNAMIC_INDEXING = ( uint64_t)262144
@@ -27,15 +27,15 @@ lib LibWGPU
   # WGPUShaderStage_VERTEX = ( uint32_t)1
   # WGPUShaderStage_FRAGMENT = ( uint32_t)2
   # WGPUShaderStage_COMPUTE = ( uint32_t)4
-  # WGPUBufferUsage_MAP_READ = ( uint32_t)1
-  # WGPUBufferUsage_MAP_WRITE = ( uint32_t)2
-  # WGPUBufferUsage_COPY_SRC = ( uint32_t)4
-  # WGPUBufferUsage_COPY_DST = ( uint32_t)8
-  # WGPUBufferUsage_INDEX = ( uint32_t)16
-  # WGPUBufferUsage_VERTEX = ( uint32_t)32
-  # WGPUBufferUsage_UNIFORM = ( uint32_t)64
-  # WGPUBufferUsage_STORAGE = ( uint32_t)128
-  # WGPUBufferUsage_INDIRECT = ( uint32_t)256
+  # BufferUsage_MAP_READ = ( uint32_t)1
+  # BufferUsage_MAP_WRITE = ( uint32_t)2
+  # BufferUsage_COPY_SRC = ( uint32_t)4
+  # BufferUsage_COPY_DST = ( uint32_t)8
+  # BufferUsage_INDEX = ( uint32_t)16
+  # BufferUsage_VERTEX = ( uint32_t)32
+  # BufferUsage_UNIFORM = ( uint32_t)64
+  # BufferUsage_STORAGE = ( uint32_t)128
+  # BufferUsage_INDIRECT = ( uint32_t)256
   # WGPUColorWrite_RED = ( uint32_t)1
   # WGPUColorWrite_GREEN = ( uint32_t)2
   # WGPUColorWrite_BLUE = ( uint32_t)4
@@ -47,21 +47,21 @@ lib LibWGPU
   # WGPUTextureUsage_SAMPLED = ( uint32_t)4
   # WGPUTextureUsage_STORAGE = ( uint32_t)8
   # WGPUTextureUsage_OUTPUT_ATTACHMENT = ( uint32_t)16
-  alias WGPUNonZeroU64 = UInt64
-  alias WGPUOption_NonZeroU32 = UInt32
-  alias WGPUOption_NonZeroU64 = UInt64
-  alias WGPUOption_BufferSize = WGPUOption_NonZeroU64
-  alias WGPUOption_AdapterId = UInt64
-  alias WGPUOption_BufferId = UInt64
-  alias WGPUOption_SamplerId = UInt64
-  alias WGPUOption_SurfaceId = UInt64
-  alias WGPUOption_TextureViewId = UInt64
-  enum WGPUAddressMode : UInt8
+  alias NonZeroU64 = UInt64
+  alias Option_NonZeroU32 = UInt32
+  alias Option_NonZeroU64 = UInt64
+  alias Option_BufferSize = Option_NonZeroU64
+  alias Option_AdapterId = UInt64
+  alias Option_BufferId = UInt64
+  alias Option_SamplerId = UInt64
+  alias Option_SurfaceId = UInt64
+  alias Option_TextureViewId = UInt64
+  enum AddressMode : UInt8
     ClampToEdge = 0
     Repeat = 1
     MirrorRepeat = 2
   end
-  enum WGPUBackend : UInt8
+  enum Backend : UInt8
     Empty = 0
     Vulkan = 1
     Metal = 2
@@ -70,7 +70,7 @@ lib LibWGPU
     Gl = 5
     BrowserWebGpu = 6
   end
-  enum WGPUBindingType : UInt32
+  enum BindingType : UInt32
     UniformBuffer = 0
     StorageBuffer = 1
     ReadonlyStorageBuffer = 2
@@ -80,7 +80,7 @@ lib LibWGPU
     ReadonlyStorageTexture = 6
     WriteonlyStorageTexture = 7
   end
-  enum WGPUBlendFactor : UInt8
+  enum BlendFactor : UInt8
     Zero = 0
     One = 1
     SrcColor = 2
@@ -95,27 +95,27 @@ lib LibWGPU
     BlendColor = 11
     OneMinusBlendColor = 12
   end
-  enum WGPUBlendOperation : UInt8
+  enum BlendOperation : UInt8
     Add = 0
     Subtract = 1
     ReverseSubtract = 2
     Min = 3
     Max = 4
   end
-  enum WGPUBufferMapAsyncStatus : UInt8
+  enum BufferMapAsyncStatus : UInt8
     Success = 0
     Error = 1
     Unknown = 2
     ContextLost = 3
   end
-  enum WGPUCDeviceType : UInt8
+  enum CDeviceType : UInt8
     Other = 0
     IntegratedGpu = 1
     DiscreteGpu = 2
     VirtualGpu = 3
     Cpu = 4
   end
-  enum WGPUCompareFunction : UInt8
+  enum CompareFunction : UInt8
     Undefined = 0
     Never = 1
     Less = 2
@@ -126,32 +126,32 @@ lib LibWGPU
     GreaterEqual = 7
     Always = 8
   end
-  enum WGPUCullMode : UInt8
+  enum CullMode : UInt8
     None = 0
     Front = 1
     Back = 2
   end
-  enum WGPUFilterMode : UInt8
+  enum FilterMode : UInt8
     Nearest = 0
     Linear = 1
   end
-  enum WGPUFrontFace : UInt8
+  enum FrontFace : UInt8
     Ccw = 0
     Cw = 1
   end
-  enum WGPUIndexFormat : UInt8
+  enum IndexFormat : UInt8
     Uint16 = 0
     Uint32 = 1
   end
-  enum WGPUInputStepMode : UInt8
+  enum InputStepMode : UInt8
     Vertex = 0
     Instance = 1
   end
-  enum WGPULoadOp : UInt8
+  enum LoadOp : UInt8
     Clear = 0
     Load = 1
   end
-  enum WGPULogLevel : UInt8
+  enum LogLevel : UInt8
     Off = 0
     Error = 1
     Warn = 2
@@ -159,24 +159,24 @@ lib LibWGPU
     Debug = 4
     Trace = 5
   end
-  enum WGPUPowerPreference : UInt8
+  enum PowerPreference : UInt8
     Default = 0
     LowPower = 1
     HighPerformance = 2
   end
-  enum WGPUPresentMode : UInt8
+  enum PresentMode : UInt8
     Immediate = 0
     Mailbox = 1
     Fifo = 2
   end
-  enum WGPUPrimitiveTopology : UInt8
+  enum PrimitiveTopology : UInt8
     PointList = 0
     LineList = 1
     LineStrip = 2
     TriangleList = 3
     TriangleStrip = 4
   end
-  enum WGPUSType : UInt32
+  enum SType : UInt32
     Invalid = 0
     SurfaceDescriptorFromMetalLayer = 1
     SurfaceDescriptorFromWindowsHWND = 2
@@ -187,7 +187,7 @@ lib LibWGPU
     AnisotropicFiltering = 268435456
     Force32 = 2147483647
   end
-  enum WGPUStencilOperation : UInt8
+  enum StencilOperation : UInt8
     Keep = 0
     Zero = 1
     Replace = 2
@@ -197,11 +197,11 @@ lib LibWGPU
     IncrementWrap = 6
     DecrementWrap = 7
   end
-  enum WGPUStoreOp : UInt8
+  enum StoreOp : UInt8
     Clear = 0
     Store = 1
   end
-  enum WGPUSwapChainStatus : UInt8
+  enum SwapChainStatus : UInt8
     Good = 0
     Suboptimal = 1
     Timeout = 2
@@ -209,22 +209,22 @@ lib LibWGPU
     Lost = 4
     OutOfMemory = 5
   end
-  enum WGPUTextureAspect : UInt8
+  enum TextureAspect : UInt8
     All = 0
     StencilOnly = 1
     DepthOnly = 2
   end
-  enum WGPUTextureComponentType : UInt8
+  enum TextureComponentType : UInt8
     Float = 0
     Sint = 1
     Uint = 2
   end
-  enum WGPUTextureDimension : UInt8
+  enum TextureDimension : UInt8
     D1 = 0
     D2 = 1
     D3 = 2
   end
-  enum WGPUTextureFormat : UInt8
+  enum TextureFormat : UInt8
     R8Unorm = 0
     R8Snorm = 1
     R8Uint = 2
@@ -264,7 +264,7 @@ lib LibWGPU
     Depth24Plus = 36
     Depth24PlusStencil8 = 37
   end
-  enum WGPUTextureViewDimension : UInt8
+  enum TextureViewDimension : UInt8
     D1 = 0
     D2 = 1
     D2Array = 2
@@ -272,7 +272,7 @@ lib LibWGPU
     CubeArray = 4
     D3 = 5
   end
-  enum WGPUVertexFormat : UInt8
+  enum VertexFormat : UInt8
     Uchar2 = 0
     Uchar4 = 1
     Char2 = 2
@@ -304,427 +304,411 @@ lib LibWGPU
     Int3 = 28
     Int4 = 29
   end
-  type WGPUComputePass = Void
-  type WGPURenderBundleEncoder = Void
-  type WGPURenderPass = Void
-  alias WGPUId_Adapter_Dummy = WGPUNonZeroU64
-  alias WGPUAdapterId = WGPUId_Adapter_Dummy
-  alias WGPUFeatures = UInt64
-  struct WGPUCAdapterInfo
+  type ComputePass = Void
+  type RenderBundleEncoder = Void
+  type RenderPass = Void
+  alias AdapterId = NonZeroU64
+  alias Features = UInt64
+  struct CAdapterInfo
     name : Char*
     name_length : LibC::SizeT
     vendor : LibC::SizeT
     device : LibC::SizeT
-    device_type : WGPUCDeviceType
-    backend : WGPUBackend
+    device_type : CDeviceType
+    backend : Backend
   end
-  struct WGPUCLimits
+  struct CLimits
     max_bind_groups : UInt32
   end
-  alias WGPUId_Device_Dummy = WGPUNonZeroU64
-  alias WGPUDeviceId = WGPUId_Device_Dummy
-  alias WGPUId_BindGroup_Dummy = WGPUNonZeroU64
-  alias WGPUBindGroupId = WGPUId_BindGroup_Dummy
-  alias WGPUId_BindGroupLayout_Dummy = WGPUNonZeroU64
-  alias WGPUBindGroupLayoutId = WGPUId_BindGroupLayout_Dummy
-  alias WGPUId_Buffer_Dummy = WGPUNonZeroU64
-  alias WGPUBufferId = WGPUId_Buffer_Dummy
-  alias WGPUBufferAddress = UInt64
-  alias WGPUBufferSize = WGPUNonZeroU64
-  alias WGPUBufferMapCallback = (WGPUBufferMapAsyncStatus, UInt8*) -> Void
-  alias WGPUId_CommandBuffer_Dummy = WGPUNonZeroU64
-  alias WGPUCommandBufferId = WGPUId_CommandBuffer_Dummy
-  alias WGPUCommandEncoderId = WGPUCommandBufferId
-  struct WGPUComputePassDescriptor
+  alias DeviceId = NonZeroU64
+  alias BindGroupId = NonZeroU64
+  alias BindGroupLayoutId = NonZeroU64
+  alias BufferId = NonZeroU64
+  alias BufferAddress = UInt64
+  alias BufferSize = NonZeroU64
+  alias BufferMapCallback = (BufferMapAsyncStatus, UInt8*) -> Void
+  alias CommandBufferId = NonZeroU64
+  alias CommandEncoderId = CommandBufferId
+  struct ComputePassDescriptor
     todo : UInt32
   end
-  alias WGPUId_TextureView_Dummy = WGPUNonZeroU64
-  alias WGPUTextureViewId = WGPUId_TextureView_Dummy
-  struct WGPUColor
+  alias TextureViewId = NonZeroU64
+  struct Color
     r : Float64
     g : Float64
     b : Float64
     a : Float64
   end
-  struct WGPUPassChannel_Color
-    load_op : WGPULoadOp
-    store_op : WGPUStoreOp
-    clear_value : WGPUColor
+  struct PassChannel_Color
+    load_op : LoadOp
+    store_op : StoreOp
+    clear_value : Color
     read_only : Bool
   end
-  struct WGPURenderPassColorAttachmentDescriptorBase_TextureViewId
-    attachment : WGPUTextureViewId
-    resolve_target : WGPUOption_TextureViewId
-    channel : WGPUPassChannel_Color
+  struct RenderPassColorAttachmentDescriptorBase_TextureViewId
+    attachment : TextureViewId
+    resolve_target : Option_TextureViewId
+    channel : PassChannel_Color
   end
-  alias WGPURenderPassColorAttachmentDescriptor = WGPURenderPassColorAttachmentDescriptorBase_TextureViewId
-  struct WGPUPassChannel_f32
-    load_op : WGPULoadOp
-    store_op : WGPUStoreOp
+  alias RenderPassColorAttachmentDescriptor = RenderPassColorAttachmentDescriptorBase_TextureViewId
+  struct PassChannel_f32
+    load_op : LoadOp
+    store_op : StoreOp
     clear_value : Float32
     read_only : Bool
   end
-  struct WGPUPassChannel_u32
-    load_op : WGPULoadOp
-    store_op : WGPUStoreOp
+  struct PassChannel_u32
+    load_op : LoadOp
+    store_op : StoreOp
     clear_value : UInt32
     read_only : Bool
   end
-  struct WGPURenderPassDepthStencilAttachmentDescriptorBase_TextureViewId
-    attachment : WGPUTextureViewId
-    depth : WGPUPassChannel_f32
-    stencil : WGPUPassChannel_u32
+  struct RenderPassDepthStencilAttachmentDescriptorBase_TextureViewId
+    attachment : TextureViewId
+    depth : PassChannel_f32
+    stencil : PassChannel_u32
   end
-  alias WGPURenderPassDepthStencilAttachmentDescriptor = WGPURenderPassDepthStencilAttachmentDescriptorBase_TextureViewId
-  struct WGPURenderPassDescriptor
-    color_attachments : WGPURenderPassColorAttachmentDescriptor*
+  alias RenderPassDepthStencilAttachmentDescriptor = RenderPassDepthStencilAttachmentDescriptorBase_TextureViewId
+  struct RenderPassDescriptor
+    color_attachments : RenderPassColorAttachmentDescriptor*
     color_attachments_length : LibC::SizeT
-    depth_stencil_attachment : WGPURenderPassDepthStencilAttachmentDescriptor*
+    depth_stencil_attachment : RenderPassDepthStencilAttachmentDescriptor*
   end
-  struct WGPUTextureDataLayout
-    offset : WGPUBufferAddress
+  struct TextureDataLayout
+    offset : BufferAddress
     bytes_per_row : UInt32
     rows_per_image : UInt32
   end
-  struct WGPUBufferCopyView
-    buffer : WGPUBufferId
-    layout : WGPUTextureDataLayout
+  struct BufferCopyView
+    buffer : BufferId
+    layout : TextureDataLayout
   end
-  alias WGPUId_Texture_Dummy = WGPUNonZeroU64
-  alias WGPUTextureId = WGPUId_Texture_Dummy
-  struct WGPUOrigin3d
+  alias TextureId = NonZeroU64
+  struct Origin3d
     x : UInt32
     y : UInt32
     z : UInt32
   end
-  struct WGPUTextureCopyView
-    texture : WGPUTextureId
+  struct TextureCopyView
+    texture : TextureId
     mip_level : UInt32
-    origin : WGPUOrigin3d
+    origin : Origin3d
   end
-  struct WGPUExtent3d
+  struct Extent3d
     width : UInt32
     height : UInt32
     depth : UInt32
   end
-  struct WGPUCommandBufferDescriptor
+  struct CommandBufferDescriptor
     todo : UInt32
   end
-  alias WGPURawString = Char*
-  alias WGPUDynamicOffset = UInt32
-  alias WGPUId_ComputePipeline_Dummy = WGPUNonZeroU64
-  alias WGPUComputePipelineId = WGPUId_ComputePipeline_Dummy
-  alias WGPUId_Surface = WGPUNonZeroU64
-  alias WGPUSurfaceId = WGPUId_Surface
-  alias WGPULabel = Char*
-  struct WGPUBindGroupEntry
+  alias RawString = Char*
+  alias DynamicOffset = UInt32
+  alias ComputePipelineId = NonZeroU64
+  alias SurfaceId = NonZeroU64
+  alias Label = Char*
+  struct BindGroupEntry
     binding : UInt32
-    buffer : WGPUOption_BufferId
-    offset : WGPUBufferAddress
-    size : WGPUBufferSize
-    sampler : WGPUOption_SamplerId
-    texture_view : WGPUOption_TextureViewId
+    buffer : Option_BufferId
+    offset : BufferAddress
+    size : BufferSize
+    sampler : Option_SamplerId
+    texture_view : Option_TextureViewId
   end
-  struct WGPUBindGroupDescriptor
-    label : WGPULabel
-    layout : WGPUBindGroupLayoutId
-    entries : WGPUBindGroupEntry*
+  struct BindGroupDescriptor
+    label : Label
+    layout : BindGroupLayoutId
+    entries : BindGroupEntry*
     entries_length : LibC::SizeT
   end
-  alias WGPUShaderStage = UInt32
-  struct WGPUBindGroupLayoutEntry
+  alias ShaderStage = UInt32
+  struct BindGroupLayoutEntry
     binding : UInt32
-    visibility : WGPUShaderStage
-    ty : WGPUBindingType
+    visibility : ShaderStage
+    ty : BindingType
     has_dynamic_offset : Bool
-    min_buffer_binding_size : WGPUOption_NonZeroU64
+    min_buffer_binding_size : Option_NonZeroU64
     multisampled : Bool
-    view_dimension : WGPUTextureViewDimension
-    texture_component_type : WGPUTextureComponentType
-    storage_texture_format : WGPUTextureFormat
-    count : WGPUOption_NonZeroU32
+    view_dimension : TextureViewDimension
+    texture_component_type : TextureComponentType
+    storage_texture_format : TextureFormat
+    count : Option_NonZeroU32
   end
-  struct WGPUBindGroupLayoutDescriptor
-    label : WGPULabel
-    entries : WGPUBindGroupLayoutEntry*
+  struct BindGroupLayoutDescriptor
+    label : Label
+    entries : BindGroupLayoutEntry*
     entries_length : LibC::SizeT
   end
-  alias WGPUBufferUsage = UInt32
-  struct WGPUBufferDescriptor
-    label : WGPULabel
-    size : WGPUBufferAddress
-    usage : WGPUBufferUsage
+  alias BufferUsage = UInt32
+  struct BufferDescriptor
+    label : Label
+    size : BufferAddress
+    usage : BufferUsage
     mapped_at_creation : Bool
   end
-  struct WGPUCommandEncoderDescriptor
-    label : WGPULabel
+  struct CommandEncoderDescriptor
+    label : Label
   end
-  alias WGPUId_PipelineLayout_Dummy = WGPUNonZeroU64
-  alias WGPUPipelineLayoutId = WGPUId_PipelineLayout_Dummy
-  alias WGPUId_ShaderModule_Dummy = WGPUNonZeroU64
-  alias WGPUShaderModuleId = WGPUId_ShaderModule_Dummy
-  struct WGPUProgrammableStageDescriptor
-    module : WGPUShaderModuleId
-    entry_point : WGPURawString
+  alias PipelineLayoutId = NonZeroU64
+  alias ShaderModuleId = NonZeroU64
+  struct ProgrammableStageDescriptor
+    module : ShaderModuleId
+    entry_point : RawString
   end
-  struct WGPUComputePipelineDescriptor
-    layout : WGPUPipelineLayoutId
-    compute_stage : WGPUProgrammableStageDescriptor
+  struct ComputePipelineDescriptor
+    layout : PipelineLayoutId
+    compute_stage : ProgrammableStageDescriptor
   end
-  struct WGPUPipelineLayoutDescriptor
-    bind_group_layouts : WGPUBindGroupLayoutId*
+  struct PipelineLayoutDescriptor
+    bind_group_layouts : BindGroupLayoutId*
     bind_group_layouts_length : LibC::SizeT
   end
-  alias WGPURenderBundleEncoderId = WGPURenderBundleEncoder*
-  struct WGPURenderBundleEncoderDescriptor
-    label : WGPULabel
-    color_formats : WGPUTextureFormat*
+  alias RenderBundleEncoderId = RenderBundleEncoder*
+  struct RenderBundleEncoderDescriptor
+    label : Label
+    color_formats : TextureFormat*
     color_formats_length : LibC::SizeT
-    depth_stencil_format : WGPUTextureFormat*
+    depth_stencil_format : TextureFormat*
     sample_count : UInt32
   end
-  alias WGPUId_RenderPipeline_Dummy = WGPUNonZeroU64
-  alias WGPURenderPipelineId = WGPUId_RenderPipeline_Dummy
-  struct WGPURasterizationStateDescriptor
-    front_face : WGPUFrontFace
-    cull_mode : WGPUCullMode
+  alias RenderPipelineId = NonZeroU64
+  struct RasterizationStateDescriptor
+    front_face : FrontFace
+    cull_mode : CullMode
     depth_bias : Int32
     depth_bias_slope_scale : Float32
     depth_bias_clamp : Float32
   end
-  struct WGPUBlendDescriptor
-    src_factor : WGPUBlendFactor
-    dst_factor : WGPUBlendFactor
-    operation : WGPUBlendOperation
+  struct BlendDescriptor
+    src_factor : BlendFactor
+    dst_factor : BlendFactor
+    operation : BlendOperation
   end
-  alias WGPUColorWrite = UInt32
-  struct WGPUColorStateDescriptor
-    format : WGPUTextureFormat
-    alpha_blend : WGPUBlendDescriptor
-    color_blend : WGPUBlendDescriptor
-    write_mask : WGPUColorWrite
+  alias ColorWrite = UInt32
+  struct ColorStateDescriptor
+    format : TextureFormat
+    alpha_blend : BlendDescriptor
+    color_blend : BlendDescriptor
+    write_mask : ColorWrite
   end
-  struct WGPUStencilStateFaceDescriptor
-    compare : WGPUCompareFunction
-    fail_op : WGPUStencilOperation
-    depth_fail_op : WGPUStencilOperation
-    pass_op : WGPUStencilOperation
+  struct StencilStateFaceDescriptor
+    compare : CompareFunction
+    fail_op : StencilOperation
+    depth_fail_op : StencilOperation
+    pass_op : StencilOperation
   end
-  struct WGPUDepthStencilStateDescriptor
-    format : WGPUTextureFormat
+  struct DepthStencilStateDescriptor
+    format : TextureFormat
     depth_write_enabled : Bool
-    depth_compare : WGPUCompareFunction
-    stencil_front : WGPUStencilStateFaceDescriptor
-    stencil_back : WGPUStencilStateFaceDescriptor
+    depth_compare : CompareFunction
+    stencil_front : StencilStateFaceDescriptor
+    stencil_back : StencilStateFaceDescriptor
     stencil_read_mask : UInt32
     stencil_write_mask : UInt32
   end
-  alias WGPUShaderLocation = UInt32
-  struct WGPUVertexAttributeDescriptor
-    offset : WGPUBufferAddress
-    format : WGPUVertexFormat
-    shader_location : WGPUShaderLocation
+  alias ShaderLocation = UInt32
+  struct VertexAttributeDescriptor
+    offset : BufferAddress
+    format : VertexFormat
+    shader_location : ShaderLocation
   end
-  struct WGPUVertexBufferLayoutDescriptor
-    array_stride : WGPUBufferAddress
-    step_mode : WGPUInputStepMode
-    attributes : WGPUVertexAttributeDescriptor*
+  struct VertexBufferLayoutDescriptor
+    array_stride : BufferAddress
+    step_mode : InputStepMode
+    attributes : VertexAttributeDescriptor*
     attributes_length : LibC::SizeT
   end
-  struct WGPUVertexStateDescriptor
-    index_format : WGPUIndexFormat
-    vertex_buffers : WGPUVertexBufferLayoutDescriptor*
+  struct VertexStateDescriptor
+    index_format : IndexFormat
+    vertex_buffers : VertexBufferLayoutDescriptor*
     vertex_buffers_length : LibC::SizeT
   end
-  struct WGPURenderPipelineDescriptor
-    layout : WGPUPipelineLayoutId
-    vertex_stage : WGPUProgrammableStageDescriptor
-    fragment_stage : WGPUProgrammableStageDescriptor*
-    primitive_topology : WGPUPrimitiveTopology
-    rasterization_state : WGPURasterizationStateDescriptor*
-    color_states : WGPUColorStateDescriptor*
+  struct RenderPipelineDescriptor
+    layout : PipelineLayoutId
+    vertex_stage : ProgrammableStageDescriptor
+    fragment_stage : ProgrammableStageDescriptor*
+    primitive_topology : PrimitiveTopology
+    rasterization_state : RasterizationStateDescriptor*
+    color_states : ColorStateDescriptor*
     color_states_length : LibC::SizeT
-    depth_stencil_state : WGPUDepthStencilStateDescriptor*
-    vertex_state : WGPUVertexStateDescriptor
+    depth_stencil_state : DepthStencilStateDescriptor*
+    vertex_state : VertexStateDescriptor
     sample_count : UInt32
     sample_mask : UInt32
     alpha_to_coverage_enabled : Bool
   end
-  alias WGPUId_Sampler_Dummy = WGPUNonZeroU64
-  alias WGPUSamplerId = WGPUId_Sampler_Dummy
-  struct WGPUChainedStruct
-    next : WGPUChainedStruct*
-    s_type : WGPUSType
+  alias SamplerId = NonZeroU64
+  struct ChainedStruct
+    next : ChainedStruct*
+    s_type : SType
   end
-  struct WGPUSamplerDescriptor
-    next_in_chain : WGPUChainedStruct*
-    label : WGPULabel
-    address_mode_u : WGPUAddressMode
-    address_mode_v : WGPUAddressMode
-    address_mode_w : WGPUAddressMode
-    mag_filter : WGPUFilterMode
-    min_filter : WGPUFilterMode
-    mipmap_filter : WGPUFilterMode
+  struct SamplerDescriptor
+    next_in_chain : ChainedStruct*
+    label : Label
+    address_mode_u : AddressMode
+    address_mode_v : AddressMode
+    address_mode_w : AddressMode
+    mag_filter : FilterMode
+    min_filter : FilterMode
+    mipmap_filter : FilterMode
     lod_min_clamp : Float32
     lod_max_clamp : Float32
-    compare : WGPUCompareFunction
+    compare : CompareFunction
   end
-  struct WGPUShaderSource
+  struct ShaderSource
     bytes : UInt32*
     length : LibC::SizeT
   end
-  alias WGPUId_SwapChain_Dummy = WGPUNonZeroU64
-  alias WGPUSwapChainId = WGPUId_SwapChain_Dummy
-  alias WGPUTextureUsage = UInt32
-  struct WGPUSwapChainDescriptor
-    usage : WGPUTextureUsage
-    format : WGPUTextureFormat
+  alias SwapChainId = NonZeroU64
+  alias TextureUsage = UInt32
+  struct SwapChainDescriptor
+    usage : TextureUsage
+    format : TextureFormat
     width : UInt32
     height : UInt32
-    present_mode : WGPUPresentMode
+    present_mode : PresentMode
   end
-  struct WGPUTextureDescriptor
-    label : WGPULabel
-    size : WGPUExtent3d
+  struct TextureDescriptor
+    label : Label
+    size : Extent3d
     mip_level_count : UInt32
     sample_count : UInt32
-    dimension : WGPUTextureDimension
-    format : WGPUTextureFormat
-    usage : WGPUTextureUsage
+    dimension : TextureDimension
+    format : TextureFormat
+    usage : TextureUsage
   end
-  alias WGPUQueueId = WGPUDeviceId
-  alias WGPUId_RenderBundle = WGPUNonZeroU64
-  alias WGPURenderBundleId = WGPUId_RenderBundle
-  struct WGPURenderBundleDescriptor_Label
-    label : WGPULabel
+  alias QueueId = DeviceId
+  alias RenderBundleId = NonZeroU64
+  struct RenderBundleDescriptor_Label
+    label : Label
   end
-  struct WGPURequestAdapterOptions
-    power_preference : WGPUPowerPreference
-    compatible_surface : WGPUOption_SurfaceId
+  struct RequestAdapterOptions
+    power_preference : PowerPreference
+    compatible_surface : Option_SurfaceId
   end
-  alias WGPUBackendBit = UInt32
-  alias WGPURequestAdapterCallback = (WGPUOption_AdapterId, Void*) -> Void
-  alias WGPULogCallback = (Int32, Char*) -> Void
-  struct WGPUSwapChainOutput
-    status : WGPUSwapChainStatus
-    view_id : WGPUOption_TextureViewId
+  alias BackendBit = UInt32
+  alias RequestAdapterCallback = (Option_AdapterId, Void*) -> Void
+  alias LogCallback = (Int32, Char*) -> Void
+  struct SwapChainOutput
+    status : SwapChainStatus
+    view_id : Option_TextureViewId
   end
-  struct WGPUTextureViewDescriptor
-    label : WGPULabel
-    format : WGPUTextureFormat
-    dimension : WGPUTextureViewDimension
-    aspect : WGPUTextureAspect
+  struct TextureViewDescriptor
+    label : Label
+    format : TextureFormat
+    dimension : TextureViewDimension
+    aspect : TextureAspect
     base_mip_level : UInt32
     level_count : UInt32
     base_array_layer : UInt32
     array_layer_count : UInt32
   end
-  struct WGPUAnisotropicSamplerDescriptorExt
-    next_in_chain : WGPUChainedStruct*
-    s_type : WGPUSType
+  struct AnisotropicSamplerDescriptorExt
+    next_in_chain : ChainedStruct*
+    s_type : SType
     anisotropic_clamp : UInt8
   end
-  fun wgpu_adapter_destroy(WGPUAdapterId) : Void
-  fun wgpu_adapter_features(WGPUAdapterId) : WGPUFeatures
-  fun wgpu_adapter_get_info(WGPUAdapterId, WGPUCAdapterInfo*) : Void
-  fun wgpu_adapter_limits(WGPUAdapterId) : WGPUCLimits
-  fun wgpu_adapter_request_device(WGPUAdapterId, WGPUFeatures, WGPUCLimits*, Bool, Char*) : WGPUDeviceId
-  fun wgpu_bind_group_destroy(WGPUBindGroupId) : Void
-  fun wgpu_bind_group_layout_destroy(WGPUBindGroupLayoutId) : Void
-  fun wgpu_buffer_destroy(WGPUBufferId) : Void
-  fun wgpu_buffer_get_mapped_range(WGPUBufferId, WGPUBufferAddress, WGPUBufferSize) : UInt8*
-  fun wgpu_buffer_map_read_async(WGPUBufferId, WGPUBufferAddress, WGPUBufferAddress, WGPUBufferMapCallback, UInt8*) : Void
-  fun wgpu_buffer_map_write_async(WGPUBufferId, WGPUBufferAddress, WGPUBufferAddress, WGPUBufferMapCallback, UInt8*) : Void
-  fun wgpu_buffer_unmap(WGPUBufferId) : Void
-  fun wgpu_command_buffer_destroy(WGPUCommandBufferId) : Void
-  fun wgpu_command_encoder_begin_compute_pass(WGPUCommandEncoderId, WGPUComputePassDescriptor*) : WGPUComputePass*
-  fun wgpu_command_encoder_begin_render_pass(WGPUCommandEncoderId, WGPURenderPassDescriptor*) : WGPURenderPass*
-  fun wgpu_command_encoder_copy_buffer_to_buffer(WGPUCommandEncoderId, WGPUBufferId, WGPUBufferAddress, WGPUBufferId, WGPUBufferAddress, WGPUBufferAddress) : Void
-  fun wgpu_command_encoder_copy_buffer_to_texture(WGPUCommandEncoderId, WGPUBufferCopyView*, WGPUTextureCopyView*, WGPUExtent3d*) : Void
-  fun wgpu_command_encoder_copy_texture_to_buffer(WGPUCommandEncoderId, WGPUTextureCopyView*, WGPUBufferCopyView*, WGPUExtent3d*) : Void
-  fun wgpu_command_encoder_copy_texture_to_texture(WGPUCommandEncoderId, WGPUTextureCopyView*, WGPUTextureCopyView*, WGPUExtent3d*) : Void
-  fun wgpu_command_encoder_destroy(WGPUCommandEncoderId) : Void
-  fun wgpu_command_encoder_finish(WGPUCommandEncoderId, WGPUCommandBufferDescriptor*) : WGPUCommandBufferId
-  fun wgpu_compute_pass_destroy(WGPUComputePass*) : Void
-  fun wgpu_compute_pass_dispatch(WGPUComputePass*, UInt32, UInt32, UInt32) : Void
-  fun wgpu_compute_pass_dispatch_indirect(WGPUComputePass*, WGPUBufferId, WGPUBufferAddress) : Void
-  fun wgpu_compute_pass_end_pass(WGPUComputePass*) : Void
-  fun wgpu_compute_pass_insert_debug_marker(WGPUComputePass*, WGPURawString, UInt32) : Void
-  fun wgpu_compute_pass_pop_debug_group(WGPUComputePass*) : Void
-  fun wgpu_compute_pass_push_debug_group(WGPUComputePass*, WGPURawString, UInt32) : Void
-  fun wgpu_compute_pass_set_bind_group(WGPUComputePass*, UInt32, WGPUBindGroupId, WGPUDynamicOffset*, LibC::SizeT) : Void
-  fun wgpu_compute_pass_set_pipeline(WGPUComputePass*, WGPUComputePipelineId) : Void
-  fun wgpu_compute_pipeline_destroy(WGPUComputePipelineId) : Void
-  fun wgpu_create_surface_from_android(Void*) : WGPUSurfaceId
-  fun wgpu_create_surface_from_metal_layer(Void*) : WGPUSurfaceId
-  fun wgpu_create_surface_from_wayland(Void*, Void*) : WGPUSurfaceId
-  fun wgpu_create_surface_from_windows_hwnd(Void*, Void*) : WGPUSurfaceId
-  fun wgpu_create_surface_from_xlib(Void**, UInt32) : WGPUSurfaceId
-  fun wgpu_device_create_bind_group(WGPUDeviceId, WGPUBindGroupDescriptor*) : WGPUBindGroupId
-  fun wgpu_device_create_bind_group_layout(WGPUDeviceId, WGPUBindGroupLayoutDescriptor*) : WGPUBindGroupLayoutId
-  fun wgpu_device_create_buffer(WGPUDeviceId, WGPUBufferDescriptor*) : WGPUBufferId
-  fun wgpu_device_create_command_encoder(WGPUDeviceId, WGPUCommandEncoderDescriptor*) : WGPUCommandEncoderId
-  fun wgpu_device_create_compute_pipeline(WGPUDeviceId, WGPUComputePipelineDescriptor*) : WGPUComputePipelineId
-  fun wgpu_device_create_pipeline_layout(WGPUDeviceId, WGPUPipelineLayoutDescriptor*) : WGPUPipelineLayoutId
-  fun wgpu_device_create_render_bundle_encoder(WGPUDeviceId, WGPURenderBundleEncoderDescriptor*) : WGPURenderBundleEncoderId
-  fun wgpu_device_create_render_pipeline(WGPUDeviceId, WGPURenderPipelineDescriptor*) : WGPURenderPipelineId
-  fun wgpu_device_create_sampler(WGPUDeviceId, WGPUSamplerDescriptor*) : WGPUSamplerId
-  fun wgpu_device_create_shader_module(WGPUDeviceId, WGPUShaderSource) : WGPUShaderModuleId
-  fun wgpu_device_create_swap_chain(WGPUDeviceId, WGPUSurfaceId, WGPUSwapChainDescriptor*) : WGPUSwapChainId
-  fun wgpu_device_create_texture(WGPUDeviceId, WGPUTextureDescriptor*) : WGPUTextureId
-  fun wgpu_device_destroy(WGPUDeviceId) : Void
-  fun wgpu_device_features(WGPUDeviceId) : WGPUFeatures
-  fun wgpu_device_get_default_queue(WGPUDeviceId) : WGPUQueueId
-  fun wgpu_device_limits(WGPUDeviceId) : WGPUCLimits
-  fun wgpu_device_poll(WGPUDeviceId, Bool) : Void
+  fun wgpu_adapter_destroy(AdapterId) : Void
+  fun wgpu_adapter_features(AdapterId) : Features
+  fun wgpu_adapter_get_info(AdapterId, CAdapterInfo*) : Void
+  fun wgpu_adapter_limits(AdapterId) : CLimits
+  fun wgpu_adapter_request_device(AdapterId, Features, CLimits*, Bool, Char*) : DeviceId
+  fun wgpu_bind_group_destroy(BindGroupId) : Void
+  fun wgpu_bind_group_layout_destroy(BindGroupLayoutId) : Void
+  fun wgpu_buffer_destroy(BufferId) : Void
+  fun wgpu_buffer_get_mapped_range(BufferId, BufferAddress, BufferSize) : UInt8*
+  fun wgpu_buffer_map_read_async(BufferId, BufferAddress, BufferAddress, BufferMapCallback, UInt8*) : Void
+  fun wgpu_buffer_map_write_async(BufferId, BufferAddress, BufferAddress, BufferMapCallback, UInt8*) : Void
+  fun wgpu_buffer_unmap(BufferId) : Void
+  fun wgpu_command_buffer_destroy(CommandBufferId) : Void
+  fun wgpu_command_encoder_begin_compute_pass(CommandEncoderId, ComputePassDescriptor*) : ComputePass*
+  fun wgpu_command_encoder_begin_render_pass(CommandEncoderId, RenderPassDescriptor*) : RenderPass*
+  fun wgpu_command_encoder_copy_buffer_to_buffer(CommandEncoderId, BufferId, BufferAddress, BufferId, BufferAddress, BufferAddress) : Void
+  fun wgpu_command_encoder_copy_buffer_to_texture(CommandEncoderId, BufferCopyView*, TextureCopyView*, Extent3d*) : Void
+  fun wgpu_command_encoder_copy_texture_to_buffer(CommandEncoderId, TextureCopyView*, BufferCopyView*, Extent3d*) : Void
+  fun wgpu_command_encoder_copy_texture_to_texture(CommandEncoderId, TextureCopyView*, TextureCopyView*, Extent3d*) : Void
+  fun wgpu_command_encoder_destroy(CommandEncoderId) : Void
+  fun wgpu_command_encoder_finish(CommandEncoderId, CommandBufferDescriptor*) : CommandBufferId
+  fun wgpu_compute_pass_destroy(ComputePass*) : Void
+  fun wgpu_compute_pass_dispatch(ComputePass*, UInt32, UInt32, UInt32) : Void
+  fun wgpu_compute_pass_dispatch_indirect(ComputePass*, BufferId, BufferAddress) : Void
+  fun wgpu_compute_pass_end_pass(ComputePass*) : Void
+  fun wgpu_compute_pass_insert_debug_marker(ComputePass*, RawString, UInt32) : Void
+  fun wgpu_compute_pass_pop_debug_group(ComputePass*) : Void
+  fun wgpu_compute_pass_push_debug_group(ComputePass*, RawString, UInt32) : Void
+  fun wgpu_compute_pass_set_bind_group(ComputePass*, UInt32, BindGroupId, DynamicOffset*, LibC::SizeT) : Void
+  fun wgpu_compute_pass_set_pipeline(ComputePass*, ComputePipelineId) : Void
+  fun wgpu_compute_pipeline_destroy(ComputePipelineId) : Void
+  fun wgpu_create_surface_from_android(Void*) : SurfaceId
+  fun wgpu_create_surface_from_metal_layer(Void*) : SurfaceId
+  fun wgpu_create_surface_from_wayland(Void*, Void*) : SurfaceId
+  fun wgpu_create_surface_from_windows_hwnd(Void*, Void*) : SurfaceId
+  fun wgpu_create_surface_from_xlib(Void**, UInt32) : SurfaceId
+  fun wgpu_device_create_bind_group(DeviceId, BindGroupDescriptor*) : BindGroupId
+  fun wgpu_device_create_bind_group_layout(DeviceId, BindGroupLayoutDescriptor*) : BindGroupLayoutId
+  fun wgpu_device_create_buffer(DeviceId, BufferDescriptor*) : BufferId
+  fun wgpu_device_create_command_encoder(DeviceId, CommandEncoderDescriptor*) : CommandEncoderId
+  fun wgpu_device_create_compute_pipeline(DeviceId, ComputePipelineDescriptor*) : ComputePipelineId
+  fun wgpu_device_create_pipeline_layout(DeviceId, PipelineLayoutDescriptor*) : PipelineLayoutId
+  fun wgpu_device_create_render_bundle_encoder(DeviceId, RenderBundleEncoderDescriptor*) : RenderBundleEncoderId
+  fun wgpu_device_create_render_pipeline(DeviceId, RenderPipelineDescriptor*) : RenderPipelineId
+  fun wgpu_device_create_sampler(DeviceId, SamplerDescriptor*) : SamplerId
+  fun wgpu_device_create_shader_module(DeviceId, ShaderSource) : ShaderModuleId
+  fun wgpu_device_create_swap_chain(DeviceId, SurfaceId, SwapChainDescriptor*) : SwapChainId
+  fun wgpu_device_create_texture(DeviceId, TextureDescriptor*) : TextureId
+  fun wgpu_device_destroy(DeviceId) : Void
+  fun wgpu_device_features(DeviceId) : Features
+  fun wgpu_device_get_default_queue(DeviceId) : QueueId
+  fun wgpu_device_limits(DeviceId) : CLimits
+  fun wgpu_device_poll(DeviceId, Bool) : Void
   fun wgpu_get_version() : UInt32
-  fun wgpu_pipeline_layout_destroy(WGPUPipelineLayoutId) : Void
-  fun wgpu_queue_submit(WGPUQueueId, WGPUCommandBufferId*, LibC::SizeT) : Void
-  fun wgpu_queue_write_buffer(WGPUQueueId, WGPUBufferId, WGPUBufferAddress, UInt8*, LibC::SizeT) : Void
-  fun wgpu_queue_write_texture(WGPUQueueId, WGPUTextureCopyView*, UInt8*, LibC::SizeT, WGPUTextureDataLayout*, WGPUExtent3d*) : Void
-  fun wgpu_render_bundle_destroy(WGPURenderBundleId) : Void
-  fun wgpu_render_bundle_draw(WGPURenderBundleEncoder*, UInt32, UInt32, UInt32, UInt32) : Void
-  fun wgpu_render_bundle_draw_indexed(WGPURenderBundleEncoder*, UInt32, UInt32, UInt32, Int32, UInt32) : Void
-  fun wgpu_render_bundle_draw_indirect(WGPURenderBundleEncoder*, WGPUBufferId, WGPUBufferAddress) : Void
-  fun wgpu_render_bundle_encoder_finish(WGPURenderBundleEncoderId, WGPURenderBundleDescriptor_Label*) : WGPURenderBundleId
-  fun wgpu_render_bundle_insert_debug_marker(WGPURenderBundleEncoder*, WGPURawString) : Void
-  fun wgpu_render_bundle_pop_debug_group(WGPURenderBundleEncoder*) : Void
-  fun wgpu_render_bundle_push_debug_group(WGPURenderBundleEncoder*, WGPURawString) : Void
-  fun wgpu_render_bundle_set_bind_group(WGPURenderBundleEncoder*, UInt32, WGPUBindGroupId, WGPUDynamicOffset*, LibC::SizeT) : Void
-  fun wgpu_render_bundle_set_index_buffer(WGPURenderBundleEncoder*, WGPUBufferId, WGPUBufferAddress, WGPUOption_BufferSize) : Void
-  fun wgpu_render_bundle_set_pipeline(WGPURenderBundleEncoder*, WGPURenderPipelineId) : Void
-  fun wgpu_render_bundle_set_vertex_buffer(WGPURenderBundleEncoder*, UInt32, WGPUBufferId, WGPUBufferAddress, WGPUOption_BufferSize) : Void
-  fun wgpu_render_pass_bundle_indexed_indirect(WGPURenderBundleEncoder*, WGPUBufferId, WGPUBufferAddress) : Void
-  fun wgpu_render_pass_destroy(WGPURenderPass*) : Void
-  fun wgpu_render_pass_draw(WGPURenderPass*, UInt32, UInt32, UInt32, UInt32) : Void
-  fun wgpu_render_pass_draw_indexed(WGPURenderPass*, UInt32, UInt32, UInt32, Int32, UInt32) : Void
-  fun wgpu_render_pass_draw_indexed_indirect(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress) : Void
-  fun wgpu_render_pass_draw_indirect(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress) : Void
-  fun wgpu_render_pass_end_pass(WGPURenderPass*) : Void
-  fun wgpu_render_pass_insert_debug_marker(WGPURenderPass*, WGPURawString, UInt32) : Void
-  fun wgpu_render_pass_multi_draw_indexed_indirect(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress, UInt32) : Void
-  fun wgpu_render_pass_multi_draw_indexed_indirect_count(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress, WGPUBufferId, WGPUBufferAddress, UInt32) : Void
-  fun wgpu_render_pass_multi_draw_indirect(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress, UInt32) : Void
-  fun wgpu_render_pass_multi_draw_indirect_count(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress, WGPUBufferId, WGPUBufferAddress, UInt32) : Void
-  fun wgpu_render_pass_pop_debug_group(WGPURenderPass*) : Void
-  fun wgpu_render_pass_push_debug_group(WGPURenderPass*, WGPURawString, UInt32) : Void
-  fun wgpu_render_pass_set_bind_group(WGPURenderPass*, UInt32, WGPUBindGroupId, WGPUDynamicOffset*, LibC::SizeT) : Void
-  fun wgpu_render_pass_set_blend_color(WGPURenderPass*, WGPUColor*) : Void
-  fun wgpu_render_pass_set_index_buffer(WGPURenderPass*, WGPUBufferId, WGPUBufferAddress, WGPUOption_BufferSize) : Void
-  fun wgpu_render_pass_set_pipeline(WGPURenderPass*, WGPURenderPipelineId) : Void
-  fun wgpu_render_pass_set_scissor_rect(WGPURenderPass*, UInt32, UInt32, UInt32, UInt32) : Void
-  fun wgpu_render_pass_set_stencil_reference(WGPURenderPass*, UInt32) : Void
-  fun wgpu_render_pass_set_vertex_buffer(WGPURenderPass*, UInt32, WGPUBufferId, WGPUBufferAddress, WGPUOption_BufferSize) : Void
-  fun wgpu_render_pass_set_viewport(WGPURenderPass*, Float32, Float32, Float32, Float32, Float32, Float32) : Void
-  fun wgpu_render_pipeline_destroy(WGPURenderPipelineId) : Void
-  fun wgpu_request_adapter_async(WGPURequestAdapterOptions*, WGPUBackendBit, Bool, WGPURequestAdapterCallback, Void*) : Void
-  fun wgpu_sampler_destroy(WGPUSamplerId) : Void
-  fun wgpu_set_log_callback(WGPULogCallback) : Void
-  fun wgpu_set_log_level(WGPULogLevel) : Int32
-  fun wgpu_shader_module_destroy(WGPUShaderModuleId) : Void
-  fun wgpu_swap_chain_get_next_texture(WGPUSwapChainId) : WGPUSwapChainOutput
-  fun wgpu_swap_chain_present(WGPUSwapChainId) : Void
-  fun wgpu_texture_create_view(WGPUTextureId, WGPUTextureViewDescriptor*) : WGPUTextureViewId
-  fun wgpu_texture_destroy(WGPUTextureId) : Void
-  fun wgpu_texture_view_destroy(WGPUTextureViewId) : Void
+  fun wgpu_pipeline_layout_destroy(PipelineLayoutId) : Void
+  fun wgpu_queue_submit(QueueId, CommandBufferId*, LibC::SizeT) : Void
+  fun wgpu_queue_write_buffer(QueueId, BufferId, BufferAddress, UInt8*, LibC::SizeT) : Void
+  fun wgpu_queue_write_texture(QueueId, TextureCopyView*, UInt8*, LibC::SizeT, TextureDataLayout*, Extent3d*) : Void
+  fun wgpu_render_bundle_destroy(RenderBundleId) : Void
+  fun wgpu_render_bundle_draw(RenderBundleEncoder*, UInt32, UInt32, UInt32, UInt32) : Void
+  fun wgpu_render_bundle_draw_indexed(RenderBundleEncoder*, UInt32, UInt32, UInt32, Int32, UInt32) : Void
+  fun wgpu_render_bundle_draw_indirect(RenderBundleEncoder*, BufferId, BufferAddress) : Void
+  fun wgpu_render_bundle_encoder_finish(RenderBundleEncoderId, RenderBundleDescriptor_Label*) : RenderBundleId
+  fun wgpu_render_bundle_insert_debug_marker(RenderBundleEncoder*, RawString) : Void
+  fun wgpu_render_bundle_pop_debug_group(RenderBundleEncoder*) : Void
+  fun wgpu_render_bundle_push_debug_group(RenderBundleEncoder*, RawString) : Void
+  fun wgpu_render_bundle_set_bind_group(RenderBundleEncoder*, UInt32, BindGroupId, DynamicOffset*, LibC::SizeT) : Void
+  fun wgpu_render_bundle_set_index_buffer(RenderBundleEncoder*, BufferId, BufferAddress, Option_BufferSize) : Void
+  fun wgpu_render_bundle_set_pipeline(RenderBundleEncoder*, RenderPipelineId) : Void
+  fun wgpu_render_bundle_set_vertex_buffer(RenderBundleEncoder*, UInt32, BufferId, BufferAddress, Option_BufferSize) : Void
+  fun wgpu_render_pass_bundle_indexed_indirect(RenderBundleEncoder*, BufferId, BufferAddress) : Void
+  fun wgpu_render_pass_destroy(RenderPass*) : Void
+  fun wgpu_render_pass_draw(RenderPass*, UInt32, UInt32, UInt32, UInt32) : Void
+  fun wgpu_render_pass_draw_indexed(RenderPass*, UInt32, UInt32, UInt32, Int32, UInt32) : Void
+  fun wgpu_render_pass_draw_indexed_indirect(RenderPass*, BufferId, BufferAddress) : Void
+  fun wgpu_render_pass_draw_indirect(RenderPass*, BufferId, BufferAddress) : Void
+  fun wgpu_render_pass_end_pass(RenderPass*) : Void
+  fun wgpu_render_pass_insert_debug_marker(RenderPass*, RawString, UInt32) : Void
+  fun wgpu_render_pass_multi_draw_indexed_indirect(RenderPass*, BufferId, BufferAddress, UInt32) : Void
+  fun wgpu_render_pass_multi_draw_indexed_indirect_count(RenderPass*, BufferId, BufferAddress, BufferId, BufferAddress, UInt32) : Void
+  fun wgpu_render_pass_multi_draw_indirect(RenderPass*, BufferId, BufferAddress, UInt32) : Void
+  fun wgpu_render_pass_multi_draw_indirect_count(RenderPass*, BufferId, BufferAddress, BufferId, BufferAddress, UInt32) : Void
+  fun wgpu_render_pass_pop_debug_group(RenderPass*) : Void
+  fun wgpu_render_pass_push_debug_group(RenderPass*, RawString, UInt32) : Void
+  fun wgpu_render_pass_set_bind_group(RenderPass*, UInt32, BindGroupId, DynamicOffset*, LibC::SizeT) : Void
+  fun wgpu_render_pass_set_blend_color(RenderPass*, Color*) : Void
+  fun wgpu_render_pass_set_index_buffer(RenderPass*, BufferId, BufferAddress, Option_BufferSize) : Void
+  fun wgpu_render_pass_set_pipeline(RenderPass*, RenderPipelineId) : Void
+  fun wgpu_render_pass_set_scissor_rect(RenderPass*, UInt32, UInt32, UInt32, UInt32) : Void
+  fun wgpu_render_pass_set_stencil_reference(RenderPass*, UInt32) : Void
+  fun wgpu_render_pass_set_vertex_buffer(RenderPass*, UInt32, BufferId, BufferAddress, Option_BufferSize) : Void
+  fun wgpu_render_pass_set_viewport(RenderPass*, Float32, Float32, Float32, Float32, Float32, Float32) : Void
+  fun wgpu_render_pipeline_destroy(RenderPipelineId) : Void
+  fun wgpu_request_adapter_async(RequestAdapterOptions*, BackendBit, Bool, RequestAdapterCallback, Void*) : Void
+  fun wgpu_sampler_destroy(SamplerId) : Void
+  fun wgpu_set_log_callback(LogCallback) : Void
+  fun wgpu_set_log_level(LogLevel) : Int32
+  fun wgpu_shader_module_destroy(ShaderModuleId) : Void
+  fun wgpu_swap_chain_get_next_texture(SwapChainId) : SwapChainOutput
+  fun wgpu_swap_chain_present(SwapChainId) : Void
+  fun wgpu_texture_create_view(TextureId, TextureViewDescriptor*) : TextureViewId
+  fun wgpu_texture_destroy(TextureId) : Void
+  fun wgpu_texture_view_destroy(TextureViewId) : Void
 end
