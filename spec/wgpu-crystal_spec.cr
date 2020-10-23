@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe Wgpu::Crystal do
+describe WGPU do
   # TODO: Write tests
 
   it "works" do

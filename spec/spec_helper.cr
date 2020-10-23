@@ -1,2 +1,2 @@
 require "spec"
-require "../src/wgpu-crystal"
+require "../src/wgpu"
