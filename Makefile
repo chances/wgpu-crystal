@@ -21,9 +21,9 @@ clean:
 all: vendor-libs shards src/lib-wgpu.cr
 .PHONY: all
 
-src/lib-wgpu.cr: lib/clang/bin/c2cr vendor/wgpu vendor/wgpu/ffi/wgpu.h
-	@echo "@[Link(ldflags: \"-L#{__DIR__}/../vendor/wgpu/target/debug -lwgpu_native\")]" > src/lib-wgpu.cr
-	lib/clang/bin/c2cr -Ivendor/wgpu/ffi wgpu.h --remove-enum-prefix=WGPU >> src/lib-wgpu.cr
+src/lib-wgpu.cr: lib/clang/bin/c2cr vendor/wgpu.h
+	@echo "@[Link(ldflags: \"-L#{__DIR__}/../bin/libs -lwgpu_native\")]" > src/lib-wgpu.cr
+	lib/clang/bin/c2cr -Ivendor wgpu.h --remove-enum-prefix=WGPU >> src/lib-wgpu.cr
 
 lib/clang/bin/c2cr: lib/clang
 	@cd lib/clang && shards build --release
@@ -34,18 +34,12 @@ shards: ${LIBS}
 ${LIBS}: shard.yml
 	shards install
 
-vendor-libs: vendor-submodules vendor-wgpu
+vendor-libs: vendor-wgpu
 .PHONY: vendor-libs
 
-vendor-submodules: vendor/wgpu
-.PHONY: vendor-submodules
-
-vendor/wgpu: .gitmodules
-	git submodule init
-	git submodule update
-
-vendor-wgpu: vendor/wgpu/target/debug/libwgpu_native.d
+vendor-wgpu: vendor/wgpu.h
 .PHONY: vendor-wgpu
 
-vendor/wgpu/target/debug/libwgpu_native.d: vendor/wgpu/Cargo.toml vendor/wgpu/wgpu-native/Cargo.toml
-	@cd vendor/wgpu && make lib-native
+# TODO: Execute with --release for release builds
+vendor/wgpu.h:
+	crystal vendor/wgpu.cr

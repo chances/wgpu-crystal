@@ -2,7 +2,7 @@ require "./lib-wgpu"
 
 # TODO: Write documentation for `Wgpu`
 module WGPU
-  VERSION = "0.1.0"
+  VERSION = "0.6.0"
 
   class Instance
     def initialize

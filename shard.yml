@@ -1,5 +1,5 @@
 name: wgpu
-version: 0.1.0
+version: 0.6.0
 
 authors:
   - Chance Snow <git@chancesnow.me>
@@ -13,8 +13,8 @@ scripts:
 
 development_dependencies:
   ameba:
-    github: veelenga/ameba
-    version: ~> 0.9.2
+    github: crystal-ameba/ameba
+    version: ~> 0.13.0
   clang:
     github: crystal-lang/clang.cr
     branch: master
