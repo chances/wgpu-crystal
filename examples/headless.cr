@@ -1,5 +1,7 @@
 require "./../src/wgpu"
 
+# Adapted from https://github.com/gfx-rs/wgpu-rs/blob/master/examples/capture/main.rs
+
 puts "Headless WebGPU Instance"
 
 Signal::INT.trap { exit }
@@ -61,6 +63,9 @@ encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
   depth_stencil_attachment: nil
 ))
 # Copy the data from the texture to the buffer
+# TODO: Fix panic: Source texture usage ((empty)) must contain usage flag COPY_SRC
+# https://github.com/gfx-rs/wgpu/blob/c230988caa832de0f139844e1d24f8240f2ec166/wgpu-types/src/lib.rs#L1294
+# https://github.com/gfx-rs/wgpu/blob/f963193be193022fb02ac85d5d0fb3088bf7373e/wgpu-core/src/command/transfer.rs#L44
 encoder.copy_texture_to_buffer(LibWGPU::TextureCopyView.new(
   texture: texture.id,
   mip_level: 0,
