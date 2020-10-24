@@ -1,6 +1,6 @@
 # wgpu-crystal
 
-Bindings library to [wgpu](https://github.com/gfx-rs/wgpu) for the [Crystal](https://crystal-lang.org/) programming language.
+Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the [Crystal](https://crystal-lang.org/) programming language.
 
 ## Installation
 
@@ -17,20 +17,28 @@ Bindings library to [wgpu](https://github.com/gfx-rs/wgpu) for the [Crystal](htt
 ## Usage
 
 ```crystal
-require "wgpu-crystal"
+require "wgpu"
+
+# TODO: Write usage instructions here
 ```
 
-TODO: Write usage instructions here
+See the [wgpu-native Usage instructions](https://github.com/gfx-rs/wgpu-native#usage).
 
 ## Development
 
 TODO: Write development instructions here
 
-### Compiling wgpu
+### Running examples
 
-Ensure [rustup](https://rustup.rs/) and [glfw3](https://formulae.brew.sh/formula/glfw) are installed.
+#### Headless
 
-See the [wgpu Usage instructions](https://github.com/gfx-rs/wgpu#usage).
+`make example-headless`
+
+#### Windowed Triangle
+
+Ensure [glfw3](https://formulae.brew.sh/formula/glfw) is installed.
+
+`make example-triangle`
 
 ## Contributing
 
