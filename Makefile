@@ -48,3 +48,7 @@ vendor/wgpu.h:
 example-headless:
 	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal examples/headless.cr
 .PHONY: example-headless
+
+example-triangle:
+	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal examples/triangle.cr
+.PHONY: example-triangle
