@@ -1,11 +1,5 @@
 @[Link(ldflags: "-L#{__DIR__}/../bin/libs -lwgpu_native")]
 lib LibWGPU
-  COPY_BYTES_PER_ROW_ALIGNMENT = 256
-  DESIRED_NUM_FRAMES = 3
-  MAX_ANISOTROPY = 16
-  MAX_COLOR_TARGETS = 4
-  MAX_MIP_LEVELS = 16
-  MAX_VERTEX_BUFFERS = 16
   # WGPUFeatures_MAPPABLE_PRIMARY_BUFFERS = ( uint64_t)65536
   # WGPUFeatures_SAMPLED_TEXTURE_BINDING_ARRAY = ( uint64_t)131072
   # WGPUFeatures_SAMPLED_TEXTURE_ARRAY_DYNAMIC_INDEXING = ( uint64_t)262144
@@ -16,37 +10,13 @@ lib LibWGPU
   # WGPUFeatures_ALL_WEBGPU = ( uint64_t)65535
   # WGPUFeatures_ALL_UNSAFE = ( uint64_t)ULongLong.new(18446462598732840960)
   # WGPUFeatures_ALL_NATIVE = ( uint64_t)ULongLong.new(18446744073709486080)
-  # WGPUColor_TRANSPARENT = ( WGPUColor){. r=0.0,. g=0.0,. b=0.0,. a=0.0}
-  # WGPUColor_BLACK = ( WGPUColor){. r=0.0,. g=0.0,. b=0.0,. a=1.0}
-  # WGPUColor_WHITE = ( WGPUColor){. r=1.0,. g=1.0,. b=1.0,. a=1.0}
-  # WGPUColor_RED = ( WGPUColor){. r=1.0,. g=0.0,. b=0.0,. a=1.0}
-  # WGPUColor_GREEN = ( WGPUColor){. r=0.0,. g=1.0,. b=0.0,. a=1.0}
-  # WGPUColor_BLUE = ( WGPUColor){. r=0.0,. g=0.0,. b=1.0,. a=1.0}
-  # WGPUOrigin3d_ZERO = ( WGPUOrigin3d){. x=0,. y=0,. z=0}
-  # WGPUShaderStage_NONE = ( uint32_t)0
-  # WGPUShaderStage_VERTEX = ( uint32_t)1
-  # WGPUShaderStage_FRAGMENT = ( uint32_t)2
-  # WGPUShaderStage_COMPUTE = ( uint32_t)4
-  # BufferUsage_MAP_READ = ( uint32_t)1
-  # BufferUsage_MAP_WRITE = ( uint32_t)2
-  # BufferUsage_COPY_SRC = ( uint32_t)4
-  # BufferUsage_COPY_DST = ( uint32_t)8
-  # BufferUsage_INDEX = ( uint32_t)16
-  # BufferUsage_VERTEX = ( uint32_t)32
-  # BufferUsage_UNIFORM = ( uint32_t)64
-  # BufferUsage_STORAGE = ( uint32_t)128
-  # BufferUsage_INDIRECT = ( uint32_t)256
   # WGPUColorWrite_RED = ( uint32_t)1
   # WGPUColorWrite_GREEN = ( uint32_t)2
   # WGPUColorWrite_BLUE = ( uint32_t)4
   # WGPUColorWrite_ALPHA = ( uint32_t)8
   # WGPUColorWrite_COLOR = ( uint32_t)7
   # WGPUColorWrite_ALL = ( uint32_t)15
-  # WGPUTextureUsage_COPY_SRC = ( uint32_t)1
-  # WGPUTextureUsage_COPY_DST = ( uint32_t)2
-  # WGPUTextureUsage_SAMPLED = ( uint32_t)4
-  # WGPUTextureUsage_STORAGE = ( uint32_t)8
-  # WGPUTextureUsage_OUTPUT_ATTACHMENT = ( uint32_t)16
+
   alias NonZeroU64 = UInt64
   alias Option_NonZeroU32 = UInt32
   alias Option_NonZeroU64 = UInt64
