@@ -15,5 +15,6 @@ vendor/wgpu.h
 # See https://github.com/microsoft/vscode-cpptools/issues/3347
 /.vscode/ipch/
 
-# Examples' Build Artifacts
+# Examples' Artifacts
 /examples/headless
+/examples/red.png

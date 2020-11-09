@@ -309,7 +309,7 @@ lib LibWGPU
   alias BufferId = NonZeroU64
   alias BufferAddress = UInt64
   alias BufferSize = NonZeroU64
-  alias BufferMapCallback = (BufferMapAsyncStatus, UInt8*) -> Void
+  alias BufferMapCallback = (BufferMapAsyncStatus, Void*) -> Void
   alias CommandBufferId = NonZeroU64
   alias CommandEncoderId = CommandBufferId
   struct ComputePassDescriptor
@@ -600,8 +600,8 @@ lib LibWGPU
   fun wgpu_bind_group_layout_destroy(BindGroupLayoutId) : Void
   fun wgpu_buffer_destroy(BufferId) : Void
   fun wgpu_buffer_get_mapped_range(BufferId, BufferAddress, BufferSize) : UInt8*
-  fun wgpu_buffer_map_read_async(BufferId, BufferAddress, BufferAddress, BufferMapCallback, UInt8*) : Void
-  fun wgpu_buffer_map_write_async(BufferId, BufferAddress, BufferAddress, BufferMapCallback, UInt8*) : Void
+  fun wgpu_buffer_map_read_async(BufferId, BufferAddress, BufferAddress, BufferMapCallback, Void*) : Void
+  fun wgpu_buffer_map_write_async(BufferId, BufferAddress, BufferAddress, BufferMapCallback, Void*) : Void
   fun wgpu_buffer_unmap(BufferId) : Void
   fun wgpu_command_buffer_destroy(CommandBufferId) : Void
   fun wgpu_command_encoder_begin_compute_pass(CommandEncoderId, ComputePassDescriptor*) : ComputePass*

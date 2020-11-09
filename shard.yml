@@ -18,3 +18,6 @@ development_dependencies:
   clang:
     github: crystal-lang/clang.cr
     branch: master
+  stumpy_png:
+    github: stumpycr/stumpy_png
+    version: "~> 5.0"

@@ -36,6 +36,7 @@ module WGPU
     Storage = 8
     OutputAttachment = 16
   end
+  alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
 
   abstract class WgpuId
     @id : UInt64 = 0
@@ -126,8 +127,52 @@ module WGPU
   end
 
   class Buffer < WgpuId
+    @@callback_boxes : Array(Pointer(Void)?) = [] of Pointer(Void)?
+
+    getter status : BufferMapAsyncStatus
+    getter read_only : Bool
+
     def initialize(device : Device, descriptor : LibWGPU::BufferDescriptor)
+      @status = BufferMapAsyncStatus::Unknown
+      @read_only = true
       @id = LibWGPU.wgpu_device_create_buffer(device, pointerof(descriptor))
+    end
+
+    def is_mapped?
+      @status == BufferMapAsyncStatus::Success
+    end
+
+    def get_mapped_range(start : UInt64, size : UInt64)
+      raise Exception.new(message = "must have successfully mapped buffer") unless @status == BufferMapAsyncStatus::Success
+
+      bytes_ptr = LibWGPU.wgpu_buffer_get_mapped_range(@id, start, size)
+      Bytes.new(bytes_ptr, size, read_only: @read_only)
+    end
+
+    def map_read_async(start : UInt64, size : UInt64)
+      @read_only = true
+
+      callback = ->(status : BufferMapAsyncStatus) { @status = status }
+      callback_boxed = Box.box(callback)
+      @@callback_boxes.push callback_boxed
+
+      LibWGPU.wgpu_buffer_map_read_async(@id, start, size, ->(status, data) {
+        cb = Box(typeof(callback)).unbox(data)
+        cb.call(status)
+      }, callback_boxed)
+    end
+
+    def map_write_async(start : UInt64, size : UInt64)
+      @read_only = false
+
+      callback = ->(status : BufferMapAsyncStatus) { @status = status }
+      callback_boxed = Box.box(callback)
+      @@callback_boxes.push callback_boxed
+
+      LibWGPU.wgpu_buffer_map_write_async(@id, start, size, ->(status, data) {
+        cb = Box(typeof(callback)).unbox(data)
+        cb.call(status)
+      }, callback_boxed)
     end
 
     def unmap
