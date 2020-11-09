@@ -41,11 +41,6 @@ texture = device.create_texture(LibWGPU::TextureDescriptor.new(
 ))
 texture_view = texture.create_default_view()
 
-# usage = WGPU::TextureUsage::OutputAttachment | WGPU::TextureUsage::CopySrc
-# if (usage & WGPU::TextureUsage::CopySrc) == WGPU::TextureUsage::CopySrc
-#   puts "Source texture has COPY_SRC"
-# end
-
 # Set the background to be red
 encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new label: nil)
 color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
@@ -63,14 +58,6 @@ encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
   depth_stencil_attachment: nil
 ))
 # Copy the data from the texture to the buffer
-# TODO: Fix panic: Source texture usage ((empty)) must contain usage flag COPY_SRC
-#
-# Call to LibWGPU.wgpu_device_create_texture is not passing the `usage` bits correctly...
-# TextureFormat is getting set to 17, which is what the usage is supposed to be. Maybe descriptor struct format is wrong?
-#
-# wgpu-native 0.6.0 uses wgpu-core v0.5
-# https://github.com/gfx-rs/wgpu/blob/v0.5/wgpu-core/src/command/transfer.rs#L223
-# https://github.com/gfx-rs/wgpu/blob/v0.5/wgpu-types/src/lib.rs#L589 (pub struct TextureUsage)
 encoder.copy_texture_to_buffer(LibWGPU::TextureCopyView.new(
   texture: texture.id,
   mip_level: 0,

@@ -26,12 +26,12 @@ lib LibWGPU
   alias Option_SamplerId = UInt64
   alias Option_SurfaceId = UInt64
   alias Option_TextureViewId = UInt64
-  enum AddressMode : UInt8
+  enum AddressMode : UInt32
     ClampToEdge = 0
     Repeat = 1
     MirrorRepeat = 2
   end
-  enum Backend : UInt8
+  enum Backend : UInt32
     Empty = 0
     Vulkan = 1
     Metal = 2
@@ -50,7 +50,7 @@ lib LibWGPU
     ReadonlyStorageTexture = 6
     WriteonlyStorageTexture = 7
   end
-  enum BlendFactor : UInt8
+  enum BlendFactor : UInt32
     Zero = 0
     One = 1
     SrcColor = 2
@@ -65,27 +65,27 @@ lib LibWGPU
     BlendColor = 11
     OneMinusBlendColor = 12
   end
-  enum BlendOperation : UInt8
+  enum BlendOperation : UInt32
     Add = 0
     Subtract = 1
     ReverseSubtract = 2
     Min = 3
     Max = 4
   end
-  enum BufferMapAsyncStatus : UInt8
+  enum BufferMapAsyncStatus : UInt32
     Success = 0
     Error = 1
     Unknown = 2
     ContextLost = 3
   end
-  enum CDeviceType : UInt8
+  enum CDeviceType : UInt32
     Other = 0
     IntegratedGpu = 1
     DiscreteGpu = 2
     VirtualGpu = 3
     Cpu = 4
   end
-  enum CompareFunction : UInt8
+  enum CompareFunction : UInt32
     Undefined = 0
     Never = 1
     Less = 2
@@ -96,32 +96,32 @@ lib LibWGPU
     GreaterEqual = 7
     Always = 8
   end
-  enum CullMode : UInt8
+  enum CullMode : UInt32
     None = 0
     Front = 1
     Back = 2
   end
-  enum FilterMode : UInt8
+  enum FilterMode : UInt32
     Nearest = 0
     Linear = 1
   end
-  enum FrontFace : UInt8
+  enum FrontFace : UInt32
     Ccw = 0
     Cw = 1
   end
-  enum IndexFormat : UInt8
+  enum IndexFormat : UInt32
     Uint16 = 0
     Uint32 = 1
   end
-  enum InputStepMode : UInt8
+  enum InputStepMode : UInt32
     Vertex = 0
     Instance = 1
   end
-  enum LoadOp : UInt8
+  enum LoadOp : UInt32
     Clear = 0
     Load = 1
   end
-  enum LogLevel : UInt8
+  enum LogLevel : UInt32
     Off = 0
     Error = 1
     Warn = 2
@@ -129,17 +129,17 @@ lib LibWGPU
     Debug = 4
     Trace = 5
   end
-  enum PowerPreference : UInt8
+  enum PowerPreference : UInt32
     Default = 0
     LowPower = 1
     HighPerformance = 2
   end
-  enum PresentMode : UInt8
+  enum PresentMode : UInt32
     Immediate = 0
     Mailbox = 1
     Fifo = 2
   end
-  enum PrimitiveTopology : UInt8
+  enum PrimitiveTopology : UInt32
     PointList = 0
     LineList = 1
     LineStrip = 2
@@ -157,7 +157,7 @@ lib LibWGPU
     AnisotropicFiltering = 268435456
     Force32 = 2147483647
   end
-  enum StencilOperation : UInt8
+  enum StencilOperation : UInt32
     Keep = 0
     Zero = 1
     Replace = 2
@@ -167,11 +167,11 @@ lib LibWGPU
     IncrementWrap = 6
     DecrementWrap = 7
   end
-  enum StoreOp : UInt8
+  enum StoreOp : UInt32
     Clear = 0
     Store = 1
   end
-  enum SwapChainStatus : UInt8
+  enum SwapChainStatus : UInt32
     Good = 0
     Suboptimal = 1
     Timeout = 2
@@ -179,22 +179,22 @@ lib LibWGPU
     Lost = 4
     OutOfMemory = 5
   end
-  enum TextureAspect : UInt8
+  enum TextureAspect : UInt32
     All = 0
     StencilOnly = 1
     DepthOnly = 2
   end
-  enum TextureComponentType : UInt8
+  enum TextureComponentType : UInt32
     Float = 0
     Sint = 1
     Uint = 2
   end
-  enum TextureDimension : UInt8
+  enum TextureDimension : UInt32
     D1 = 0
     D2 = 1
     D3 = 2
   end
-  enum TextureFormat : UInt8
+  enum TextureFormat : UInt32
     # Normal 8 bit formats
     R8Unorm = 0
     R8Snorm = 1
@@ -247,7 +247,7 @@ lib LibWGPU
     Depth24Plus = 36
     Depth24PlusStencil8 = 37
   end
-  enum TextureViewDimension : UInt8
+  enum TextureViewDimension : UInt32
     D1 = 0
     D2 = 1
     D2Array = 2
@@ -255,7 +255,7 @@ lib LibWGPU
     CubeArray = 4
     D3 = 5
   end
-  enum VertexFormat : UInt8
+  enum VertexFormat : UInt32
     Uchar2 = 0
     Uchar4 = 1
     Char2 = 2

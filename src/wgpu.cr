@@ -211,8 +211,8 @@ module WGPU
       LibWGPU.wgpu_command_encoder_begin_render_pass(self, pointerof(descriptor))
     end
 
-    def copy_texture_to_buffer(source : LibWGPU::TextureCopyView, destination : LibWGPU::BufferCopyView, extent : LibWGPU::Extent3d)
-      LibWGPU.wgpu_command_encoder_copy_texture_to_buffer(self, pointerof(source), pointerof(destination), pointerof(extent))
+    def copy_texture_to_buffer(source : LibWGPU::TextureCopyView, destination : LibWGPU::BufferCopyView, copy_size : LibWGPU::Extent3d)
+      LibWGPU.wgpu_command_encoder_copy_texture_to_buffer(self, pointerof(source), pointerof(destination), pointerof(copy_size))
     end
 
     def finish()
