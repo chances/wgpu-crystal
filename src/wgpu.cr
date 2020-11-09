@@ -141,6 +141,7 @@ module WGPU
 
   class Texture < WgpuId
     def initialize(device : Device, @descriptor : LibWGPU::TextureDescriptor)
+      # https://github.com/gfx-rs/wgpu-native/blob/v0.6.0/src/device.rs#L308
       @id = LibWGPU.wgpu_device_create_texture(device, pointerof(@descriptor))
     end
 

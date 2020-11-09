@@ -64,8 +64,13 @@ encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
 ))
 # Copy the data from the texture to the buffer
 # TODO: Fix panic: Source texture usage ((empty)) must contain usage flag COPY_SRC
-# https://github.com/gfx-rs/wgpu/blob/c230988caa832de0f139844e1d24f8240f2ec166/wgpu-types/src/lib.rs#L1294
-# https://github.com/gfx-rs/wgpu/blob/f963193be193022fb02ac85d5d0fb3088bf7373e/wgpu-core/src/command/transfer.rs#L44
+#
+# Call to LibWGPU.wgpu_device_create_texture is not passing the `usage` bits correctly...
+# TextureFormat is getting set to 17, which is what the usage is supposed to be. Maybe descriptor struct format is wrong?
+#
+# wgpu-native 0.6.0 uses wgpu-core v0.5
+# https://github.com/gfx-rs/wgpu/blob/v0.5/wgpu-core/src/command/transfer.rs#L223
+# https://github.com/gfx-rs/wgpu/blob/v0.5/wgpu-types/src/lib.rs#L589 (pub struct TextureUsage)
 encoder.copy_texture_to_buffer(LibWGPU::TextureCopyView.new(
   texture: texture.id,
   mip_level: 0,
