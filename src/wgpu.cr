@@ -3,7 +3,7 @@ require "./colors"
 
 # TODO: Write documentation for `Wgpu`
 module WGPU
-  VERSION = "0.6.0"
+  VERSION = "0.7.0"
 
   COPY_BYTES_PER_ROW_ALIGNMENT = 256
   DESIRED_NUM_FRAMES = 3
@@ -59,7 +59,7 @@ module WGPU
       @@callback_box = callback_boxed
 
       allowed_backends = LibWGPU::Backend::Vulkan | LibWGPU::Backend::Metal | LibWGPU::Backend::Dx12
-      LibWGPU.wgpu_request_adapter_async(pointerof(options), allowed_backends, false, ->(adapter_id, data) {
+      LibWGPU.wgpu_request_adapter_async(pointerof(options), allowed_backends, ->(adapter_id : LibWGPU::AdapterId, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(adapter_id)
       }, callback_boxed)
@@ -73,7 +73,7 @@ module WGPU
       unless self.is_ready?
         raise Exception.new(message = "adapter must be ready")
       end
-      info = LibWGPU::CAdapterInfo.new
+      info = LibWGPU::AdapterInfo.new
       LibWGPU.wgpu_adapter_get_info(self, pointerof(info))
       return info
     end
@@ -84,12 +84,16 @@ module WGPU
   end
 
   class Device < WgpuId
-    def initialize(adapter : Adapter)
+    def initialize(adapter : Adapter, label : String = "")
       unless adapter && adapter.is_ready?
         raise ArgumentError.new(message = "adapter must be ready")
       end
-      limits = LibWGPU::CLimits.new max_bind_groups: 1
-      @id = LibWGPU.wgpu_adapter_request_device(adapter, 0, pointerof(limits), true, nil)
+      limits = LibWGPU::Limits.new max_bind_groups: 4
+      device_descriptor = LibWGPU::DeviceDescriptor.new
+      device_descriptor.label = label.to_unsafe.as(Char*) if label != ""
+      device_descriptor.limits = limits
+      # TODO: Set requested `DeviceDescriptor.features`
+      @id = LibWGPU.wgpu_adapter_request_device(adapter, pointerof(device_descriptor))
     end
 
     def queue
@@ -180,7 +184,7 @@ module WGPU
     end
 
     def finalize
-      LibWGPU.wgpu_buffer_destroy(@id)
+      LibWGPU.wgpu_buffer_destroy(@id, true)
     end
   end
 
@@ -203,7 +207,7 @@ module WGPU
     end
 
     def finalize
-      LibWGPU.wgpu_texture_destroy(@id)
+      LibWGPU.wgpu_texture_destroy(@id, true)
     end
   end
 
@@ -216,7 +220,7 @@ module WGPU
     end
 
     def finalize
-      LibWGPU.wgpu_texture_view_destroy(@id)
+      LibWGPU.wgpu_texture_view_destroy(@id, true)
     end
   end
 

@@ -47,7 +47,7 @@ texture_view = texture.create_default_view()
 
 # Set the background to be red
 encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new label: nil)
-color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
+color_attachment = LibWGPU::ColorAttachmentDescriptor.new(
   attachment: texture_view.id,
   resolve_target: 0,
   channel: LibWGPU::PassChannel_Color.new(

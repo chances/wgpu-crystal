@@ -6,7 +6,7 @@ require "http/client"
   abort("Unsupported platform for wgpu-crystal!", 1)
 {% end %}
 
-binaries_url = "https://github.com/gfx-rs/wgpu-native/releases/download/v0.6.0/wgpu-"
+binaries_url = "https://github.com/gfx-rs/wgpu-native/releases/download/v0.7.0/wgpu-"
 {% if flag?(:linux) %}
   binaries_url += "linux-"
 {% end %}
