@@ -14,7 +14,7 @@ scripts:
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
-    version: ~> 0.13.0
+    version: ~> 0.14.3
   clang:
     github: crystal-lang/clang.cr
     branch: master
