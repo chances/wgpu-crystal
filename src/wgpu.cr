@@ -3,7 +3,7 @@ require "./colors"
 
 # TODO: Write documentation for `Wgpu`
 module WGPU
-  VERSION = "0.6.0"
+  VERSION = "0.7.0"
 
   COPY_BYTES_PER_ROW_ALIGNMENT = 256
   DESIRED_NUM_FRAMES = 3
@@ -38,11 +38,21 @@ module WGPU
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
 
+  # A resource managed internally by the underlying WebGPU implementation.
   abstract class WgpuId
-    @id : UInt64 = 0
+    @id : Pointer(Void) = Pointer(Void).null
+
+    def finalize
+      @id = Pointer(Void).null
+    end
 
     def id
       @id
+    end
+
+    # Whether this managed WebGPU resource reference is valid.
+    def is_valid?
+      @id.null?
     end
 
     def to_unsafe
@@ -50,46 +60,100 @@ module WGPU
     end
   end
 
+  class Instance < WgpuId
+    def initialize()
+      descriptor = LibWGPU::InstanceDescriptor.new()
+      @id = LibWGPU.create_instance(pointerof(descriptor))
+    end
+  end
+
+  class Surface < WgpuId
+    private def initialize(instance : Instance, descriptor : LibWGPU::SurfaceDescriptor)
+      @id = LibWGPU.instance_create_surface(instance, pointerof(descriptor))
+    end
+
+    def self.from_metal_layer(instance : Instance, label : String, layer : Void*)
+      metal_layer_descriptor = LibWGPU::SurfaceDescriptorFromMetalLayer.new layer: layer
+      descriptor = LibWGPU::SurfaceDescriptor.new(
+        label: label, next_in_chain: pointerof(metal_layer_descriptor)
+      )
+      return Surface.new(instance, descriptor)
+    end
+
+    def self.from_windows_hwnd(instance : Instance, label : String, hinstance : Void*, hwnd : Void*)
+      windows_hwnd_descriptor = LibWGPU::SurfaceDescriptorFromWindowsHWND.new(hinstance: hinstance, hwnd: hwnd)
+      descriptor = LibWGPU::SurfaceDescriptor.new(
+        label: label, next_in_chain: pointerof(windows_hwnd_descriptor)
+      )
+      return Surface.new(instance, descriptor)
+    end
+
+    def self.from_xlib(instance : Instance, label : String, display : Void*, window : UInt32)
+      xlib_descriptor = LibWGPU::SurfaceDescriptorFromXlib.new(
+        display: display, window: window
+      )
+      descriptor = LibWGPU::SurfaceDescriptor.new(
+        label: label, next_in_chain: pointerof(xlib_descriptor)
+      )
+      return Surface.new(instance, descriptor)
+    end
+  end
+
   class Adapter < WgpuId
     @@callback_box : Pointer(Void)?
 
-    def initialize(options : LibWGPU::RequestAdapterOptions)
-      callback = ->(adapter_id : LibWGPU::AdapterId) { @id = adapter_id }
+    def initialize(instance : Instance, compatible_surface : Surface? = nil)
+      callback = ->(adapter_id : LibWGPU::Adapter) { @id = adapter_id }
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
 
-      allowed_backends = LibWGPU::Backend::Vulkan | LibWGPU::Backend::Metal | LibWGPU::Backend::Dx12
-      LibWGPU.wgpu_request_adapter_async(pointerof(options), allowed_backends, false, ->(adapter_id, data) {
+      allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
+      options = LibWGPU::RequestAdapterOptions.new()
+      options.compatible_surface = compatible_surface unless compatible_surface.nil?
+      LibWGPU.instance_request_adapter(instance, pointerof(options), ->(adapter_id : LibWGPU::Adapter, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(adapter_id)
       }, callback_boxed)
     end
 
     def is_ready?
-      @id > 0
+      @id.null? == false
     end
 
+    # Deprecated: Since wgpu-native 0.7
     def info
-      unless self.is_ready?
-        raise Exception.new(message = "adapter must be ready")
-      end
-      info = LibWGPU::CAdapterInfo.new
-      LibWGPU.wgpu_adapter_get_info(self, pointerof(info))
-      return info
+      return self.properties
     end
 
-    def finalize
-      LibWGPU.wgpu_adapter_destroy(self)
+    def properties
+      raise Exception.new(message: "adapter must be ready") unless self.is_ready?
+      info = LibWGPU::AdapterProperties.new
+      LibWGPU.adapter_get_properties(self, pointerof(info))
+      return info
     end
   end
 
   class Device < WgpuId
-    def initialize(adapter : Adapter)
-      unless adapter && adapter.is_ready?
-        raise ArgumentError.new(message = "adapter must be ready")
-      end
-      limits = LibWGPU::CLimits.new max_bind_groups: 1
-      @id = LibWGPU.wgpu_adapter_request_device(adapter, 0, pointerof(limits), true, nil)
+    @@callback_box : Pointer(Void)?
+
+    def initialize(adapter : Adapter, label : String? = nil, trace_path : String? = nil)
+      raise ArgumentError.new(message: "adapter must be ready") unless adapter && adapter.is_ready?
+
+      callback = ->(device_id : LibWGPU::Device) { @id = device_id }
+      callback_boxed = Box.box(callback)
+      @@callback_box = callback_boxed
+
+      device_extras = LibWGPU::DeviceExtras.new(
+        LibWGPU::ChainedStruct.new(s_type: LibWGPU::NativeSType::DeviceExtras.as(LibWGPU::SType)),
+        max_bind_groups: 4
+      )
+      device_extras.label = label.to_unsafe.as(Char*) unless label.nil?
+      device_extras.trace_path = trace_path.to_unsafe.as(Char*) unless trace_path.nil?
+      device_descriptor = LibWGPU::DeviceDescriptor.new next_in_chain: pointerof(device_extras).as(LibWGPU::ChainedStruct*)
+      LibWGPU.adapter_request_device(adapter, pointerof(device_descriptor), ->(device_id : LibWGPU::Device, data : Void*) {
+        cb = Box(typeof(callback)).unbox(data)
+        cb.call(device_id)
+      }, callback_boxed)
     end
 
     def queue
@@ -109,11 +173,7 @@ module WGPU
     end
 
     def poll(*args, force_wait = false)
-      LibWGPU.wgpu_device_poll(@id, force_wait)
-    end
-
-    def finalize
-      LibWGPU.wgpu_device_destroy(@id)
+      LibWGPU.device_poll(@id, force_wait)
     end
   end
 
@@ -121,8 +181,8 @@ module WGPU
   end
 
   class SwapChain < WgpuId
-    def initialize(device : Device, surface : Surface, swapChainDescriptor : LibWGPU::SwapChainDescriptor)
-      @id = LibWGPU.wgpu_device_create_swap_chain(device, surface, pointerof(swapChainDescriptor))
+    def initialize(device : Device, surface : Surface, descriptor : LibWGPU::SwapChainDescriptor)
+      @id = LibWGPU.device_create_swap_chain(device, surface, pointerof(descriptor))
     end
   end
 
@@ -135,7 +195,7 @@ module WGPU
     def initialize(device : Device, descriptor : LibWGPU::BufferDescriptor)
       @status = BufferMapAsyncStatus::Unknown
       @read_only = true
-      @id = LibWGPU.wgpu_device_create_buffer(device, pointerof(descriptor))
+      @id = LibWGPU.device_create_buffer(device, pointerof(descriptor))
     end
 
     def is_mapped?
@@ -143,10 +203,10 @@ module WGPU
     end
 
     def get_mapped_range(start : UInt64, size : UInt64)
-      raise Exception.new(message = "must have successfully mapped buffer") unless @status == BufferMapAsyncStatus::Success
+      raise Exception.new(message: "must have successfully mapped buffer") unless @status == BufferMapAsyncStatus::Success
 
-      bytes_ptr = LibWGPU.wgpu_buffer_get_mapped_range(@id, start, size)
-      Bytes.new(bytes_ptr, size, read_only: @read_only)
+      bytes_ptr = LibWGPU.buffer_get_mapped_range(@id, start, size)
+      Bytes.new(bytes_ptr.as(UInt8*), size, read_only: @read_only)
     end
 
     def map_read_async(start : UInt64, size : UInt64)
@@ -156,7 +216,7 @@ module WGPU
       callback_boxed = Box.box(callback)
       @@callback_boxes.push callback_boxed
 
-      LibWGPU.wgpu_buffer_map_read_async(@id, start, size, ->(status, data) {
+      LibWGPU.buffer_map_async(@id, LibWGPU::MapMode::Read, start, size, ->(status, data) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(status)
       }, callback_boxed)
@@ -169,25 +229,25 @@ module WGPU
       callback_boxed = Box.box(callback)
       @@callback_boxes.push callback_boxed
 
-      LibWGPU.wgpu_buffer_map_write_async(@id, start, size, ->(status, data) {
+      LibWGPU.buffer_map_async(@id, LibWGPU::MapMode::Write, start, size, ->(status : BufferMapAsyncStatus, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(status)
       }, callback_boxed)
     end
 
     def unmap
-      LibWGPU.wgpu_buffer_unmap(@id)
+      LibWGPU.buffer_unmap(@id)
     end
 
     def finalize
-      LibWGPU.wgpu_buffer_destroy(@id)
+      LibWGPU.buffer_destroy(@id)
     end
   end
 
   class Texture < WgpuId
     def initialize(device : Device, @descriptor : LibWGPU::TextureDescriptor)
       # https://github.com/gfx-rs/wgpu-native/blob/v0.6.0/src/device.rs#L308
-      @id = LibWGPU.wgpu_device_create_texture(device, pointerof(@descriptor))
+      @id = LibWGPU.device_create_texture(device, pointerof(@descriptor))
     end
 
     def format
@@ -203,75 +263,63 @@ module WGPU
     end
 
     def finalize
-      LibWGPU.wgpu_texture_destroy(@id)
+      LibWGPU.texture_destroy(@id)
     end
   end
 
   class TextureView < WgpuId
     def initialize(texture : Texture)
-      @id = LibWGPU.wgpu_texture_create_view(texture, nil)
+      @id = LibWGPU.texture_create_view(texture, nil)
     end
     def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor)
-      @id = LibWGPU.wgpu_texture_create_view(texture, pointerof(descriptor))
-    end
-
-    def finalize
-      LibWGPU.wgpu_texture_view_destroy(@id)
+      @id = LibWGPU.texture_create_view(texture, pointerof(descriptor))
     end
   end
 
   class Queue < WgpuId
     def initialize(device : Device)
-      @id = LibWGPU.wgpu_device_get_default_queue(device)
+      @id = LibWGPU.device_get_queue(device)
     end
 
     def submit(command_buffers : Array(CommandBuffer))
       submit(Tuple.from command_buffers)
     end
     def submit(*command_buffers)
-      unless !command_buffers.empty? && command_buffers.class.types.all? { |t| t == CommandBuffer }
-        raise ArgumentError.new(message = "must submit one or more command buffers")
+      raise ArgumentError.new(message: "must submit one or more command buffers") if command_buffers.empty?
+      unless command_buffers.class.types.all? { |t| t == CommandBuffer }
+        raise ArgumentError.new(message: "must submit only `CommandBuffer` objects")
       end
-      command_buffer_ids = command_buffers.map { |buf| buf.id }
-      LibWGPU.wgpu_queue_submit(@id, command_buffer_ids.to_a.to_unsafe, command_buffers.size)
+      command_buffer_ids = command_buffers.map(&.id)
+      LibWGPU.queue_submit(@id, command_buffers.size, command_buffer_ids.to_a.to_unsafe)
     end
   end
 
   class CommandBuffer < WgpuId
-    def initialize(id : UInt64)
-      @id = id
-    end
-
-    def finalize
-      LibWGPU.wgpu_command_buffer_destroy(self)
+    def initialize(cmd_buffer : LibWGPU::CommandBuffer)
+      @id = cmd_buffer
     end
   end
 
   class CommandEncoder < WgpuId
     def initialize(device : Device, descriptor : LibWGPU::CommandEncoderDescriptor)
-      @id = LibWGPU.wgpu_device_create_command_encoder(device, pointerof(descriptor))
+      @id = LibWGPU.device_create_command_encoder(device, pointerof(descriptor))
     end
 
     def begin_render_pass(descriptor : LibWGPU::RenderPassDescriptor)
-      LibWGPU.wgpu_command_encoder_begin_render_pass(self, pointerof(descriptor))
+      LibWGPU.command_encoder_begin_render_pass(self, pointerof(descriptor))
     end
 
-    def copy_texture_to_buffer(source : LibWGPU::TextureCopyView, destination : LibWGPU::BufferCopyView, copy_size : LibWGPU::Extent3d)
-      LibWGPU.wgpu_command_encoder_copy_texture_to_buffer(self, pointerof(source), pointerof(destination), pointerof(copy_size))
+    def copy_texture_to_buffer(source : LibWGPU::ImageCopyTexture, destination : LibWGPU::ImageCopyBuffer, copy_size : LibWGPU::Extent3D)
+      LibWGPU.command_encoder_copy_texture_to_buffer(self, pointerof(source), pointerof(destination), pointerof(copy_size))
     end
 
     def finish()
       descriptor = LibWGPU::CommandBufferDescriptor.new
-      command_buffer_id = LibWGPU.wgpu_command_encoder_finish(self, pointerof(descriptor))
-      CommandBuffer.new command_buffer_id
-    end
-
-    def finalize
-      LibWGPU.wgpu_command_encoder_destroy(self)
+      CommandBuffer.new LibWGPU.command_encoder_finish(self, pointerof(descriptor))
     end
   end
 end
 
-module WGPU::Origin3d
-  ZERO = LibWGPU::Origin3d.new x: 0, y: 0, z: 0
+module WGPU::Origin3D
+  ZERO = LibWGPU::Origin3D.new x: 0, y: 0, z: 0
 end

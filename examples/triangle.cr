@@ -4,7 +4,11 @@ puts "WebGPU Triangle"
 
 Signal::INT.trap { exit }
 
-adapter = WGPU::Adapter.new(LibWGPU::RequestAdapterOptions.new power_preference: LibWGPU::PowerPreference::LowPower)
+instance = WGPU::Instance.new
+# TODO: Create a compatible surface to render to
+# surface = LibWGPU::Surface.fromBlah
+# adapter = WGPU::Adapter.new(LibWGPU::RequestAdapterOptions.new surface)
+adapter = WGPU::Adapter.new instance
 pp adapter.info
 device = WGPU::Device.new adapter
 

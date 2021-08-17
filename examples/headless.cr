@@ -3,13 +3,14 @@ include StumpyPNG
 
 require "./../src/wgpu"
 
-# Adapted from https://github.com/gfx-rs/wgpu-rs/blob/master/examples/capture/main.rs
+# Adapted from https://github.com/gfx-rs/wgpu-native/blob/v0.7.0.2/examples/capture/main.c
 
 puts "Headless WebGPU Instance"
 
 Signal::INT.trap { exit }
 
-adapter = WGPU::Adapter.new(LibWGPU::RequestAdapterOptions.new power_preference: LibWGPU::PowerPreference::LowPower)
+instance = WGPU::Instance.new
+adapter = WGPU::Adapter.new(instance)
 pp adapter.info
 device = WGPU::Device.new adapter
 
@@ -31,7 +32,7 @@ output_buffer = device.create_buffer(LibWGPU::BufferDescriptor.new(
   usage: WGPU::BufferUsage::MapRead | WGPU::BufferUsage::CopyDst,
   mapped_at_creation: false
 ))
-texture_extent = LibWGPU::Extent3d.new width: width, height: height, depth: 1
+texture_extent = LibWGPU::Extent3D.new width, height, depth: 1
 
 # The render pipeline renders data into this texture
 texture = device.create_texture(LibWGPU::TextureDescriptor.new(
@@ -39,7 +40,7 @@ texture = device.create_texture(LibWGPU::TextureDescriptor.new(
   mip_level_count: 1,
   sample_count: 1,
   dimension: LibWGPU::TextureDimension::D2,
-  format: LibWGPU::TextureFormat::Rgba8UnormSrgb,
+  format: LibWGPU::TextureFormat::RGBA8UnormSrgb,
   usage: WGPU::TextureUsage::OutputAttachment | WGPU::TextureUsage::CopySrc,
   label: nil
 ))
@@ -49,25 +50,22 @@ texture_view = texture.create_default_view()
 encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new label: nil)
 color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
   attachment: texture_view.id,
-  resolve_target: 0,
-  channel: LibWGPU::PassChannel_Color.new(
-    load_op: LibWGPU::LoadOp::Clear,
-    store_op: LibWGPU::StoreOp::Store,
-    clear_value: WGPU::Colors::RED,
-    read_only: false
-  )
+  resolve_target: LibWGPU::TextureView.null,
+  load_op: LibWGPU::LoadOp::Clear,
+  store_op: LibWGPU::StoreOp::Store,
+  clear_color: WGPU::Colors::RED
 )
 encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
   color_attachments: pointerof(color_attachment),
-  color_attachments_length: 1,
+  color_attachment_count: 1,
   depth_stencil_attachment: nil
 ))
 # Copy the data from the texture to the buffer
-encoder.copy_texture_to_buffer(LibWGPU::TextureCopyView.new(
+encoder.copy_texture_to_buffer(LibWGPU::ImageCopyTexture.new(
   texture: texture.id,
   mip_level: 0,
-  origin: WGPU::Origin3d::ZERO
-), LibWGPU::BufferCopyView.new(
+  origin: WGPU::Origin3D::ZERO
+), LibWGPU::ImageCopyBuffer.new(
   buffer: output_buffer.id,
   layout: LibWGPU::TextureDataLayout.new(
     offset: 0,
@@ -97,7 +95,7 @@ if output_buffer.is_mapped?
 
   rows.each_index do |y|
     rows[y].each_index do |x|
-      pixel = rows[y][x].map { |byte| byte.to_u16 }
+      pixel = rows[y][x].map(&.to_u16)
       canvas[x, y] = RGBA.from_rgba_n(pixel, 8) unless x >= width
     end
   end
