@@ -7,7 +7,7 @@ default: all
 
 lint: shards
 	bin/ameba
-	crystal tool format --check
+	crystal tool format -e src/lib-wgpu.cr --check
 .PHONY: lint
 
 test:
