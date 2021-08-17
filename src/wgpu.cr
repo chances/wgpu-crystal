@@ -60,49 +60,51 @@ module WGPU
     end
   end
 
-  class Instance < WgpuId
-    def initialize()
-      descriptor = LibWGPU::InstanceDescriptor.new()
-      @id = LibWGPU.create_instance(pointerof(descriptor))
-    end
-  end
+  # TODO: wgpu-native doesn't use instances at the moment
+  # https://github.com/gfx-rs/wgpu-native/issues/116#issuecomment-873296219
+  # class Instance < WgpuId
+  #   def initialize()
+  #     descriptor = LibWGPU::InstanceDescriptor.new()
+  #     @id = LibWGPU.create_instance(pointerof(descriptor))
+  #   end
+  # end
 
   class Surface < WgpuId
-    private def initialize(instance : Instance, descriptor : LibWGPU::SurfaceDescriptor)
-      @id = LibWGPU.instance_create_surface(instance, pointerof(descriptor))
+    private def initialize(descriptor : LibWGPU::SurfaceDescriptor)
+      @id = LibWGPU.instance_create_surface(nil, pointerof(descriptor))
     end
 
-    def self.from_metal_layer(instance : Instance, label : String, layer : Void*)
+    def self.from_metal_layer(label : String, layer : Void*)
       metal_layer_descriptor = LibWGPU::SurfaceDescriptorFromMetalLayer.new layer: layer
       descriptor = LibWGPU::SurfaceDescriptor.new(
         label: label, next_in_chain: pointerof(metal_layer_descriptor)
       )
-      return Surface.new(instance, descriptor)
+      return Surface.new(nil, descriptor)
     end
 
-    def self.from_windows_hwnd(instance : Instance, label : String, hinstance : Void*, hwnd : Void*)
+    def self.from_windows_hwnd(label : String, hinstance : Void*, hwnd : Void*)
       windows_hwnd_descriptor = LibWGPU::SurfaceDescriptorFromWindowsHWND.new(hinstance: hinstance, hwnd: hwnd)
       descriptor = LibWGPU::SurfaceDescriptor.new(
         label: label, next_in_chain: pointerof(windows_hwnd_descriptor)
       )
-      return Surface.new(instance, descriptor)
+      return Surface.new(nil, descriptor)
     end
 
-    def self.from_xlib(instance : Instance, label : String, display : Void*, window : UInt32)
+    def self.from_xlib(label : String, display : Void*, window : UInt32)
       xlib_descriptor = LibWGPU::SurfaceDescriptorFromXlib.new(
         display: display, window: window
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         label: label, next_in_chain: pointerof(xlib_descriptor)
       )
-      return Surface.new(instance, descriptor)
+      return Surface.new(nil, descriptor)
     end
   end
 
   class Adapter < WgpuId
     @@callback_box : Pointer(Void)?
 
-    def initialize(instance : Instance, compatible_surface : Surface? = nil)
+    def initialize(compatible_surface : Surface? = nil)
       callback = ->(adapter_id : LibWGPU::Adapter) { @id = adapter_id }
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
@@ -110,7 +112,7 @@ module WGPU
       allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
       options = LibWGPU::RequestAdapterOptions.new()
       options.compatible_surface = compatible_surface unless compatible_surface.nil?
-      LibWGPU.instance_request_adapter(instance, pointerof(options), ->(adapter_id : LibWGPU::Adapter, data : Void*) {
+      LibWGPU.instance_request_adapter(nil, pointerof(options), ->(adapter_id : LibWGPU::Adapter, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(adapter_id)
       }, callback_boxed)
@@ -268,11 +270,10 @@ module WGPU
   end
 
   class TextureView < WgpuId
-    def initialize(texture : Texture)
-      @id = LibWGPU.texture_create_view(texture, nil)
-    end
-    def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor)
-      @id = LibWGPU.texture_create_view(texture, pointerof(descriptor))
+    def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor? = nil)
+      descriptor = LibWGPU::TextureViewDescriptor.new() if descriptor.nil?
+      tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
+      @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
     end
   end
 

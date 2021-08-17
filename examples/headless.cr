@@ -3,14 +3,13 @@ include StumpyPNG
 
 require "./../src/wgpu"
 
-# Adapted from https://github.com/gfx-rs/wgpu-native/blob/v0.7.0.2/examples/capture/main.c
+# Adapted from https://github.com/gfx-rs/wgpu-native/blob/v0.9.2.2/examples/capture/main.c
 
 puts "Headless WebGPU Instance"
 
 Signal::INT.trap { exit }
 
-instance = WGPU::Instance.new
-adapter = WGPU::Adapter.new(instance)
+adapter = WGPU::Adapter.new
 pp adapter.info
 device = WGPU::Device.new adapter
 
@@ -32,7 +31,8 @@ output_buffer = device.create_buffer(LibWGPU::BufferDescriptor.new(
   usage: WGPU::BufferUsage::MapRead | WGPU::BufferUsage::CopyDst,
   mapped_at_creation: false
 ))
-texture_extent = LibWGPU::Extent3D.new width, height, depth: 1
+texture_extent = LibWGPU::Extent3D.new width: width, height: height, depth: 1
+pp texture_extent
 
 # The render pipeline renders data into this texture
 texture = device.create_texture(LibWGPU::TextureDescriptor.new(

@@ -34,7 +34,7 @@ binaries_url = "https://github.com/gfx-rs/wgpu-native/releases/download/v#{wgpu_
   binaries_url += "-debug.zip"
 {% end %}
 
-tmp_zip = "#{Dir.tempdir}/#{{Path[binaries_url].basename}}"
+tmp_zip = "#{Dir.tempdir}/#{Path[binaries_url].basename}"
 unless File.exists? tmp_zip
   puts "Downloading " + binaries_url
 
@@ -66,7 +66,6 @@ Compress::Zip::File.open(tmp_zip) do |archive|
     puts "Deflating wgpu.h…"
     File.write("#{__DIR__}/wgpu.h", io)
   end
-  # TODO: Rewrite `#include "webgpu-headers/webgpu.h"` in wgpu.h to `#include "webgpu.h"`
 
   wgpu_lib = archive.entries.find(&.filename.starts_with? "libwgpu_native")
   abort("Could not find libwgpu_native DLL!", 1) if wgpu_lib.nil?
@@ -74,11 +73,8 @@ Compress::Zip::File.open(tmp_zip) do |archive|
   wgpu_lib.open do |io|
     puts "Deflating #{wgpu_lib.filename}…"
     Dir.mkdir_p libs_dir
-    IO.copy(io, File.open("#{libs_dir}/#{wgpu_lib.filename}", "wb"))
+    File.write("#{libs_dir}/#{wgpu_lib.filename}", io, mode: "wb")
   end
 end
 
 puts "Done"
-
-libs_dir = Path["#{__DIR__}"].parent.join "src/lib-wgpu.cr"
-puts "Remember to search and replace \"WGPU\" prefixes in #{libs_dir}\n\ti.e. find: `WGPU([A-Z][A-Za-z3_]+)`"

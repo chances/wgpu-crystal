@@ -7,12 +7,12 @@
 # 3. Make these replacements, in order:
 #   a. `struct WGPU([A-Za-z]+)$` => `struct $1`
 #   b. `alias WGPU([A-Za-z]+) = WGPU[A-Za-z]+Impl*$` => `alias $1 = Void*`
-#   c. `-> ([A-Za-z]+)Impl\*$` => `-> $1`
+#   c. `-> WGPU([A-Za-z]+)Impl\*$` => `-> $1`
 #   d. `alias WGPU([A-Za-z]+) =` => `alias $1 =`
 #   e. `type WGPU([A-Za-z]+) =` => `type $1 =`
 #   f. `^(\s+)([0-9])D` => `$1 D$2`
-#   g. `[:,] Float` => `: Float32`
-#   h. `: Double$` => `: Float64`
+#   g. `([:,]) Float\b` => `$1 Float32`
+#   h. `: Double\b` => `: Float64`
 #   i. `Uint32T` => `UInt32`
 #   j. `SizeT` => `UInt32`
 # 3. Replace `WGPU([A-Za-z]+)` for `$1`, with special care.
@@ -794,12 +794,14 @@ lib LibWGPU
   alias RequestDeviceCallback = (Device, Void*) -> Void
   alias SurfaceGetPreferredFormatCallback = (TextureFormat, Void*) -> Void
   alias ProcCreateInstance = (InstanceDescriptor*) -> Instance
+  # See `wgpuGetProcAddress`
+  # alias ProcGetProcAddress = (Device, Char*) -> () -> Void*
   alias ProcAdapterGetProperties = (Adapter, AdapterProperties*) -> Void
   alias ProcAdapterRequestDevice = (Adapter, DeviceDescriptor*, RequestDeviceCallback, Void*) -> Void
   alias ProcBufferDestroy = (Buffer) -> Void*
-  alias ProcBufferGetConstMappedRange = (Buffer, UInt32, UInt32) -> Void
-  alias ProcBufferGetMappedRange = (Buffer, UInt32, UInt32) -> Void
-  alias ProcBufferMapAsync = (Buffer, MapModeFlags, UInt32, UInt32, BufferMapCallback, Void*) -> Void
+  alias ProcBufferGetConstMappedRange = (Buffer, LibC::SizeT, LibC::SizeT) -> Void
+  alias ProcBufferGetMappedRange = (Buffer, LibC::SizeT, LibC::SizeT) -> Void
+  alias ProcBufferMapAsync = (Buffer, MapModeFlags, LibC::SizeT, LibC::SizeT, BufferMapCallback, Void*) -> Void
   alias ProcBufferUnmap = (Buffer) -> Void*
   alias ProcCommandEncoderBeginComputePass = (CommandEncoder, ComputePassDescriptor*) -> ComputePassEncoder
   alias ProcCommandEncoderBeginRenderPass = (CommandEncoder, RenderPassDescriptor*) -> RenderPassEncoder
@@ -851,8 +853,8 @@ lib LibWGPU
   alias ProcQuerySetDestroy = (QuerySet) -> Void*
   alias ProcQueueOnSubmittedWorkDone = (Queue, UInt64, QueueWorkDoneCallback, Void*) -> Void
   alias ProcQueueSubmit = (Queue, UInt32, CommandBuffer*) -> Void
-  alias ProcQueueWriteBuffer = (Queue, Buffer, UInt64, Void*, UInt32) -> Void
-  alias ProcQueueWriteTexture = (Queue, ImageCopyTexture*, Void*, UInt32, TextureDataLayout*, Extent3D*) -> Void
+  alias ProcQueueWriteBuffer = (Queue, Buffer, UInt64, Void*, LibC::SizeT) -> Void
+  alias ProcQueueWriteTexture = (Queue, ImageCopyTexture*, Void*, LibC::SizeT, TextureDataLayout*, Extent3D*) -> Void
   alias ProcRenderBundleEncoderDraw = (RenderBundleEncoder, UInt32, UInt32, UInt32, UInt32) -> Void
   alias ProcRenderBundleEncoderDrawIndexed = (RenderBundleEncoder, UInt32, UInt32, UInt32, Int32, UInt32) -> Void
   alias ProcRenderBundleEncoderDrawIndexedIndirect = (RenderBundleEncoder, Buffer, UInt64) -> Void
@@ -898,9 +900,9 @@ lib LibWGPU
   fun adapter_get_properties = wgpuAdapterGetProperties(Adapter, AdapterProperties*) : Void
   fun adapter_request_device = wgpuAdapterRequestDevice(Adapter, DeviceDescriptor*, RequestDeviceCallback, Void*) : Void
   fun buffer_destroy = wgpuBufferDestroy(Buffer) : Void
-  fun buffer_get_const_mapped_range = wgpuBufferGetConstMappedRange(Buffer, UInt32, UInt32) : Void*
-  fun buffer_get_mapped_range = wgpuBufferGetMappedRange(Buffer, UInt32, UInt32) : Void*
-  fun buffer_map_async = wgpuBufferMapAsync(Buffer, MapModeFlags, UInt32, UInt32, BufferMapCallback, Void*) : Void
+  fun buffer_get_const_mapped_range = wgpuBufferGetConstMappedRange(Buffer, LibC::SizeT, LibC::SizeT) : Void*
+  fun buffer_get_mapped_range = wgpuBufferGetMappedRange(Buffer, LibC::SizeT, LibC::SizeT) : Void*
+  fun buffer_map_async = wgpuBufferMapAsync(Buffer, MapModeFlags, LibC::SizeT, LibC::SizeT, BufferMapCallback, Void*) : Void
   fun buffer_unmap = wgpuBufferUnmap(Buffer) : Void
   fun command_encoder_begin_compute_pass = wgpuCommandEncoderBeginComputePass(CommandEncoder, ComputePassDescriptor*) : ComputePassEncoder
   fun command_encoder_begin_render_pass = wgpuCommandEncoderBeginRenderPass(CommandEncoder, RenderPassDescriptor*) : RenderPassEncoder
@@ -952,8 +954,8 @@ lib LibWGPU
   fun query_set_destroy = wgpuQuerySetDestroy(QuerySet) : Void
   fun queue_on_submitted_work_done = wgpuQueueOnSubmittedWorkDone(Queue, UInt64, QueueWorkDoneCallback, Void*) : Void
   fun queue_submit = wgpuQueueSubmit(Queue, UInt32, CommandBuffer*) : Void
-  fun queue_write_buffer = wgpuQueueWriteBuffer(Queue, Buffer, UInt64, Void*, UInt32) : Void
-  fun queue_write_texture = wgpuQueueWriteTexture(Queue, ImageCopyTexture*, Void*, UInt32, TextureDataLayout*, Extent3D*) : Void
+  fun queue_write_buffer = wgpuQueueWriteBuffer(Queue, Buffer, UInt64, Void*, LibC::SizeT) : Void
+  fun queue_write_texture = wgpuQueueWriteTexture(Queue, ImageCopyTexture*, Void*, LibC::SizeT, TextureDataLayout*, Extent3D*) : Void
   fun render_bundle_encoder_draw = wgpuRenderBundleEncoderDraw(RenderBundleEncoder, UInt32, UInt32, UInt32, UInt32) : Void
   fun render_bundle_encoder_draw_indexed = wgpuRenderBundleEncoderDrawIndexed(RenderBundleEncoder, UInt32, UInt32, UInt32, Int32, UInt32) : Void
   fun render_bundle_encoder_draw_indexed_indirect = wgpuRenderBundleEncoderDrawIndexedIndirect(RenderBundleEncoder, Buffer, UInt64) : Void

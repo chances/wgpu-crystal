@@ -14,6 +14,7 @@ vendor/wgpu/
 
 # Example Artifacts
 /examples/headless
+/examples/headless.app
 /examples/red.png
 
 # Precompiled C headers
