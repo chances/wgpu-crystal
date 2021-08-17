@@ -7,8 +7,10 @@ require "yaml"
   abort("Unsupported platform for wgpu-crystal!", 1)
 {% end %}
 
+project_dir = Path["#{__DIR__}"].parent
+
 abort("Missing native libraries lockfile!", 1) unless File.exists? "./native.lock.yml"
-native_lock = File.open("./native.lock.yml") do |lockfile|
+native_lock = File.open("#{project_dir.join "native.lock.yml"}") do |lockfile|
   YAML.parse(lockfile)
 end
 abort("Missing \"libwgpu_native\" key in ./native.lock.yml", 1) if native_lock["libwgpu_native"]?.nil? || native_lock["libwgpu_native"].as_s?.nil?
