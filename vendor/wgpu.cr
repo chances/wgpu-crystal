@@ -71,12 +71,10 @@ Compress::Zip::File.open(tmp_zip) do |archive|
   wgpu_lib = archive.entries.find(&.filename.starts_with? "libwgpu_native")
   abort("Could not find libwgpu_native DLL!", 1) if wgpu_lib.nil?
   libs_dir = Path["#{__DIR__}"].parent.join "bin/libs"
-  # FIXME: ld: mach-o string pool extends beyond end of file in `#{wgpu_lib}` file '#{wgpu_lib}' for architecture x86_64
-  # This doesn't write binary dynamic libs correctly
   wgpu_lib.open do |io|
     puts "Deflating #{wgpu_lib.filename}…"
     Dir.mkdir_p libs_dir
-    IO.copy(io, File.open("#{libs_dir}/#{wgpu_lib.filename}", "wb"))
+    File.write("#{libs_dir}/#{wgpu_lib.filename}", io, mode: "wb")
   end
 end
 
