@@ -1,5 +1,7 @@
 # wgpu-crystal
 
+[![wgpu.cr CI](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml/badge.svg)](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml)
+
 Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the [Crystal](https://crystal-lang.org/) programming language.
 
 ## Installation
