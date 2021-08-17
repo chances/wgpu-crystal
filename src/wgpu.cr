@@ -109,7 +109,9 @@ module WGPU
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
 
-      allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
+      # TODO: Add configurable backends when `AdapterExtras` lands
+      # https://github.com/gfx-rs/wgpu-native/blob/b10496e7eed9349f0fd541e6dfe5029cb436de74/ffi/wgpu.h#L27-L30
+      # allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
       options = LibWGPU::RequestAdapterOptions.new()
       options.compatible_surface = compatible_surface unless compatible_surface.nil?
       LibWGPU.instance_request_adapter(nil, pointerof(options), ->(adapter_id : LibWGPU::Adapter, data : Void*) {
