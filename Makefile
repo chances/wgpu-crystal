@@ -18,10 +18,9 @@ clean:
 	rm -f examples/headless
 	rm -f examples/*.dwarf
 	rm -rf lib
-	rm src/lib-wgpu.cr
 .PHONY: clean
 
-all: vendor-libs shards src/lib-wgpu.cr
+all: vendor-libs shards
 .PHONY: all
 
 src/lib-wgpu.cr: lib/clang/bin/c2cr ${WGPU_ARTIFACTS}
@@ -58,7 +57,7 @@ ${WGPU_ARTIFACTS}: vendor/wgpu.cr native.lock.yml
 # https://developer.apple.com/forums/thread/656303
 # https://www.oreilly.com/library/view/modding-mac-os/0596007094/ch04s05.html
 
-example-headless: src/lib-wgpu.cr
+example-headless: vendor-libs
 	crystal build examples/headless.cr -o examples/headless
 ifeq (${OS},Darwin)
 	@echo "Fixing up libwgpu_native dylib path…"
@@ -75,6 +74,6 @@ else
 endif
 .PHONY: example-headless
 
-example-triangle: vendor-libs src/lib-wgpu.cr
+example-triangle: vendor-libs
 	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal build examples/triangle.cr -o examples/triangle
 .PHONY: example-triangle
