@@ -270,11 +270,10 @@ module WGPU
   end
 
   class TextureView < WgpuId
-    def initialize(texture : Texture)
-      @id = LibWGPU.texture_create_view(texture, nil)
-    end
-    def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor)
-      @id = LibWGPU.texture_create_view(texture, pointerof(descriptor))
+    def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor? = nil)
+      descriptor = LibWGPU::TextureViewDescriptor.new() if descriptor.nil?
+      tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
+      @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
     end
   end
 

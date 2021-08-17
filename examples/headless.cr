@@ -31,7 +31,8 @@ output_buffer = device.create_buffer(LibWGPU::BufferDescriptor.new(
   usage: WGPU::BufferUsage::MapRead | WGPU::BufferUsage::CopyDst,
   mapped_at_creation: false
 ))
-texture_extent = LibWGPU::Extent3D.new width, height, depth: 1
+texture_extent = LibWGPU::Extent3D.new width: width, height: height, depth: 1
+pp texture_extent
 
 # The render pipeline renders data into this texture
 texture = device.create_texture(LibWGPU::TextureDescriptor.new(
