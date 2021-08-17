@@ -34,7 +34,7 @@ binaries_url = "https://github.com/gfx-rs/wgpu-native/releases/download/v#{wgpu_
   binaries_url += "-debug.zip"
 {% end %}
 
-tmp_zip = "#{Dir.tempdir}/#{{Path[binaries_url].basename}}"
+tmp_zip = "#{Dir.tempdir}/#{Path[binaries_url].basename}"
 unless File.exists? tmp_zip
   puts "Downloading " + binaries_url
 
@@ -71,6 +71,8 @@ Compress::Zip::File.open(tmp_zip) do |archive|
   wgpu_lib = archive.entries.find(&.filename.starts_with? "libwgpu_native")
   abort("Could not find libwgpu_native DLL!", 1) if wgpu_lib.nil?
   libs_dir = Path["#{__DIR__}"].parent.join "bin/libs"
+  # FIXME: ld: mach-o string pool extends beyond end of file in `#{wgpu_lib}` file '#{wgpu_lib}' for architecture x86_64
+  # This doesn't write binary dynamic libs correctly
   wgpu_lib.open do |io|
     puts "Deflating #{wgpu_lib.filename}…"
     Dir.mkdir_p libs_dir
@@ -81,4 +83,4 @@ end
 puts "Done"
 
 libs_dir = Path["#{__DIR__}"].parent.join "src/lib-wgpu.cr"
-puts "Remember to search and replace \"WGPU\" prefixes in #{libs_dir}\n\ti.e. find: `WGPU([A-Z][A-Za-z3_]+)`"
+puts "Remember to search and replace \"WGPU\" prefixes in #{libs_dir}\n\te.g. find: `WGPU([A-Z][A-Za-z3_]+)`"
