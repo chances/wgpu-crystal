@@ -1,4 +1,5 @@
 CWD := $(shell pwd)
+OS := $(shell uname -s)
 LIBS = lib/ameba lib/clang
 
 default: all
@@ -40,17 +41,22 @@ ${LIBS}: shard.yml
 vendor-libs: vendor-wgpu
 .PHONY: vendor-libs
 
-vendor-wgpu: vendor/wgpu.h
+WGPU_ARTIFACTS := vendor/webgpu.h vendor/wgpu.h
+# TODO: Add OS checks for Linux and Windows
+ifeq (${OS},Darwin)
+	WGPU_ARTIFACTS += bin/libs/libwgpu_native.dylib
+endif
+vendor-wgpu: ${WGPU_ARTIFACTS}
 .PHONY: vendor-wgpu
 
 # TODO: Execute with --release for release builds
-vendor/wgpu.h:
+${WGPU_ARTIFACTS}:
 	crystal vendor/wgpu.cr
 
-example-headless:
-	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal examples/headless.cr
+example-headless: vendor-libs src/lib-wgpu.cr
+	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal examples/headless.cr --verbose
 .PHONY: example-headless
 
-example-triangle:
+example-triangle: vendor-libs src/lib-wgpu.cr
 	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal examples/triangle.cr
 .PHONY: example-triangle
