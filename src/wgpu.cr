@@ -126,7 +126,7 @@ module WGPU
     end
 
     def properties
-      raise Exception.new(message = "adapter must be ready") unless self.is_ready?
+      raise Exception.new(message: "adapter must be ready") unless self.is_ready?
       info = LibWGPU::AdapterProperties.new
       LibWGPU.adapter_get_properties(self, pointerof(info))
       return info
@@ -137,7 +137,7 @@ module WGPU
     @@callback_box : Pointer(Void)?
 
     def initialize(adapter : Adapter, label : String? = nil, trace_path : String? = nil)
-      raise ArgumentError.new(message = "adapter must be ready") unless adapter && adapter.is_ready?
+      raise ArgumentError.new(message: "adapter must be ready") unless adapter && adapter.is_ready?
 
       callback = ->(device_id : LibWGPU::Device) { @id = device_id }
       callback_boxed = Box.box(callback)
@@ -181,8 +181,8 @@ module WGPU
   end
 
   class SwapChain < WgpuId
-    def initialize(device : Device, surface : Surface, swapChainDescriptor : LibWGPU::SwapChainDescriptor)
-      @id = LibWGPU.device_create_swap_chain(device, surface, pointerof(swapChainDescriptor))
+    def initialize(device : Device, surface : Surface, descriptor : LibWGPU::SwapChainDescriptor)
+      @id = LibWGPU.device_create_swap_chain(device, surface, pointerof(descriptor))
     end
   end
 
@@ -203,7 +203,7 @@ module WGPU
     end
 
     def get_mapped_range(start : UInt64, size : UInt64)
-      raise Exception.new(message = "must have successfully mapped buffer") unless @status == BufferMapAsyncStatus::Success
+      raise Exception.new(message: "must have successfully mapped buffer") unless @status == BufferMapAsyncStatus::Success
 
       bytes_ptr = LibWGPU.buffer_get_mapped_range(@id, start, size)
       Bytes.new(bytes_ptr.as(UInt8*), size, read_only: @read_only)
@@ -285,10 +285,11 @@ module WGPU
       submit(Tuple.from command_buffers)
     end
     def submit(*command_buffers)
-      unless !command_buffers.empty? && command_buffers.class.types.all? { |t| t == CommandBuffer }
-        raise ArgumentError.new(message = "must submit one or more command buffers")
+      raise ArgumentError.new(message: "must submit one or more command buffers") if command_buffers.empty?
+      unless command_buffers.class.types.all? { |t| t == CommandBuffer }
+        raise ArgumentError.new(message: "must submit only `CommandBuffer` objects")
       end
-      command_buffer_ids = command_buffers.map { |buf| buf.id }
+      command_buffer_ids = command_buffers.map(&.id)
       LibWGPU.queue_submit(@id, command_buffers.size, command_buffer_ids.to_a.to_unsafe)
     end
   end

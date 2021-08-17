@@ -95,7 +95,7 @@ if output_buffer.is_mapped?
 
   rows.each_index do |y|
     rows[y].each_index do |x|
-      pixel = rows[y][x].map { |byte| byte.to_u16 }
+      pixel = rows[y][x].map(&.to_u16)
       canvas[x, y] = RGBA.from_rgba_n(pixel, 8) unless x >= width
     end
   end
