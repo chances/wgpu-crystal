@@ -3,37 +3,37 @@ require "./colors"
 
 # TODO: Write documentation for `Wgpu`
 module WGPU
-  VERSION = "0.7.0"
+  VERSION = "0.9.0"
 
   COPY_BYTES_PER_ROW_ALIGNMENT = 256
-  DESIRED_NUM_FRAMES = 3
-  MAX_ANISOTROPY = 16
-  MAX_COLOR_TARGETS = 4
-  MAX_MIP_LEVELS = 16
-  MAX_VERTEX_BUFFERS = 16
+  DESIRED_NUM_FRAMES           =   3
+  MAX_ANISOTROPY               =  16
+  MAX_COLOR_TARGETS            =   4
+  MAX_MIP_LEVELS               =  16
+  MAX_VERTEX_BUFFERS           =  16
 
   enum ShaderStage : UInt8
-    None = 0
-    Vertex = 1
+    None     = 0
+    Vertex   = 1
     Fragment = 2
-    Compute = 4
+    Compute  = 4
   end
   enum BufferUsage : UInt16
-    MapRead = 1
-    MapWrite = 2
-    CopySrc = 4
-    CopyDst = 8
-    Index = 16
-    Vertex = 32
-    Uniform = 64
-    Storage = 128
+    MapRead  =   1
+    MapWrite =   2
+    CopySrc  =   4
+    CopyDst  =   8
+    Index    =  16
+    Vertex   =  32
+    Uniform  =  64
+    Storage  = 128
     Indirect = 256
   end
   enum TextureUsage : UInt8
-    CopySrc = 1
-    CopyDst = 2
-    Sampled = 4
-    Storage = 8
+    CopySrc          =  1
+    CopyDst          =  2
+    Sampled          =  4
+    Storage          =  8
     OutputAttachment = 16
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
@@ -109,8 +109,10 @@ module WGPU
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
 
-      allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
-      options = LibWGPU::RequestAdapterOptions.new()
+      # TODO: Add configurable backends when `AdapterExtras` lands
+      # https://github.com/gfx-rs/wgpu-native/blob/b10496e7eed9349f0fd541e6dfe5029cb436de74/ffi/wgpu.h#L27-L30
+      # allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
+      options = LibWGPU::RequestAdapterOptions.new
       options.compatible_surface = compatible_surface unless compatible_surface.nil?
       LibWGPU.instance_request_adapter(nil, pointerof(options), ->(adapter_id : LibWGPU::Adapter, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
@@ -260,7 +262,7 @@ module WGPU
       @descriptor.usage
     end
 
-    def create_default_view()
+    def create_default_view
       TextureView.new(self)
     end
 
@@ -271,7 +273,7 @@ module WGPU
 
   class TextureView < WgpuId
     def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor? = nil)
-      descriptor = LibWGPU::TextureViewDescriptor.new() if descriptor.nil?
+      descriptor = LibWGPU::TextureViewDescriptor.new if descriptor.nil?
       tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
       @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
     end
@@ -285,6 +287,7 @@ module WGPU
     def submit(command_buffers : Array(CommandBuffer))
       submit(Tuple.from command_buffers)
     end
+
     def submit(*command_buffers)
       raise ArgumentError.new(message: "must submit one or more command buffers") if command_buffers.empty?
       unless command_buffers.class.types.all? { |t| t == CommandBuffer }
@@ -314,7 +317,7 @@ module WGPU
       LibWGPU.command_encoder_copy_texture_to_buffer(self, pointerof(source), pointerof(destination), pointerof(copy_size))
     end
 
-    def finish()
+    def finish
       descriptor = LibWGPU::CommandBufferDescriptor.new
       CommandBuffer.new LibWGPU.command_encoder_finish(self, pointerof(descriptor))
     end

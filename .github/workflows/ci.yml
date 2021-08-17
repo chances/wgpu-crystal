@@ -1,0 +1,15 @@
+name: wgpu.cr CI
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+      - name: Lint
+        run: make lint
+      - name: Test
+        run: crystal spec

@@ -44,7 +44,7 @@ texture = device.create_texture(LibWGPU::TextureDescriptor.new(
   usage: WGPU::TextureUsage::OutputAttachment | WGPU::TextureUsage::CopySrc,
   label: nil
 ))
-texture_view = texture.create_default_view()
+texture_view = texture.create_default_view
 
 # Set the background to be red
 encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new label: nil)
@@ -73,7 +73,7 @@ encoder.copy_texture_to_buffer(LibWGPU::ImageCopyTexture.new(
     rows_per_image: 0
   ),
 ), texture_extent)
-command_buffer = encoder.finish()
+command_buffer = encoder.finish
 device.queue.submit(command_buffer)
 
 output_buffer.map_read_async(0, size.to_u64)
@@ -87,7 +87,6 @@ pp output_buffer.status
 canvas = Canvas.new(width, height)
 
 if output_buffer.is_mapped?
-
   padded_buffer = output_buffer.get_mapped_range(0, size.to_u64)
   rows = padded_buffer.in_groups_of(padded_bytes_per_row, 0).map do |chunk|
     chunk[0..unpadded_bytes_per_row].in_groups_of(4, 0)
@@ -103,4 +102,4 @@ if output_buffer.is_mapped?
   StumpyPNG.write(canvas, "#{__DIR__}/red.png")
 end
 
-output_buffer.unmap()
+output_buffer.unmap

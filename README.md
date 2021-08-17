@@ -1,5 +1,7 @@
 # wgpu-crystal
 
+[![wgpu.cr CI](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml/badge.svg)](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml)
+
 Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the [Crystal](https://crystal-lang.org/) programming language.
 
 ## Installation
@@ -42,7 +44,7 @@ Ensure [glfw3](https://formulae.brew.sh/formula/glfw) is installed.
 
 ## Contributing
 
-1. Fork it (<https://github.com/chances/wgpu-crystal/fork>)
+1. Fork it ([https://github.com/chances/wgpu-crystal/fork](https://github.com/chances/wgpu-crystal/fork))
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

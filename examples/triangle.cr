@@ -9,7 +9,7 @@ Signal::INT.trap { exit }
 # adapter = WGPU::Adapter.new(LibWGPU::RequestAdapterOptions.new surface)
 adapter = WGPU::Adapter.new
 pp adapter.info
-device = WGPU::Device.new adapter
+device = WGPU::Device.new adapter # ameba:disable Lint/UselessAssign
 
 width : UInt64 = 300
 height : UInt64 = 400
