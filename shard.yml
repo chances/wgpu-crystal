@@ -11,6 +11,9 @@ license: MIT
 scripts:
   postinstall: make vendor-libs
 
+libraries:
+  libwgpu_native: "~> 0.7"
+
 development_dependencies:
   ameba:
     github: crystal-ameba/ameba
