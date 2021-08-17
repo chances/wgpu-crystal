@@ -1,4 +1,5 @@
 require "http/client"
+require "yaml"
 
 {% if flag?(:linux) || flag?(:apple) || flag?(:windows) %}
   puts "Fetching wgpu-native binaries…"
@@ -6,7 +7,13 @@ require "http/client"
   abort("Unsupported platform for wgpu-crystal!", 1)
 {% end %}
 
-binaries_url = "https://github.com/gfx-rs/wgpu-native/releases/download/v0.7.0/wgpu-"
+abort("Missing native libraries lockfile!", 1) unless File.exists? "./native.lock.yml"
+native_lock = File.open("./native.lock.yml") do |lockfile|
+  YAML.parse(lockfile)
+end
+abort("Missing \"libwgpu_native\" key in ./native.lock.yml", 1) if native_lock["libwgpu_native"]?.nil? || native_lock["libwgpu_native"].as_s?.nil?
+wgpu_version = native_lock["libwgpu_native"].as_s
+binaries_url = "https://github.com/gfx-rs/wgpu-native/releases/download/v#{wgpu_version}/wgpu-"
 {% if flag?(:linux) %}
   binaries_url += "linux-"
 {% end %}
@@ -46,19 +53,22 @@ end
 
 require "compress/zip"
 Compress::Zip::File.open(tmp_zip) do |archive|
-  wgpu_header = archive["wgpu.h"]?
-  if wgpu_header.nil?
-    abort("Could not find wgpu.h!", 1)
+  webgpu_header = archive["webgpu.h"]?
+  abort("Could not find webgpu.h!", 1) if webgpu_header.nil?
+  webgpu_header.open do |io|
+    puts "Deflating webgpu.h…"
+    File.write("#{__DIR__}/webgpu.h", io)
   end
+
+  wgpu_header = archive["wgpu.h"]?
+  abort("Could not find wgpu.h!", 1) if wgpu_header.nil?
   wgpu_header.open do |io|
     puts "Deflating wgpu.h…"
     File.write("#{__DIR__}/wgpu.h", io)
   end
 
   wgpu_lib = archive.entries.find { |entry| entry.filename.starts_with? "libwgpu_native" }
-  if wgpu_lib.nil?
-    abort("Could not find libwgpu_native DLL!", 1)
-  end
+  abort("Could not find libwgpu_native DLL!", 1) if wgpu_lib.nil?
   libs_dir = Path["#{__DIR__}"].parent.join "bin/libs"
   wgpu_lib.open do |io|
     puts "Deflating #{wgpu_lib.filename}…"

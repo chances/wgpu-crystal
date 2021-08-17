@@ -5,6 +5,7 @@
 *.dwarf
 
 # Vendored wgpu sources
+vendor/webgpu.h
 vendor/wgpu.h
 vendor/wgpu/
 
