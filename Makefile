@@ -5,7 +5,7 @@ WGPU_ARTIFACTS := vendor/webgpu.h vendor/wgpu.h
 
 default: all
 
-lint:
+lint: shards
 	bin/ameba
 	crystal tool format --check
 .PHONY: lint
