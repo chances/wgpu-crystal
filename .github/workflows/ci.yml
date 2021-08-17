@@ -1,9 +1,6 @@
 name: wgpu.cr CI
 
-on:
-  push:
-  pull_request:
-    branches: [master]
+on: push
 
 jobs:
   test:
