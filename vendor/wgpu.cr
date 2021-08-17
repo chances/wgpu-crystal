@@ -66,7 +66,6 @@ Compress::Zip::File.open(tmp_zip) do |archive|
     puts "Deflating wgpu.h…"
     File.write("#{__DIR__}/wgpu.h", io)
   end
-  # TODO: Rewrite `#include "webgpu-headers/webgpu.h"` in wgpu.h to `#include "webgpu.h"`
 
   wgpu_lib = archive.entries.find(&.filename.starts_with? "libwgpu_native")
   abort("Could not find libwgpu_native DLL!", 1) if wgpu_lib.nil?
