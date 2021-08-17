@@ -1,7 +1,0 @@
-language: crystal
-
-install:
-  - shards install
-script:
-  - make lint
-  - crystal spec
