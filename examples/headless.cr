@@ -3,14 +3,13 @@ include StumpyPNG
 
 require "./../src/wgpu"
 
-# Adapted from https://github.com/gfx-rs/wgpu-native/blob/v0.7.0.2/examples/capture/main.c
+# Adapted from https://github.com/gfx-rs/wgpu-native/blob/v0.9.2.2/examples/capture/main.c
 
 puts "Headless WebGPU Instance"
 
 Signal::INT.trap { exit }
 
-instance = WGPU::Instance.new
-adapter = WGPU::Adapter.new(instance)
+adapter = WGPU::Adapter.new
 pp adapter.info
 device = WGPU::Device.new adapter
 
