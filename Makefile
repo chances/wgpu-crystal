@@ -33,10 +33,11 @@ src/lib-wgpu.cr: lib/clang/bin/c2cr ${WGPU_ARTIFACTS}
 lib/clang/bin/c2cr: lib/clang
 	@cd lib/clang && shards build --release --ignore-crystal-version
 
-shards: ${LIBS}
+shards:
+	shards install --ignore-crystal-version
 .PHONY: shards
 
-${LIBS}: shard.yml
+${LIBS}:
 	shards install --ignore-crystal-version
 
 vendor-libs: vendor-wgpu
