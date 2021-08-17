@@ -78,6 +78,3 @@ Compress::Zip::File.open(tmp_zip) do |archive|
 end
 
 puts "Done"
-
-libs_dir = Path["#{__DIR__}"].parent.join "src/lib-wgpu.cr"
-puts "Remember to search and replace \"WGPU\" prefixes in #{libs_dir}\n\te.g. find: `WGPU([A-Z][A-Za-z3_]+)`"
