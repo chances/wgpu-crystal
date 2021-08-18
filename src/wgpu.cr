@@ -76,36 +76,37 @@ module WGPU
 
     def self.from_metal_layer(label : String, layer : Void*) : Surface
       metal_layer_descriptor = LibWGPU::SurfaceDescriptorFromMetalLayer.new(
-        LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::SurfaceDescriptorFromMetalLayer),
-        layer
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::SurfaceDescriptorFromMetalLayer),
+        layer: layer
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
-        pointerof(metal_layer_descriptor).as(LibWGPU::ChainedStruct*),
-        label.chars
+        next_in_chain: pointerof(metal_layer_descriptor).as(LibWGPU::ChainedStruct*),
+        label: label.chars
       )
       return self.new(descriptor)
     end
 
     def self.from_windows_hwnd(label : String, hinstance : Void*, hwnd : Void*) : Surface
       windows_hwnd_descriptor = LibWGPU::SurfaceDescriptorFromWindowsHWND.new(
-        LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::SurfaceDescriptorFromWindowsHWND),
-        hinstance: hinstance, hwnd: hwnd
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::SurfaceDescriptorFromWindowsHWND),
+        hinstance: hinstance,
+        hwnd: hwnd
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
-        pointerof(windows_hwnd_descriptor).as(LibWGPU::ChainedStruct*),
-        label.chars
+        next_in_chain: pointerof(windows_hwnd_descriptor).as(LibWGPU::ChainedStruct*),
+        label: label.chars
       )
       return self.new(descriptor)
     end
 
     def self.from_xlib(label : String, display : Void*, window : UInt32) : Surface
       xlib_descriptor = LibWGPU::SurfaceDescriptorFromXlib.new(
-        LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::SurfaceDescriptorFromXlib),
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::SurfaceDescriptorFromXlib),
         display: display, window: window
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
-        pointerof(xlib_descriptor).as(LibWGPU::ChainedStruct*),
-        label.chars
+        next_in_chain: pointerof(xlib_descriptor).as(LibWGPU::ChainedStruct*),
+        label: label.chars
       )
       return self.new(descriptor)
     end
