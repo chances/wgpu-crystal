@@ -9,9 +9,9 @@ puts "Headless WebGPU Instance"
 
 Signal::INT.trap { exit }
 
-adapter = WGPU::Adapter.new
-pp adapter.info
-device = WGPU::Device.new adapter
+adapter = WGPU::Adapter.request
+pp adapter.get.info
+device = WGPU::Device.request(adapter.get).get
 
 width : Int32 = 300
 height : Int32 = 400
@@ -27,7 +27,7 @@ size = padded_bytes_per_row * height
 # The output buffer lets us retrieve data as an array
 output_buffer = device.create_buffer(LibWGPU::BufferDescriptor.new(
   label: nil,
-  size: padded_bytes_per_row * height,
+  size: size,
   usage: WGPU::BufferUsage::MapRead | WGPU::BufferUsage::CopyDst,
   mapped_at_creation: false
 ))
@@ -49,7 +49,7 @@ texture_view = texture.create_default_view
 # Set the background to be red
 encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new label: nil)
 color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
-  attachment: texture_view.id,
+  attachment: texture_view,
   resolve_target: LibWGPU::TextureView.null,
   load_op: LibWGPU::LoadOp::Clear,
   store_op: LibWGPU::StoreOp::Store,
@@ -62,11 +62,11 @@ encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
 ))
 # Copy the data from the texture to the buffer
 encoder.copy_texture_to_buffer(LibWGPU::ImageCopyTexture.new(
-  texture: texture.id,
+  texture: texture,
   mip_level: 0,
   origin: WGPU::Origin3D::ZERO
 ), LibWGPU::ImageCopyBuffer.new(
-  buffer: output_buffer.id,
+  buffer: output_buffer,
   layout: LibWGPU::TextureDataLayout.new(
     offset: 0,
     bytes_per_row: padded_bytes_per_row,

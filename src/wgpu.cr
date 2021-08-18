@@ -1,3 +1,5 @@
+require "future"
+
 require "./lib-wgpu"
 require "./colors"
 
@@ -101,11 +103,20 @@ module WGPU
     end
   end
 
+  private ADAPTER_MUST_BE_READY = "Graphics adapter must be ready"
+
   class Adapter < WgpuId
+    @@chan = Channel(Adapter).new
     @@callback_box : Pointer(Void)?
 
-    def initialize(compatible_surface : Surface? = nil)
-      callback = ->(adapter_id : LibWGPU::Adapter) { @id = adapter_id }
+    private def initialize(adapter_id : LibWGPU::Adapter)
+      @id = adapter_id
+    end
+
+    def self.request(compatible_surface : Surface? = nil)
+      @@chan = Channel(Adapter).new if @@chan.closed?
+      pp @@chan
+      callback = ->(adapter_id : LibWGPU::Adapter) { spawn { @@chan.send self.new(adapter_id) } }
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
 
@@ -114,10 +125,18 @@ module WGPU
       # allowed_backends = LibWGPU::BackendType::Vulkan | LibWGPU::BackendType::Metal | LibWGPU::BackendType::D3D11 | LibWGPU::BackendType::D3D12
       options = LibWGPU::RequestAdapterOptions.new
       options.compatible_surface = compatible_surface unless compatible_surface.nil?
+      puts "Requesting graphics adapter…"
       LibWGPU.instance_request_adapter(nil, pointerof(options), ->(adapter_id : LibWGPU::Adapter, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(adapter_id)
       }, callback_boxed)
+
+      return future {
+        adapter = @@chan.receive
+        @@chan.close
+        puts "Received requested graphics adapter"
+        adapter
+      }
     end
 
     def is_ready?
@@ -130,7 +149,7 @@ module WGPU
     end
 
     def properties
-      raise Exception.new(message: "adapter must be ready") unless self.is_ready?
+      raise ADAPTER_MUST_BE_READY unless self.is_ready?
       info = LibWGPU::AdapterProperties.new
       LibWGPU.adapter_get_properties(self, pointerof(info))
       return info
@@ -138,12 +157,18 @@ module WGPU
   end
 
   class Device < WgpuId
+    @@chan = Channel(Device).new
     @@callback_box : Pointer(Void)?
 
-    def initialize(adapter : Adapter, label : String? = nil, trace_path : String? = nil)
-      raise ArgumentError.new(message: "adapter must be ready") unless adapter && adapter.is_ready?
+    def initialize(device_id : LibWGPU::Device)
+      @id = device_id
+    end
 
-      callback = ->(device_id : LibWGPU::Device) { @id = device_id }
+    def self.request(adapter : Adapter, label : String? = nil, trace_path : String? = nil)
+      raise ArgumentError.new(message: ADAPTER_MUST_BE_READY) unless adapter && adapter.is_ready?
+
+      @@chan = Channel(Device).new if @@chan.closed?
+      callback = ->(device_id : LibWGPU::Device) { spawn { @@chan.send self.new(device_id) } }
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
 
@@ -154,10 +179,18 @@ module WGPU
       device_extras.label = label.to_unsafe.as(Char*) unless label.nil?
       device_extras.trace_path = trace_path.to_unsafe.as(Char*) unless trace_path.nil?
       device_descriptor = LibWGPU::DeviceDescriptor.new next_in_chain: pointerof(device_extras).as(LibWGPU::ChainedStruct*)
+      puts "Requesting graphics device…"
       LibWGPU.adapter_request_device(adapter, pointerof(device_descriptor), ->(device_id : LibWGPU::Device, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(device_id)
       }, callback_boxed)
+
+      return future {
+        device = @@chan.receive
+        @@chan.close
+        puts "Received requested graphics device"
+        device
+      }
     end
 
     def queue
