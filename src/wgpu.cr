@@ -79,7 +79,7 @@ module WGPU
       descriptor = LibWGPU::SurfaceDescriptor.new(
         label: label.chars, next_in_chain: pointerof(metal_layer_descriptor)
       )
-      return Surface.new(descriptor)
+      return self.new(descriptor)
     end
 
     def self.from_windows_hwnd(label : String, hinstance : Void*, hwnd : Void*)
@@ -89,7 +89,7 @@ module WGPU
       descriptor = LibWGPU::SurfaceDescriptor.new(
         label: label.chars, next_in_chain: pointerof(windows_hwnd_descriptor)
       )
-      return Surface.new(descriptor)
+      return self.new(descriptor)
     end
 
     def self.from_xlib(label : String, display : Void*, window : UInt32)
@@ -99,7 +99,7 @@ module WGPU
       descriptor = LibWGPU::SurfaceDescriptor.new(
         label: label.chars, next_in_chain: pointerof(xlib_descriptor)
       )
-      return Surface.new(descriptor)
+      return self.new(descriptor)
     end
   end
 
