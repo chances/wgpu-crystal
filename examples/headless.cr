@@ -9,6 +9,11 @@ puts "Headless WebGPU Instance"
 
 Signal::INT.trap { exit }
 
+WGPU.set_log_level WGPU::LogLevel::Warning
+WGPU.set_log_callback(->(level : WGPU::LogLevel, message : String) {
+  puts "#{level}: #{message}"
+})
+
 adapter = WGPU::Adapter.request
 pp adapter.get.info
 device = WGPU::Device.request(adapter.get).get
