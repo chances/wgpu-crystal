@@ -51,11 +51,12 @@ color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
   store_op: LibWGPU::StoreOp::Store,
   clear_color: WGPU::Colors::RED
 )
-encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
+render_pass = encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
   color_attachments: pointerof(color_attachment),
   color_attachment_count: 1,
   depth_stencil_attachment: nil
 ))
+render_pass.end_pass
 # Copy the data from the texture to the buffer
 encoder.copy_texture_to_buffer(LibWGPU::ImageCopyTexture.new(
   texture: texture,
