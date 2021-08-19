@@ -5,6 +5,8 @@ require "./colors"
 
 # TODO: Write documentation for `Wgpu`
 module WGPU
+  extend self
+
   VERSION = "0.9.0"
 
   COPY_BYTES_PER_ROW_ALIGNMENT = 256
@@ -39,6 +41,30 @@ module WGPU
     OutputAttachment = 16
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
+  enum LogLevel : UInt32
+    Off     = LibWGPU::LogLevel::Off
+    Error   = LibWGPU::LogLevel::Error
+    Warning = LibWGPU::LogLevel::Warn
+    Info    = LibWGPU::LogLevel::Info
+    Debug   = LibWGPU::LogLevel::Debug
+    Trace   = LibWGPU::LogLevel::Trace
+  end
+
+  def set_log_level(level : LogLevel)
+    LibWGPU.set_log_level LibWGPU::LogLevel.new(level.value)
+  end
+
+  alias LogCallback = Proc(LogLevel, String, Nil)
+  @@log_callback = Pointer(Void).null
+
+  def set_log_callback(callback : LogCallback)
+    @@log_callback = Box.box(callback)
+    LibWGPU.set_log_callback(->(level : LibWGPU::LogLevel, message : Char*) {
+      return if @@log_callback.null?
+      cb = Box(LogCallback).unbox(@@log_callback)
+      cb.call LogLevel.new(level.value), String.new(message.as(UInt8*))
+    })
+  end
 
   # A resource managed internally by the underlying WebGPU implementation.
   abstract class WgpuId
