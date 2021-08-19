@@ -80,7 +80,7 @@ module WGPU
 
     # Whether this managed WebGPU resource reference is valid.
     def is_valid?
-      @id.null?
+      @id.null? == false
     end
 
     def to_unsafe
