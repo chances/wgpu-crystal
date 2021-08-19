@@ -42,12 +42,12 @@ module WGPU
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
   enum LogLevel : UInt32
-    Off = LibWGPU::LogLevel::Off
-    Error = LibWGPU::LogLevel::Error
+    Off     = LibWGPU::LogLevel::Off
+    Error   = LibWGPU::LogLevel::Error
     Warning = LibWGPU::LogLevel::Warn
-    Info = LibWGPU::LogLevel::Info
-    Debug = LibWGPU::LogLevel::Debug
-    Trace = LibWGPU::LogLevel::Trace
+    Info    = LibWGPU::LogLevel::Info
+    Debug   = LibWGPU::LogLevel::Debug
+    Trace   = LibWGPU::LogLevel::Trace
   end
 
   def set_log_level(level : LogLevel)
@@ -56,6 +56,7 @@ module WGPU
 
   alias LogCallback = Proc(LogLevel, String, Nil)
   @@log_callback = Pointer(Void).null
+
   def set_log_callback(callback : LogCallback)
     @@log_callback = Box.box(callback)
     LibWGPU.set_log_callback(->(level : LibWGPU::LogLevel, message : Char*) {
