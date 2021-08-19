@@ -466,7 +466,7 @@ module WGPU
       layout_ids = layout.map(&.id)
       layout_descriptor = LibWGPU::PipelineLayoutDescriptor.new(
         bind_group_layout_count: layout.size,
-        bind_group_layouts: layout.to_a.to_unsafe.as(LibWGPU::BindGroupLayout*)
+        bind_group_layouts: layout_ids.to_a.to_unsafe.as(LibWGPU::BindGroupLayout*)
       )
       layout_descriptor.label = label unless label.nil?
       @id = LibWGPU.device_create_pipeline_layout(device, pointerof(layout_descriptor))
