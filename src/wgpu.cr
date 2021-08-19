@@ -141,7 +141,6 @@ module WGPU
 
     def self.request(compatible_surface : Surface? = nil)
       @@chan = Channel(Adapter).new if @@chan.closed?
-      pp @@chan
       callback = ->(adapter_id : LibWGPU::Adapter) { spawn { @@chan.send self.new(adapter_id) } }
       callback_boxed = Box.box(callback)
       @@callback_box = callback_boxed
