@@ -18,6 +18,7 @@ vendor/wgpu/
 /examples/red.png
 /examples/triangle
 /examples/triangle.app
+/examples/triangle.png
 
 # Precompiled C headers
 # See https://github.com/microsoft/vscode-cpptools/issues/3347
