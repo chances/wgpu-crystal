@@ -63,15 +63,15 @@ pipeline = device.create_render_pipeline WGPU::RenderPipelineDescriptor.new(
   layout: pipeline_layout,
   vertex: WGPU::VertexState.from(shader, entry_point: "vs_main"),
   primitive: LibWGPU::PrimitiveState.new(
-      topology: LibWGPU::PrimitiveTopology::TriangleList,
-      strip_index_format: LibWGPU::IndexFormat::Undefined,
-      front_face: LibWGPU::FrontFace::CCW,
-      cull_mode: LibWGPU::CullMode::None
+    topology: LibWGPU::PrimitiveTopology::TriangleList,
+    strip_index_format: LibWGPU::IndexFormat::Undefined,
+    front_face: LibWGPU::FrontFace::CCW,
+    cull_mode: LibWGPU::CullMode::None
   ),
   multisample: LibWGPU::MultisampleState.new(
-      count: 1,
-      mask: ~0,
-      alpha_to_coverage_enabled: false,
+    count: 1,
+    mask: ~0,
+    alpha_to_coverage_enabled: false,
   ),
   fragment: WGPU::FragmentState.new(
     shader,
@@ -84,7 +84,7 @@ pipeline = device.create_render_pipeline WGPU::RenderPipelineDescriptor.new(
           alpha: WGPU::BlendComponent::SRC_ONE_DST_ZERO_ADD
         ),
         write_mask: LibWGPU::ColorWriteMask::All
-      )
+      ),
     ],
   ),
   depth_stencil: nil,
@@ -105,7 +105,7 @@ render_pass = encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
   depth_stencil_attachment: nil
 ))
 
-render_pass.pipeline= pipeline
+render_pass.pipeline = pipeline
 render_pass.draw(3, 1, 0, 0)
 render_pass.end_pass
 

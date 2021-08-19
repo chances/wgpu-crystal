@@ -411,7 +411,7 @@ module WGPU
       LibWGPU::VertexState.new(
         shader: shader,
         entry_point: entry_point,
-        buffer_count: buffers.size, # UInt32
+        buffer_count: buffers.size,
         buffers: buffers.to_unsafe # VertexBufferLayout*
       )
     end
@@ -583,7 +583,7 @@ module WGPU
       LibWGPU.render_pass_encoder_push_debug_group(self, label)
     end
 
-    def bind_group()
+    def bind_group
       LibWGPU.render_pass_encoder_set_bind_group(self)
     end
 
