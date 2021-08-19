@@ -78,7 +78,7 @@ endif
 .PHONY: example-headless
 
 example-triangle: vendor-libs
-	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal build examples/triangle.cr -o examples/triangle
+	crystal build examples/triangle.cr -o examples/triangle
 ifeq (${OS},Darwin)
 	@echo "Fixing up libwgpu_native dylib path…"
 	@install_name_tool -change /Users/runner/work/wgpu-native/wgpu-native/target/debug/deps/libwgpu_native.dylib @executable_path/../../Frameworks/libwgpu_native.dylib examples/triangle
