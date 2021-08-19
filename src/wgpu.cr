@@ -59,10 +59,10 @@ module WGPU
 
   def set_log_callback(callback : LogCallback)
     @@log_callback = Box.box(callback)
-    LibWGPU.set_log_callback(->(level : LibWGPU::LogLevel, message : Char*) {
+    LibWGPU.set_log_callback(->(level : LibWGPU::LogLevel, message : UInt8*) {
       return if @@log_callback.null?
       cb = Box(LogCallback).unbox(@@log_callback)
-      cb.call LogLevel.new(level.value), String.new(message.as(UInt8*))
+      cb.call LogLevel.new(level.value), String.new(message)
     })
   end
 
@@ -109,7 +109,7 @@ module WGPU
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         next_in_chain: pointerof(metal_layer_descriptor).as(LibWGPU::ChainedStruct*),
-        label: label.chars
+        label: label
       )
       return self.new(descriptor)
     end
@@ -122,7 +122,7 @@ module WGPU
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         next_in_chain: pointerof(windows_hwnd_descriptor).as(LibWGPU::ChainedStruct*),
-        label: label.chars
+        label: label
       )
       return self.new(descriptor)
     end
@@ -134,7 +134,7 @@ module WGPU
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         next_in_chain: pointerof(xlib_descriptor).as(LibWGPU::ChainedStruct*),
-        label: label.chars
+        label: label
       )
       return self.new(descriptor)
     end
@@ -212,8 +212,8 @@ module WGPU
         LibWGPU::ChainedStruct.new(s_type: LibWGPU::NativeSType::DeviceExtras.as(LibWGPU::SType)),
         max_bind_groups: 4
       )
-      device_extras.label = label.to_unsafe.as(Char*) unless label.nil?
-      device_extras.trace_path = trace_path.to_unsafe.as(Char*) unless trace_path.nil?
+      device_extras.label = label.to_unsafe unless label.nil?
+      device_extras.trace_path = trace_path.to_unsafe unless trace_path.nil?
       device_descriptor = LibWGPU::DeviceDescriptor.new next_in_chain: pointerof(device_extras).as(LibWGPU::ChainedStruct*)
       puts "Requesting graphics device…"
       LibWGPU.adapter_request_device(adapter, pointerof(device_descriptor), ->(device_id : LibWGPU::Device, data : Void*) {
