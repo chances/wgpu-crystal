@@ -241,6 +241,10 @@ module WGPU
       Texture.new(self, descriptor)
     end
 
+    def create_shader_module(descriptor : LibWGPU::ShaderModuleDescriptor)
+      ShaderModule.new(self, descriptor)
+    end
+
     def create_command_encoder(descriptor : LibWGPU::CommandEncoderDescriptor)
       CommandEncoder.new(self, descriptor)
     end
@@ -248,9 +252,6 @@ module WGPU
     def poll(*args, force_wait = false)
       LibWGPU.device_poll(@id, force_wait)
     end
-  end
-
-  class Surface < WgpuId
   end
 
   class SwapChain < WgpuId
@@ -345,6 +346,37 @@ module WGPU
       descriptor = LibWGPU::TextureViewDescriptor.new if descriptor.nil?
       tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
       @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
+    end
+  end
+
+  class ShaderModule < WgpuId
+    def initialize(device : Device, descriptor : LibWGPU::ShaderModuleDescriptor)
+      @id = LibWGPU.device_create_shader_module(device, pointerof(descriptor))
+    end
+
+    def self.from_spirv(device : Device, spirv : Bytes, *args, label : String? = nil)
+      spirv_descriptor = LibWGPU::ShaderModuleSPIRVDescriptor.new(
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::ShaderModuleSPIRVDescriptor),
+        code_size: spirv.length,
+        code: spirv
+      )
+      descriptor = LibWGPU::ShaderModuleDescriptor.new(
+        next_in_chain: pointerof(spirv_descriptor).as(LibWGPU::ChainedStruct*)
+      )
+      descriptor.label = label unless label.nil?
+      device.create_shader_module descriptor
+    end
+
+    def self.from_wgsl(device : Device, wgsl : String, *args, label : String? = nil)
+      wgsl_descriptor = LibWGPU::ShaderModuleWGSLDescriptor.new(
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::ShaderModuleWGSLDescriptor),
+        source: wgsl
+      )
+      descriptor = LibWGPU::ShaderModuleDescriptor.new(
+        next_in_chain: pointerof(wgsl_descriptor).as(LibWGPU::ChainedStruct*)
+      )
+      descriptor.label = label unless label.nil?
+      device.create_shader_module descriptor
     end
   end
 
