@@ -245,6 +245,14 @@ module WGPU
       ShaderModule.new(self, descriptor)
     end
 
+    def create_pipeline_layout(layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil)
+      PipelineLayout.new(self, layout, label: label)
+    end
+
+    def create_render_pipeline(descriptor : LibWGPU::RenderPipelineDescriptor)
+      RenderPipeline.new(self, descriptor)
+    end
+
     def create_command_encoder(descriptor : LibWGPU::CommandEncoderDescriptor)
       CommandEncoder.new(self, descriptor)
     end
@@ -380,6 +388,241 @@ module WGPU
     end
   end
 
+  alias BindGroupLayoutEntry = LibWGPU::BindGroupLayoutEntry
+
+  class BindGroupLayout < WgpuId
+    getter label : String
+    getter entries : Array(BindGroupLayoutEntry)
+
+    def initialize(device : Device, @label : String, @entries : Array(BindGroupLayoutEntry))
+      layout_descriptor = LibWGPU::BindGroupLayout.new(
+        label: @label,
+        entry_count: entries.size,
+        entries: entries.to_unsafe
+      )
+      @id = LibWGPU.device_create_bind_group_layout(device, pointerof(layout_descriptor))
+    end
+  end
+
+  alias VertexBufferLayout = LibWGPU::VertexBufferLayout
+
+  class VertexState
+    def self.from(shader : ShaderModule, *args, entry_point : String, buffers : Array(VertexBufferLayout) = [] of VertexBufferLayout)
+      LibWGPU::VertexState.new(
+        shader: shader,
+        entry_point: entry_point,
+        buffer_count: buffers.size, # UInt32
+        buffers: buffers.to_unsafe # VertexBufferLayout*
+      )
+    end
+  end
+
+  class BlendState
+    @blend : LibWGPU::BlendState
+    getter color_blend_func : LibWGPU::BlendComponent
+    getter alpha_blend_func : LibWGPU::BlendComponent
+
+    def initialize(*args, color : LibWGPU::BlendComponent, alpha : LibWGPU::BlendComponent)
+      @blend = LibWGPU::BlendState.new(
+        color: @color_blend_func = color,
+        alpha: @alpha_blend_func = alpha
+      )
+    end
+
+    def to_unsafe
+      pointerof(@blend)
+    end
+  end
+
+  module BlendComponent
+    SRC_ONE_DST_ZERO_ADD = LibWGPU::BlendComponent.new(
+      src_factor: LibWGPU::BlendFactor::One,
+      dst_factor: LibWGPU::BlendFactor::Zero,
+      operation: LibWGPU::BlendOperation::Add,
+    )
+  end
+
+  alias ColorTargetState = LibWGPU::ColorTargetState
+
+  class FragmentState
+    @state : LibWGPU::FragmentState
+
+    def initialize(shader : ShaderModule, *args, entry_point : String, targets : Array(ColorTargetState) = [] of ColorTargetState)
+      @state = LibWGPU::FragmentState.new(
+        shader: shader,
+        entry_point: entry_point,
+        target_count: targets.size, # UInt32
+        targets: targets.to_unsafe
+      )
+    end
+
+    def to_unsafe
+      pointerof(@state)
+    end
+  end
+
+  class PipelineLayout < WgpuId
+    def initialize(device : Device, layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil)
+      layout_ids = layout.map(&.id)
+      layout_descriptor = LibWGPU::PipelineLayoutDescriptor.new(
+        bind_group_layout_count: layout.size,
+        bind_group_layouts: layout.to_a.to_unsafe.as(LibWGPU::BindGroupLayout*)
+      )
+      layout_descriptor.label = label unless label.nil?
+      @id = LibWGPU.device_create_pipeline_layout(device, pointerof(layout_descriptor))
+    end
+
+    def self.empty(device : Device, *args, label : String? = nil)
+      PipelineLayout.new(device, label: label)
+    end
+  end
+
+  alias RenderPipelineDescriptor = LibWGPU::RenderPipelineDescriptor
+
+  class RenderPipeline < WgpuId
+    def initialize(device : Device, descriptor : LibWGPU::RenderPipelineDescriptor)
+      @id = LibWGPU.device_create_render_pipeline(device, pointerof(descriptor))
+    end
+
+    # TODO: Add support for LibWGPU.device_create_render_pipeline_async
+  end
+
+  record Rectangle, x : UInt32, y : UInt32, width : UInt32, height : UInt32 do
+    def top
+      self.y
+    end
+
+    def right
+      self.x + self.width
+    end
+
+    def bottom
+      self.y + self.height
+    end
+
+    def left
+      self.x
+    end
+  end
+
+  # A render viewport region.
+  #
+  # See Also: `RenderPass.viewport=`
+  record(Viewport,
+    x : UInt32, y : UInt32,
+    width : UInt32, height : UInt32,
+    min_depth : Float32, max_depth : Float32
+  )
+
+  class RenderPass < WgpuId
+    def initialize(encoder : LibWGPU::RenderPassEncoder)
+      @id = encoder
+    end
+
+    def begin_occlusion_query(index : UInt32)
+      LibWGPU.render_pass_encoder_begin_occlusion_query(self, index)
+    end
+
+    def begin_pipeline_statistics_query(set : LibWGPU::QuerySet, index : UInt32)
+      LibWGPU.render_pass_encoder_begin_pipeline_statistics_query(self, set, index)
+    end
+
+    def draw(vertex_count : UInt32, instance_count : UInt32, first_vertex : UInt32, first_instance : UInt32)
+      LibWGPU.render_pass_encoder_draw(self, vertex_count, instance_count, first_vertex, first_instance)
+    end
+
+    def draw_indexed(index_count : UInt32, instance_count : UInt32, first_index : UInt32, base_vertex : Int32, first_instance : UInt32)
+      LibWGPU.render_pass_encoder_draw_indexed(
+        self,
+        index_count,
+        instance_count,
+        first_index,
+        base_vertex,
+        first_instance
+      )
+    end
+
+    def draw_indexed_indirect(buf : Buffer, offset : UInt64)
+      LibWGPU.render_pass_encoder_draw_indexed_indirect(self, buf, offset)
+    end
+
+    def draw_indirect(buf : Buffer, offset : UInt64)
+      LibWGPU.render_pass_encoder_draw_indirect(self, buf, offset)
+    end
+
+    def end_occlusion_query
+      LibWGPU.render_pass_encoder_end_occlusion_query(self)
+    end
+
+    def end_pass
+      LibWGPU.render_pass_encoder_end_pass(self)
+    end
+
+    def end_pipeline_statistics_query
+      LibWGPU.render_pass_encoder_end_pipeline_statistics_query(self)
+    end
+
+    def execute_bundles(bundles : Array(RenderBundle))
+      bundle_ids = bindles.map(&.id)
+      LibWGPU.render_pass_encoder_execute_bundles(
+        self,
+        bundles.size,
+        bundle_ids.to_a.to_unsafe
+      )
+    end
+
+    def insert_debug_marker(label : String)
+      LibWGPU.render_pass_encoder_insert_debug_marker(self, label)
+    end
+
+    def pop_debug_group
+      LibWGPU.render_pass_encoder_pop_debug_group(self)
+    end
+
+    def push_debug_group(label : String)
+      LibWGPU.render_pass_encoder_push_debug_group(self, label)
+    end
+
+    def bind_group()
+      LibWGPU.render_pass_encoder_set_bind_group(self)
+    end
+
+    def blend_color=(color : LibWGPU::Color)
+      LibWGPU.render_pass_encoder_set_blend_color(self, pointerof(color))
+    end
+
+    def set_index_buffer(buf : Buffer, format : LibWGPU::IndexFormat, offset : UInt64, size : UInt64)
+      LibWGPU.render_pass_encoder_set_index_buffer(self, buf, format, offset, size)
+    end
+
+    def pipeline=(pipeline : RenderPipeline)
+      LibWGPU.render_pass_encoder_set_pipeline(self, pipeline)
+    end
+
+    # Sets the scissor region.
+    # Subsequent draw calls will discard any fragments that fall outside this region.
+    def scissor_rect=(rect : Rectangle)
+      LibWGPU.render_pass_encoder_set_scissor_rect(self, rect.x, rect.y, rect.width, rect.height)
+    end
+
+    # Subsequent stencil tests will test against this value.
+    def stencil_reference=(ref : UInt32)
+      LibWGPU.render_pass_encoder_set_stencil_reference(self, ref)
+    end
+
+    def set_vertex_buffer(slot : UInt32, buf : Buffer, offset : UInt64, size : UInt64)
+      LibWGPU.render_pass_encoder_set_vertex_buffer(self, slot, buf, offset, size)
+    end
+
+    # Sets the viewport region.
+    # Subsequent draw calls will draw any fragments in this region.
+    def viewport=(view : Viewport)
+      LibWGPU.render_pass_encoder_set_viewport(
+        self, view.x, view.y, view.width, view.height, view.min_depth, view.max_depth
+      )
+    end
+  end
+
   class Queue < WgpuId
     def initialize(device : Device)
       @id = LibWGPU.device_get_queue(device)
@@ -411,7 +654,7 @@ module WGPU
     end
 
     def begin_render_pass(descriptor : LibWGPU::RenderPassDescriptor)
-      LibWGPU.command_encoder_begin_render_pass(self, pointerof(descriptor))
+      RenderPass.new LibWGPU.command_encoder_begin_render_pass(self, pointerof(descriptor))
     end
 
     def copy_texture_to_buffer(source : LibWGPU::ImageCopyTexture, destination : LibWGPU::ImageCopyBuffer, copy_size : LibWGPU::Extent3D)

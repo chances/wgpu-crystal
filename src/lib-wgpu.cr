@@ -762,14 +762,14 @@ lib LibWGPU
   end
   struct VertexState
     next_in_chain : ChainedStruct*
-    module : ShaderModule
+    shader : ShaderModule
     entry_point : UInt8*
     buffer_count : UInt32
     buffers : VertexBufferLayout*
   end
   struct FragmentState
     next_in_chain : ChainedStruct*
-    module : ShaderModule
+    shader : ShaderModule
     entry_point : UInt8*
     target_count : UInt32
     targets : ColorTargetState*
@@ -982,7 +982,7 @@ lib LibWGPU
   fun render_pass_encoder_pop_debug_group = wgpuRenderPassEncoderPopDebugGroup(RenderPassEncoder) : Void
   fun render_pass_encoder_push_debug_group = wgpuRenderPassEncoderPushDebugGroup(RenderPassEncoder, UInt8*) : Void
   fun render_pass_encoder_set_bind_group = wgpuRenderPassEncoderSetBindGroup(RenderPassEncoder, UInt32, BindGroup, UInt32, UInt32*) : Void
-  fun render_pass_encoder_set_blend_color = wgpuRenderPassEncoderSetBlendColor(RenderPassEncoder, Color*) : Void
+  fun render_pass_encoder_set_blend_color = wgpuRenderPassEncoderSetBlendConstant(RenderPassEncoder, Color*) : Void
   fun render_pass_encoder_set_index_buffer = wgpuRenderPassEncoderSetIndexBuffer(RenderPassEncoder, Buffer, IndexFormat, UInt64, UInt64) : Void
   fun render_pass_encoder_set_pipeline = wgpuRenderPassEncoderSetPipeline(RenderPassEncoder, RenderPipeline) : Void
   fun render_pass_encoder_set_scissor_rect = wgpuRenderPassEncoderSetScissorRect(RenderPassEncoder, UInt32, UInt32, UInt32, UInt32) : Void
