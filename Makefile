@@ -94,3 +94,21 @@ else
 	env LD_LIBRARY_PATH=${CWD}/bin/libs examples/triangle
 endif
 .PHONY: example-triangle
+
+example-compute: vendor-libs
+	crystal build examples/compute.cr -o examples/compute
+ifeq (${OS},Darwin)
+	@echo "Fixing up libwgpu_native dylib path…"
+	@install_name_tool -change /Users/runner/work/wgpu-native/wgpu-native/target/debug/deps/libwgpu_native.dylib @executable_path/../../Frameworks/libwgpu_native.dylib examples/compute
+	@otool -L examples/compute | grep wgpu
+	@rm -rf "examples/compute.app"
+	@scripts/appify.sh examples/compute
+	@mkdir -p "compute.app/Frameworks"
+	@cp bin/libs/libwgpu_native.dylib "compute.app/Frameworks"
+	@cp examples/Info.plist "compute.app/Contents"
+	@mv -f "compute.app" examples
+	@./examples/compute.app/Contents/MacOS/compute
+else
+	env LD_LIBRARY_PATH=${CWD}/bin/libs examples/compute
+endif
+.PHONY: example-compute
