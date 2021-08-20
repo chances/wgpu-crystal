@@ -382,6 +382,10 @@ module WGPU
     def current_texture_view
       TextureView.from_swap_chain self
     end
+
+    def present
+      LibWGPU.swap_chain_present(self)
+    end
   end
 
   class Buffer < WgpuId
