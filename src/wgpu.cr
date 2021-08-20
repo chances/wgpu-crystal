@@ -327,6 +327,26 @@ module WGPU
       @id = pointerof(@descriptor).as(Void*)
     end
 
+    def format
+      @descriptor.format
+    end
+
+    def width
+      @descriptor.width
+    end
+
+    def height
+      @descriptor.height
+    end
+
+    def size
+      Size.new(width, height)
+    end
+
+    def present_mode
+      @descriptor.present_mode
+    end
+
     def to_unsafe
       @id.as(LibWGPU::SwapChainDescriptor*)
     end
@@ -337,10 +357,6 @@ module WGPU
 
     def initialize(device : Device, surface : Surface, @descriptor : SwapChainDescriptor)
       @id = LibWGPU.device_create_swap_chain(device, surface, @descriptor)
-    end
-
-    def usage
-      @descriptor.usage
     end
 
     def format
@@ -356,7 +372,7 @@ module WGPU
     end
 
     def size
-      Size.new(width, height)
+      @descriptor.size
     end
 
     def present_mode
