@@ -362,7 +362,7 @@ module WGPU
       @id = LibWGPU.device_create_shader_module(device, pointerof(descriptor))
     end
 
-    def self.from_spirv(device : Device, spirv : Bytes, *args, label : String? = nil)
+    def self.from_spirv(device : Device, spirv : Bytes, *args, label : String? = nil) : ShaderModule
       spirv_descriptor = LibWGPU::ShaderModuleSPIRVDescriptor.new(
         chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::ShaderModuleSPIRVDescriptor),
         code_size: spirv.length,
@@ -375,7 +375,7 @@ module WGPU
       device.create_shader_module descriptor
     end
 
-    def self.from_wgsl(device : Device, wgsl : String, *args, label : String? = nil)
+    def self.from_wgsl(device : Device, wgsl : String, *args, label : String? = nil) : ShaderModule
       wgsl_descriptor = LibWGPU::ShaderModuleWGSLDescriptor.new(
         chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::ShaderModuleWGSLDescriptor),
         source: wgsl
