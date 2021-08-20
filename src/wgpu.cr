@@ -326,6 +326,10 @@ module WGPU
     private def initialize(@descriptor : LibWGPU::SwapChainDescriptor)
       @id = pointerof(@descriptor).as(Void*)
     end
+
+    def to_unsafe
+      @id.as(LibWGPU::SwapChainDescriptor*)
+    end
   end
 
   class SwapChain < WgpuId
