@@ -71,11 +71,26 @@ ifeq (${OS},Darwin)
 	@cp bin/libs/libwgpu_native.dylib "headless.app/Frameworks"
 	@cp examples/Info.plist "headless.app/Contents"
 	@mv -f "headless.app" examples
+	@./examples/headless.app/Contents/MacOS/headless
 else
 	env LD_LIBRARY_PATH=${CWD}/bin/libs examples/headless
 endif
 .PHONY: example-headless
 
 example-triangle: vendor-libs
-	env LD_LIBRARY_PATH=${CWD}/bin/libs crystal build examples/triangle.cr -o examples/triangle
+	crystal build examples/triangle.cr -o examples/triangle
+ifeq (${OS},Darwin)
+	@echo "Fixing up libwgpu_native dylib path…"
+	@install_name_tool -change /Users/runner/work/wgpu-native/wgpu-native/target/debug/deps/libwgpu_native.dylib @executable_path/../../Frameworks/libwgpu_native.dylib examples/triangle
+	@otool -L examples/triangle | grep wgpu
+	@rm -rf "examples/triangle.app"
+	@scripts/appify.sh examples/triangle
+	@mkdir -p "triangle.app/Frameworks"
+	@cp bin/libs/libwgpu_native.dylib "triangle.app/Frameworks"
+	@cp examples/Info.plist "triangle.app/Contents"
+	@mv -f "triangle.app" examples
+	@./examples/triangle.app/Contents/MacOS/triangle
+else
+	env LD_LIBRARY_PATH=${CWD}/bin/libs examples/triangle
+endif
 .PHONY: example-triangle

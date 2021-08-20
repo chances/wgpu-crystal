@@ -23,6 +23,9 @@ development_dependencies:
   ameba:
     github: crystal-ameba/ameba
     version: ~> 0.14.3
+  baked_file_system:
+    github: schovi/baked_file_system
+    version: 0.10.0
   clang:
     github: crystal-lang/clang.cr
     branch: master

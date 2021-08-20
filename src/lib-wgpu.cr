@@ -440,8 +440,8 @@ lib LibWGPU
     next_in_chain : ChainedStruct*
     device_id : UInt32
     vendor_id : UInt32
-    name : Char*
-    driver_description : Char*
+    name : UInt8*
+    driver_description : UInt8*
     adapter_type : AdapterType
     backend_type : BackendType
   end
@@ -466,7 +466,7 @@ lib LibWGPU
   end
   struct BufferDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     usage : BufferUsageFlags
     size : UInt64
     mapped_at_creation : Bool
@@ -479,15 +479,15 @@ lib LibWGPU
   end
   struct CommandBufferDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
   end
   struct CommandEncoderDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
   end
   struct ComputePassDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
   end
   struct DeviceDescriptor
     next_in_chain : ChainedStruct*
@@ -513,7 +513,7 @@ lib LibWGPU
   end
   struct PipelineLayoutDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     bind_group_layout_count : UInt32
     bind_group_layouts : BindGroupLayout*
   end
@@ -527,11 +527,11 @@ lib LibWGPU
   struct ProgrammableStageDescriptor
     next_in_chain : ChainedStruct*
     module : ShaderModule
-    entry_point : Char*
+    entry_point : UInt8*
   end
   struct QuerySetDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     type : QueryType
     count : UInt32
     pipeline_statistics : PipelineStatisticName*
@@ -539,11 +539,11 @@ lib LibWGPU
   end
   struct RenderBundleDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
   end
   struct RenderBundleEncoderDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     color_formats_count : UInt32
     color_formats : TextureFormat*
     depth_stencil_format : TextureFormat
@@ -570,7 +570,7 @@ lib LibWGPU
   end
   struct SamplerDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     address_mode_u : AddressMode
     address_mode_v : AddressMode
     address_mode_w : AddressMode
@@ -584,7 +584,7 @@ lib LibWGPU
   end
   struct ShaderModuleDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
   end
   struct ShaderModuleSPIRVDescriptor
     chain : ChainedStruct
@@ -593,7 +593,7 @@ lib LibWGPU
   end
   struct ShaderModuleWGSLDescriptor
     chain : ChainedStruct
-    source : Char*
+    source : UInt8*
   end
   struct StencilFaceState
     compare : CompareFunction
@@ -609,11 +609,11 @@ lib LibWGPU
   end
   struct SurfaceDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
   end
   struct SurfaceDescriptorFromCanvasHTMLSelector
     chain : ChainedStruct
-    selector : Char*
+    selector : UInt8*
   end
   struct SurfaceDescriptorFromMetalLayer
     chain : ChainedStruct
@@ -631,7 +631,7 @@ lib LibWGPU
   end
   struct SwapChainDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     usage : TextureUsageFlags
     format : TextureFormat
     width : UInt32
@@ -652,7 +652,7 @@ lib LibWGPU
   end
   struct TextureViewDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     format : TextureFormat
     dimension : TextureViewDimension
     base_mip_level : UInt32
@@ -668,7 +668,7 @@ lib LibWGPU
   end
   struct BindGroupDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     layout : BindGroupLayout
     entry_count : UInt32
     entries : BindGroupEntry*
@@ -688,7 +688,7 @@ lib LibWGPU
   end
   struct ComputePipelineDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     layout : PipelineLayout
     compute_stage : ProgrammableStageDescriptor
   end
@@ -726,7 +726,7 @@ lib LibWGPU
   end
   struct TextureDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     usage : TextureUsageFlags
     dimension : TextureDimension
     size : Extent3D
@@ -742,7 +742,7 @@ lib LibWGPU
   end
   struct BindGroupLayoutDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     entry_count : UInt32
     entries : BindGroupLayoutEntry*
   end
@@ -754,7 +754,7 @@ lib LibWGPU
   end
   struct RenderPassDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     color_attachment_count : UInt32
     color_attachments : RenderPassColorAttachmentDescriptor*
     depth_stencil_attachment : RenderPassDepthStencilAttachmentDescriptor*
@@ -762,21 +762,21 @@ lib LibWGPU
   end
   struct VertexState
     next_in_chain : ChainedStruct*
-    module : ShaderModule
-    entry_point : Char*
+    shader : ShaderModule
+    entry_point : UInt8*
     buffer_count : UInt32
     buffers : VertexBufferLayout*
   end
   struct FragmentState
     next_in_chain : ChainedStruct*
-    module : ShaderModule
-    entry_point : Char*
+    shader : ShaderModule
+    entry_point : UInt8*
     target_count : UInt32
     targets : ColorTargetState*
   end
   struct RenderPipelineDescriptor
     next_in_chain : ChainedStruct*
-    label : Char*
+    label : UInt8*
     layout : PipelineLayout
     vertex : VertexState
     primitive : PrimitiveState
@@ -785,17 +785,17 @@ lib LibWGPU
     fragment : FragmentState*
   end
   alias BufferMapCallback = (BufferMapAsyncStatus, Void*) -> Void
-  alias CreateComputePipelineAsyncCallback = (CreatePipelineAsyncStatus, ComputePipeline, Char*, Void*) -> Void
-  alias CreateRenderPipelineAsyncCallback = (CreatePipelineAsyncStatus, RenderPipeline, Char*, Void*) -> Void
-  alias DeviceLostCallback = (Char*, Void*) -> Void
-  alias ErrorCallback = (ErrorType, Char*, Void*) -> Void
+  alias CreateComputePipelineAsyncCallback = (CreatePipelineAsyncStatus, ComputePipeline, UInt8*, Void*) -> Void
+  alias CreateRenderPipelineAsyncCallback = (CreatePipelineAsyncStatus, RenderPipeline, UInt8*, Void*) -> Void
+  alias DeviceLostCallback = (UInt8*, Void*) -> Void
+  alias ErrorCallback = (ErrorType, UInt8*, Void*) -> Void
   alias QueueWorkDoneCallback = (QueueWorkDoneStatus, Void*) -> Void
   alias RequestAdapterCallback = (Adapter, Void*) -> Void
   alias RequestDeviceCallback = (Device, Void*) -> Void
   alias SurfaceGetPreferredFormatCallback = (TextureFormat, Void*) -> Void
   alias ProcCreateInstance = (InstanceDescriptor*) -> Instance
   # See `wgpuGetProcAddress`
-  # alias ProcGetProcAddress = (Device, Char*) -> () -> Void*
+  # alias ProcGetProcAddress = (Device, UInt8*) -> () -> Void*
   alias ProcAdapterGetProperties = (Adapter, AdapterProperties*) -> Void
   alias ProcAdapterRequestDevice = (Adapter, DeviceDescriptor*, RequestDeviceCallback, Void*) -> Void
   alias ProcBufferDestroy = (Buffer) -> Void*
@@ -810,9 +810,9 @@ lib LibWGPU
   alias ProcCommandEncoderCopyTextureToBuffer = (CommandEncoder, ImageCopyTexture*, ImageCopyBuffer*, Extent3D*) -> Void
   alias ProcCommandEncoderCopyTextureToTexture = (CommandEncoder, ImageCopyTexture*, ImageCopyTexture*, Extent3D*) -> Void
   alias ProcCommandEncoderFinish = (CommandEncoder, CommandBufferDescriptor*) -> CommandBuffer
-  alias ProcCommandEncoderInsertDebugMarker = (CommandEncoder, Char*) -> Void
+  alias ProcCommandEncoderInsertDebugMarker = (CommandEncoder, UInt8*) -> Void
   alias ProcCommandEncoderPopDebugGroup = (CommandEncoder) -> Void*
-  alias ProcCommandEncoderPushDebugGroup = (CommandEncoder, Char*) -> Void
+  alias ProcCommandEncoderPushDebugGroup = (CommandEncoder, UInt8*) -> Void
   alias ProcCommandEncoderResolveQuerySet = (CommandEncoder, QuerySet, UInt32, UInt32, Buffer, UInt64) -> Void
   alias ProcCommandEncoderWriteTimestamp = (CommandEncoder, QuerySet, UInt32) -> Void
   alias ProcComputePassEncoderBeginPipelineStatisticsQuery = (ComputePassEncoder, QuerySet, UInt32) -> Void
@@ -820,9 +820,9 @@ lib LibWGPU
   alias ProcComputePassEncoderDispatchIndirect = (ComputePassEncoder, Buffer, UInt64) -> Void
   alias ProcComputePassEncoderEndPass = (ComputePassEncoder) -> Void*
   alias ProcComputePassEncoderEndPipelineStatisticsQuery = (ComputePassEncoder) -> Void*
-  alias ProcComputePassEncoderInsertDebugMarker = (ComputePassEncoder, Char*) -> Void
+  alias ProcComputePassEncoderInsertDebugMarker = (ComputePassEncoder, UInt8*) -> Void
   alias ProcComputePassEncoderPopDebugGroup = (ComputePassEncoder) -> Void*
-  alias ProcComputePassEncoderPushDebugGroup = (ComputePassEncoder, Char*) -> Void
+  alias ProcComputePassEncoderPushDebugGroup = (ComputePassEncoder, UInt8*) -> Void
   alias ProcComputePassEncoderSetBindGroup = (ComputePassEncoder, UInt32, BindGroup, UInt32, UInt32*) -> Void
   alias ProcComputePassEncoderSetPipeline = (ComputePassEncoder, ComputePipeline) -> Void
   alias ProcComputePassEncoderWriteTimestamp = (ComputePassEncoder, QuerySet, UInt32) -> Void
@@ -860,9 +860,9 @@ lib LibWGPU
   alias ProcRenderBundleEncoderDrawIndexedIndirect = (RenderBundleEncoder, Buffer, UInt64) -> Void
   alias ProcRenderBundleEncoderDrawIndirect = (RenderBundleEncoder, Buffer, UInt64) -> Void
   alias ProcRenderBundleEncoderFinish = (RenderBundleEncoder, RenderBundleDescriptor*) -> RenderBundle
-  alias ProcRenderBundleEncoderInsertDebugMarker = (RenderBundleEncoder, Char*) -> Void
+  alias ProcRenderBundleEncoderInsertDebugMarker = (RenderBundleEncoder, UInt8*) -> Void
   alias ProcRenderBundleEncoderPopDebugGroup = (RenderBundleEncoder) -> Void*
-  alias ProcRenderBundleEncoderPushDebugGroup = (RenderBundleEncoder, Char*) -> Void
+  alias ProcRenderBundleEncoderPushDebugGroup = (RenderBundleEncoder, UInt8*) -> Void
   alias ProcRenderBundleEncoderSetBindGroup = (RenderBundleEncoder, UInt32, BindGroup, UInt32, UInt32*) -> Void
   alias ProcRenderBundleEncoderSetIndexBuffer = (RenderBundleEncoder, Buffer, IndexFormat, UInt64, UInt64) -> Void
   alias ProcRenderBundleEncoderSetPipeline = (RenderBundleEncoder, RenderPipeline) -> Void
@@ -877,9 +877,9 @@ lib LibWGPU
   alias ProcRenderPassEncoderEndPass = (RenderPassEncoder) -> Void*
   alias ProcRenderPassEncoderEndPipelineStatisticsQuery = (RenderPassEncoder) -> Void*
   alias ProcRenderPassEncoderExecuteBundles = (RenderPassEncoder, UInt32, RenderBundle*) -> Void
-  alias ProcRenderPassEncoderInsertDebugMarker = (RenderPassEncoder, Char*) -> Void
+  alias ProcRenderPassEncoderInsertDebugMarker = (RenderPassEncoder, UInt8*) -> Void
   alias ProcRenderPassEncoderPopDebugGroup = (RenderPassEncoder) -> Void*
-  alias ProcRenderPassEncoderPushDebugGroup = (RenderPassEncoder, Char*) -> Void
+  alias ProcRenderPassEncoderPushDebugGroup = (RenderPassEncoder, UInt8*) -> Void
   alias ProcRenderPassEncoderSetBindGroup = (RenderPassEncoder, UInt32, BindGroup, UInt32, UInt32*) -> Void
   alias ProcRenderPassEncoderSetBlendColor = (RenderPassEncoder, Color*) -> Void
   alias ProcRenderPassEncoderSetIndexBuffer = (RenderPassEncoder, Buffer, IndexFormat, UInt64, UInt64) -> Void
@@ -896,7 +896,7 @@ lib LibWGPU
   alias ProcTextureCreateView = (Texture, TextureViewDescriptor*) -> TextureView
   alias ProcTextureDestroy = (Texture) -> Void*
   fun create_instance = wgpuCreateInstance(InstanceDescriptor*) : Instance
-  fun get_proc_address = wgpuGetProcAddress(Device, Char*) : Proc(Void*)
+  fun get_proc_address = wgpuGetProcAddress(Device, UInt8*) : Proc(Void*)
   fun adapter_get_properties = wgpuAdapterGetProperties(Adapter, AdapterProperties*) : Void
   fun adapter_request_device = wgpuAdapterRequestDevice(Adapter, DeviceDescriptor*, RequestDeviceCallback, Void*) : Void
   fun buffer_destroy = wgpuBufferDestroy(Buffer) : Void
@@ -911,9 +911,9 @@ lib LibWGPU
   fun command_encoder_copy_texture_to_buffer = wgpuCommandEncoderCopyTextureToBuffer(CommandEncoder, ImageCopyTexture*, ImageCopyBuffer*, Extent3D*) : Void
   fun command_encoder_copy_texture_to_texture = wgpuCommandEncoderCopyTextureToTexture(CommandEncoder, ImageCopyTexture*, ImageCopyTexture*, Extent3D*) : Void
   fun command_encoder_finish = wgpuCommandEncoderFinish(CommandEncoder, CommandBufferDescriptor*) : CommandBuffer
-  fun command_encoder_insert_debug_marker = wgpuCommandEncoderInsertDebugMarker(CommandEncoder, Char*) : Void
+  fun command_encoder_insert_debug_marker = wgpuCommandEncoderInsertDebugMarker(CommandEncoder, UInt8*) : Void
   fun command_encoder_pop_debug_group = wgpuCommandEncoderPopDebugGroup(CommandEncoder) : Void
-  fun command_encoder_push_debug_group = wgpuCommandEncoderPushDebugGroup(CommandEncoder, Char*) : Void
+  fun command_encoder_push_debug_group = wgpuCommandEncoderPushDebugGroup(CommandEncoder, UInt8*) : Void
   fun command_encoder_resolve_query_set = wgpuCommandEncoderResolveQuerySet(CommandEncoder, QuerySet, UInt32, UInt32, Buffer, UInt64) : Void
   fun command_encoder_write_timestamp = wgpuCommandEncoderWriteTimestamp(CommandEncoder, QuerySet, UInt32) : Void
   fun compute_pass_encoder_begin_pipeline_statistics_query = wgpuComputePassEncoderBeginPipelineStatisticsQuery(ComputePassEncoder, QuerySet, UInt32) : Void
@@ -921,9 +921,9 @@ lib LibWGPU
   fun compute_pass_encoder_dispatch_indirect = wgpuComputePassEncoderDispatchIndirect(ComputePassEncoder, Buffer, UInt64) : Void
   fun compute_pass_encoder_end_pass = wgpuComputePassEncoderEndPass(ComputePassEncoder) : Void
   fun compute_pass_encoder_end_pipeline_statistics_query = wgpuComputePassEncoderEndPipelineStatisticsQuery(ComputePassEncoder) : Void
-  fun compute_pass_encoder_insert_debug_marker = wgpuComputePassEncoderInsertDebugMarker(ComputePassEncoder, Char*) : Void
+  fun compute_pass_encoder_insert_debug_marker = wgpuComputePassEncoderInsertDebugMarker(ComputePassEncoder, UInt8*) : Void
   fun compute_pass_encoder_pop_debug_group = wgpuComputePassEncoderPopDebugGroup(ComputePassEncoder) : Void
-  fun compute_pass_encoder_push_debug_group = wgpuComputePassEncoderPushDebugGroup(ComputePassEncoder, Char*) : Void
+  fun compute_pass_encoder_push_debug_group = wgpuComputePassEncoderPushDebugGroup(ComputePassEncoder, UInt8*) : Void
   fun compute_pass_encoder_set_bind_group = wgpuComputePassEncoderSetBindGroup(ComputePassEncoder, UInt32, BindGroup, UInt32, UInt32*) : Void
   fun compute_pass_encoder_set_pipeline = wgpuComputePassEncoderSetPipeline(ComputePassEncoder, ComputePipeline) : Void
   fun compute_pass_encoder_write_timestamp = wgpuComputePassEncoderWriteTimestamp(ComputePassEncoder, QuerySet, UInt32) : Void
@@ -961,9 +961,9 @@ lib LibWGPU
   fun render_bundle_encoder_draw_indexed_indirect = wgpuRenderBundleEncoderDrawIndexedIndirect(RenderBundleEncoder, Buffer, UInt64) : Void
   fun render_bundle_encoder_draw_indirect = wgpuRenderBundleEncoderDrawIndirect(RenderBundleEncoder, Buffer, UInt64) : Void
   fun render_bundle_encoder_finish = wgpuRenderBundleEncoderFinish(RenderBundleEncoder, RenderBundleDescriptor*) : RenderBundle
-  fun render_bundle_encoder_insert_debug_marker = wgpuRenderBundleEncoderInsertDebugMarker(RenderBundleEncoder, Char*) : Void
+  fun render_bundle_encoder_insert_debug_marker = wgpuRenderBundleEncoderInsertDebugMarker(RenderBundleEncoder, UInt8*) : Void
   fun render_bundle_encoder_pop_debug_group = wgpuRenderBundleEncoderPopDebugGroup(RenderBundleEncoder) : Void
-  fun render_bundle_encoder_push_debug_group = wgpuRenderBundleEncoderPushDebugGroup(RenderBundleEncoder, Char*) : Void
+  fun render_bundle_encoder_push_debug_group = wgpuRenderBundleEncoderPushDebugGroup(RenderBundleEncoder, UInt8*) : Void
   fun render_bundle_encoder_set_bind_group = wgpuRenderBundleEncoderSetBindGroup(RenderBundleEncoder, UInt32, BindGroup, UInt32, UInt32*) : Void
   fun render_bundle_encoder_set_index_buffer = wgpuRenderBundleEncoderSetIndexBuffer(RenderBundleEncoder, Buffer, IndexFormat, UInt64, UInt64) : Void
   fun render_bundle_encoder_set_pipeline = wgpuRenderBundleEncoderSetPipeline(RenderBundleEncoder, RenderPipeline) : Void
@@ -978,11 +978,11 @@ lib LibWGPU
   fun render_pass_encoder_end_pass = wgpuRenderPassEncoderEndPass(RenderPassEncoder) : Void
   fun render_pass_encoder_end_pipeline_statistics_query = wgpuRenderPassEncoderEndPipelineStatisticsQuery(RenderPassEncoder) : Void
   fun render_pass_encoder_execute_bundles = wgpuRenderPassEncoderExecuteBundles(RenderPassEncoder, UInt32, RenderBundle*) : Void
-  fun render_pass_encoder_insert_debug_marker = wgpuRenderPassEncoderInsertDebugMarker(RenderPassEncoder, Char*) : Void
+  fun render_pass_encoder_insert_debug_marker = wgpuRenderPassEncoderInsertDebugMarker(RenderPassEncoder, UInt8*) : Void
   fun render_pass_encoder_pop_debug_group = wgpuRenderPassEncoderPopDebugGroup(RenderPassEncoder) : Void
-  fun render_pass_encoder_push_debug_group = wgpuRenderPassEncoderPushDebugGroup(RenderPassEncoder, Char*) : Void
+  fun render_pass_encoder_push_debug_group = wgpuRenderPassEncoderPushDebugGroup(RenderPassEncoder, UInt8*) : Void
   fun render_pass_encoder_set_bind_group = wgpuRenderPassEncoderSetBindGroup(RenderPassEncoder, UInt32, BindGroup, UInt32, UInt32*) : Void
-  fun render_pass_encoder_set_blend_color = wgpuRenderPassEncoderSetBlendColor(RenderPassEncoder, Color*) : Void
+  fun render_pass_encoder_set_blend_color = wgpuRenderPassEncoderSetBlendConstant(RenderPassEncoder, Color*) : Void
   fun render_pass_encoder_set_index_buffer = wgpuRenderPassEncoderSetIndexBuffer(RenderPassEncoder, Buffer, IndexFormat, UInt64, UInt64) : Void
   fun render_pass_encoder_set_pipeline = wgpuRenderPassEncoderSetPipeline(RenderPassEncoder, RenderPipeline) : Void
   fun render_pass_encoder_set_scissor_rect = wgpuRenderPassEncoderSetScissorRect(RenderPassEncoder, UInt32, UInt32, UInt32, UInt32) : Void
@@ -1005,8 +1005,8 @@ lib LibWGPU
   struct DeviceExtras
     chain : ChainedStruct
     max_bind_groups : UInt32
-    label : Char*
-    trace_path : Char*
+    label : UInt8*
+    trace_path : UInt8*
   end
   enum LogLevel : UInt32
     Off = 0
@@ -1017,7 +1017,7 @@ lib LibWGPU
     Trace = 5
     Force32 = 2147483647
   end
-  alias LogCallback = (LogLevel, Char*) -> Void
+  alias LogCallback = (LogLevel, UInt8*) -> Void
   fun device_poll = wgpuDevicePoll(Device, Bool) : Void
   fun set_log_callback = wgpuSetLogCallback(LogCallback) : Void
   fun set_log_level = wgpuSetLogLevel(LogLevel) : Void

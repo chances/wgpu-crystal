@@ -33,12 +33,15 @@ module WGPU
     Storage  = 128
     Indirect = 256
   end
+  alias TextureFormat = LibWGPU::TextureFormat
   enum TextureUsage : UInt8
-    CopySrc          =  1
-    CopyDst          =  2
-    Sampled          =  4
-    Storage          =  8
-    OutputAttachment = 16
+    CopySrc = LibWGPU::TextureUsage::CopySrc
+    CopyDst = LibWGPU::TextureUsage::CopyDst
+    Sampled = LibWGPU::TextureUsage::Sampled
+    Storage = LibWGPU::TextureUsage::Storage
+    # DEPRECATED: Since wgpu-native `0.7`, use `TextureUsage::RenderAttachment`.
+    OutputAttachment = LibWGPU::TextureUsage::RenderAttachment
+    RenderAttachment = LibWGPU::TextureUsage::RenderAttachment
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
   enum LogLevel : UInt32
@@ -59,10 +62,10 @@ module WGPU
 
   def set_log_callback(callback : LogCallback)
     @@log_callback = Box.box(callback)
-    LibWGPU.set_log_callback(->(level : LibWGPU::LogLevel, message : Char*) {
+    LibWGPU.set_log_callback(->(level : LibWGPU::LogLevel, message : UInt8*) {
       return if @@log_callback.null?
       cb = Box(LogCallback).unbox(@@log_callback)
-      cb.call LogLevel.new(level.value), String.new(message.as(UInt8*))
+      cb.call LogLevel.new(level.value), String.new(message)
     })
   end
 
@@ -97,9 +100,13 @@ module WGPU
   #   end
   # end
 
+  alias SurfaceDescriptor = LibWGPU::SurfaceDescriptor
+
   class Surface < WgpuId
-    private def initialize(descriptor : LibWGPU::SurfaceDescriptor)
-      @id = LibWGPU.instance_create_surface(nil, pointerof(descriptor))
+    getter descriptor : LibWGPU::SurfaceDescriptor
+
+    private def initialize(@descriptor : LibWGPU::SurfaceDescriptor)
+      @id = LibWGPU.instance_create_surface(nil, pointerof(@descriptor))
     end
 
     def self.from_metal_layer(label : String, layer : Void*) : Surface
@@ -109,7 +116,7 @@ module WGPU
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         next_in_chain: pointerof(metal_layer_descriptor).as(LibWGPU::ChainedStruct*),
-        label: label.chars
+        label: label
       )
       return self.new(descriptor)
     end
@@ -122,7 +129,7 @@ module WGPU
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         next_in_chain: pointerof(windows_hwnd_descriptor).as(LibWGPU::ChainedStruct*),
-        label: label.chars
+        label: label
       )
       return self.new(descriptor)
     end
@@ -134,9 +141,42 @@ module WGPU
       )
       descriptor = LibWGPU::SurfaceDescriptor.new(
         next_in_chain: pointerof(xlib_descriptor).as(LibWGPU::ChainedStruct*),
-        label: label.chars
+        label: label
       )
       return self.new(descriptor)
+    end
+
+    @@chan = Channel(TextureFormat).new
+    @@callback_box : Pointer(Void)?
+    # Lazy getter to retreive the preferred `TextureFormat` for this Surface.
+    # Call `preferred_format(adapter : Adapter)` first.
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    getter preferred_format : Future::Compute(TextureFormat)?
+
+    # Asynchronously retreive the preferred `TextureFormat` for this Surface.
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    def preferred_format(adapter : Adapter) : Future::Compute(TextureFormat)
+      @@chan = Channel(TextureFormat).new if @@chan.closed?
+      callback = ->(format : TextureFormat) { spawn { @@chan.send format } }
+      callback_boxed = Box.box(callback)
+      @@callback_box = callback_boxed
+
+      puts "Requesting surface preferred texture format…" if @descriptor.label.null?
+      puts "Requesting preferred texture format for #{String.new @descriptor.label} surface…" unless @descriptor.label.null?
+      LibWGPU.surface_get_preferred_format(self, adapter, ->(format : TextureFormat, data : Void*) {
+        cb = Box(typeof(callback)).unbox(data)
+        cb.call(format)
+      }, callback_boxed)
+
+      @preferred_format = future {
+        format = @@chan.receive
+        @@chan.close
+        puts "Received requested surface texture format" if @descriptor.label.null?
+        puts "Received requested texture format for #{String.new @descriptor.label} surface" unless @descriptor.label.null?
+        format
+      }
     end
   end
 
@@ -150,7 +190,11 @@ module WGPU
       @id = adapter_id
     end
 
-    def self.request(compatible_surface : Surface? = nil)
+    # Asynchronously request a graphics Adapter.
+    # Optionally, a `Surface` may be provided such that a compatible Adapter is selected.
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    def self.request(compatible_surface : Surface? = nil) : Future::Compute(Adapter)
       @@chan = Channel(Adapter).new if @@chan.closed?
       callback = ->(adapter_id : LibWGPU::Adapter) { spawn { @@chan.send self.new(adapter_id) } }
       callback_boxed = Box.box(callback)
@@ -179,7 +223,7 @@ module WGPU
       @id.null? == false
     end
 
-    # Deprecated: Since wgpu-native 0.7
+    # DEPRECATED: Since wgpu-native `0.7`, use `Adapter.properties`.
     def info
       return self.properties
     end
@@ -200,7 +244,10 @@ module WGPU
       @id = device_id
     end
 
-    def self.request(adapter : Adapter, label : String? = nil, trace_path : String? = nil)
+    # Asynchronously request a graphics Device.
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    def self.request(adapter : Adapter, label : String? = nil, trace_path : String? = nil) : Future::Compute(Device)
       raise ArgumentError.new(message: ADAPTER_MUST_BE_READY) unless adapter && adapter.is_ready?
 
       @@chan = Channel(Device).new if @@chan.closed?
@@ -212,8 +259,8 @@ module WGPU
         LibWGPU::ChainedStruct.new(s_type: LibWGPU::NativeSType::DeviceExtras.as(LibWGPU::SType)),
         max_bind_groups: 4
       )
-      device_extras.label = label.to_unsafe.as(Char*) unless label.nil?
-      device_extras.trace_path = trace_path.to_unsafe.as(Char*) unless trace_path.nil?
+      device_extras.label = label.to_unsafe unless label.nil?
+      device_extras.trace_path = trace_path.to_unsafe unless trace_path.nil?
       device_descriptor = LibWGPU::DeviceDescriptor.new next_in_chain: pointerof(device_extras).as(LibWGPU::ChainedStruct*)
       puts "Requesting graphics device…"
       LibWGPU.adapter_request_device(adapter, pointerof(device_descriptor), ->(device_id : LibWGPU::Device, data : Void*) {
@@ -229,33 +276,115 @@ module WGPU
       }
     end
 
-    def queue
+    def queue : Queue
       Queue.new self
     end
 
-    def create_buffer(descriptor : LibWGPU::BufferDescriptor)
+    def create_buffer(descriptor : LibWGPU::BufferDescriptor) : Buffer
       Buffer.new(self, descriptor)
     end
 
-    def create_texture(descriptor : LibWGPU::TextureDescriptor)
+    def create_texture(descriptor : LibWGPU::TextureDescriptor) : Texture
       Texture.new(self, descriptor)
     end
 
-    def create_command_encoder(descriptor : LibWGPU::CommandEncoderDescriptor)
+    def create_shader_module(descriptor : LibWGPU::ShaderModuleDescriptor) : ShaderModule
+      ShaderModule.new(self, descriptor)
+    end
+
+    def create_swap_chain(surface : Surface, descriptor : SwapChainDescriptor) : SwapChain
+      SwapChain.new(self, surface, descriptor)
+    end
+
+    def create_pipeline_layout(layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil) : PipelineLayout
+      PipelineLayout.new(self, layout, label: label)
+    end
+
+    def create_render_pipeline(descriptor : LibWGPU::RenderPipelineDescriptor) : RenderPipeline
+      RenderPipeline.new(self, descriptor)
+    end
+
+    def create_command_encoder(descriptor : LibWGPU::CommandEncoderDescriptor) : CommandEncoder
       CommandEncoder.new(self, descriptor)
     end
 
-    def poll(*args, force_wait = false)
+    def poll(*args, force_wait = false) : Void
       LibWGPU.device_poll(@id, force_wait)
     end
   end
 
-  class Surface < WgpuId
+  record Size, width : UInt32, height : UInt32 do
+    def initialize(width : UInt32, height : UInt32)
+      @width = width
+      @height = height
+    end
+  end
+
+  alias PresentMode = LibWGPU::PresentMode
+
+  class SwapChainDescriptor < WgpuId
+    private def initialize(@descriptor : LibWGPU::SwapChainDescriptor)
+      @id = pointerof(@descriptor).as(Void*)
+    end
+
+    def format
+      @descriptor.format
+    end
+
+    def width
+      @descriptor.width
+    end
+
+    def height
+      @descriptor.height
+    end
+
+    def size
+      Size.new(width, height)
+    end
+
+    def present_mode
+      @descriptor.present_mode
+    end
+
+    def to_unsafe
+      @id.as(LibWGPU::SwapChainDescriptor*)
+    end
   end
 
   class SwapChain < WgpuId
-    def initialize(device : Device, surface : Surface, descriptor : LibWGPU::SwapChainDescriptor)
-      @id = LibWGPU.device_create_swap_chain(device, surface, pointerof(descriptor))
+    getter descriptor : SwapChainDescriptor
+
+    def initialize(device : Device, surface : Surface, @descriptor : SwapChainDescriptor)
+      @id = LibWGPU.device_create_swap_chain(device, surface, @descriptor)
+    end
+
+    def format
+      @descriptor.format
+    end
+
+    def width
+      @descriptor.width
+    end
+
+    def height
+      @descriptor.height
+    end
+
+    def size
+      @descriptor.size
+    end
+
+    def present_mode
+      @descriptor.present_mode
+    end
+
+    def current_texture_view
+      TextureView.from_swap_chain self
+    end
+
+    def present
+      LibWGPU.swap_chain_present(self)
     end
   end
 
@@ -341,10 +470,283 @@ module WGPU
   end
 
   class TextureView < WgpuId
+    private def initialize(@id : LibWGPU::TextureView)
+    end
+
     def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor? = nil)
       descriptor = LibWGPU::TextureViewDescriptor.new if descriptor.nil?
       tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
       @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
+    end
+
+    def self.from_swap_chain(swap_chain : SwapChain)
+      self.new LibWGPU.swap_chain_get_current_texture_view(swap_chain)
+    end
+  end
+
+  class ShaderModule < WgpuId
+    def initialize(device : Device, descriptor : LibWGPU::ShaderModuleDescriptor)
+      @id = LibWGPU.device_create_shader_module(device, pointerof(descriptor))
+    end
+
+    def self.from_spirv(device : Device, spirv : Bytes, *args, label : String? = nil) : ShaderModule
+      spirv_descriptor = LibWGPU::ShaderModuleSPIRVDescriptor.new(
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::ShaderModuleSPIRVDescriptor),
+        code_size: spirv.length,
+        code: spirv
+      )
+      descriptor = LibWGPU::ShaderModuleDescriptor.new(
+        next_in_chain: pointerof(spirv_descriptor).as(LibWGPU::ChainedStruct*)
+      )
+      descriptor.label = label unless label.nil?
+      device.create_shader_module descriptor
+    end
+
+    def self.from_wgsl(device : Device, wgsl : String, *args, label : String? = nil) : ShaderModule
+      wgsl_descriptor = LibWGPU::ShaderModuleWGSLDescriptor.new(
+        chain: LibWGPU::ChainedStruct.new(s_type: LibWGPU::SType::ShaderModuleWGSLDescriptor),
+        source: wgsl
+      )
+      descriptor = LibWGPU::ShaderModuleDescriptor.new(
+        next_in_chain: pointerof(wgsl_descriptor).as(LibWGPU::ChainedStruct*)
+      )
+      descriptor.label = label unless label.nil?
+      device.create_shader_module descriptor
+    end
+  end
+
+  alias BindGroupLayoutEntry = LibWGPU::BindGroupLayoutEntry
+
+  class BindGroupLayout < WgpuId
+    getter label : String
+    getter entries : Array(BindGroupLayoutEntry)
+
+    def initialize(device : Device, @label : String, @entries : Array(BindGroupLayoutEntry))
+      layout_descriptor = LibWGPU::BindGroupLayout.new(
+        label: @label,
+        entry_count: entries.size,
+        entries: entries.to_unsafe
+      )
+      @id = LibWGPU.device_create_bind_group_layout(device, pointerof(layout_descriptor))
+    end
+  end
+
+  alias VertexBufferLayout = LibWGPU::VertexBufferLayout
+
+  class VertexState
+    def self.from(shader : ShaderModule, *args, entry_point : String, buffers : Array(VertexBufferLayout) = [] of VertexBufferLayout)
+      LibWGPU::VertexState.new(
+        shader: shader,
+        entry_point: entry_point,
+        buffer_count: buffers.size,
+        buffers: buffers.to_unsafe # VertexBufferLayout*
+      )
+    end
+  end
+
+  class BlendState
+    @blend : LibWGPU::BlendState
+    getter color_blend_func : LibWGPU::BlendComponent
+    getter alpha_blend_func : LibWGPU::BlendComponent
+
+    def initialize(*args, color : LibWGPU::BlendComponent, alpha : LibWGPU::BlendComponent)
+      @blend = LibWGPU::BlendState.new(
+        color: @color_blend_func = color,
+        alpha: @alpha_blend_func = alpha
+      )
+    end
+
+    def to_unsafe
+      pointerof(@blend)
+    end
+  end
+
+  module BlendComponent
+    SRC_ONE_DST_ZERO_ADD = LibWGPU::BlendComponent.new(
+      src_factor: LibWGPU::BlendFactor::One,
+      dst_factor: LibWGPU::BlendFactor::Zero,
+      operation: LibWGPU::BlendOperation::Add,
+    )
+  end
+
+  alias ColorTargetState = LibWGPU::ColorTargetState
+
+  class FragmentState
+    @state : LibWGPU::FragmentState
+
+    def initialize(shader : ShaderModule, *args, entry_point : String, targets : Array(ColorTargetState) = [] of ColorTargetState)
+      @state = LibWGPU::FragmentState.new(
+        shader: shader,
+        entry_point: entry_point,
+        target_count: targets.size, # UInt32
+        targets: targets.to_unsafe
+      )
+    end
+
+    def to_unsafe
+      pointerof(@state)
+    end
+  end
+
+  class PipelineLayout < WgpuId
+    def initialize(device : Device, layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil)
+      layout_ids = layout.map(&.id)
+      layout_descriptor = LibWGPU::PipelineLayoutDescriptor.new(
+        bind_group_layout_count: layout.size,
+        bind_group_layouts: layout_ids.to_a.to_unsafe.as(LibWGPU::BindGroupLayout*)
+      )
+      layout_descriptor.label = label unless label.nil?
+      @id = LibWGPU.device_create_pipeline_layout(device, pointerof(layout_descriptor))
+    end
+
+    def self.empty(device : Device, *args, label : String? = nil)
+      PipelineLayout.new(device, label: label)
+    end
+  end
+
+  alias RenderPipelineDescriptor = LibWGPU::RenderPipelineDescriptor
+
+  class RenderPipeline < WgpuId
+    def initialize(device : Device, descriptor : LibWGPU::RenderPipelineDescriptor)
+      @id = LibWGPU.device_create_render_pipeline(device, pointerof(descriptor))
+    end
+
+    # TODO: Add support for LibWGPU.device_create_render_pipeline_async
+  end
+
+  record Rectangle, x : UInt32, y : UInt32, width : UInt32, height : UInt32 do
+    def top
+      self.y
+    end
+
+    def right
+      self.x + self.width
+    end
+
+    def bottom
+      self.y + self.height
+    end
+
+    def left
+      self.x
+    end
+  end
+
+  # A render viewport region.
+  #
+  # See Also: `RenderPass.viewport=`
+  record(Viewport,
+    x : UInt32, y : UInt32,
+    width : UInt32, height : UInt32,
+    min_depth : Float32, max_depth : Float32
+  )
+
+  class RenderPass < WgpuId
+    def initialize(encoder : LibWGPU::RenderPassEncoder)
+      @id = encoder
+    end
+
+    def begin_occlusion_query(index : UInt32)
+      LibWGPU.render_pass_encoder_begin_occlusion_query(self, index)
+    end
+
+    def begin_pipeline_statistics_query(set : LibWGPU::QuerySet, index : UInt32)
+      LibWGPU.render_pass_encoder_begin_pipeline_statistics_query(self, set, index)
+    end
+
+    def draw(vertex_count : UInt32, instance_count : UInt32, first_vertex : UInt32, first_instance : UInt32)
+      LibWGPU.render_pass_encoder_draw(self, vertex_count, instance_count, first_vertex, first_instance)
+    end
+
+    def draw_indexed(index_count : UInt32, instance_count : UInt32, first_index : UInt32, base_vertex : Int32, first_instance : UInt32)
+      LibWGPU.render_pass_encoder_draw_indexed(
+        self,
+        index_count,
+        instance_count,
+        first_index,
+        base_vertex,
+        first_instance
+      )
+    end
+
+    def draw_indexed_indirect(buf : Buffer, offset : UInt64)
+      LibWGPU.render_pass_encoder_draw_indexed_indirect(self, buf, offset)
+    end
+
+    def draw_indirect(buf : Buffer, offset : UInt64)
+      LibWGPU.render_pass_encoder_draw_indirect(self, buf, offset)
+    end
+
+    def end_occlusion_query
+      LibWGPU.render_pass_encoder_end_occlusion_query(self)
+    end
+
+    def end_pass
+      LibWGPU.render_pass_encoder_end_pass(self)
+    end
+
+    def end_pipeline_statistics_query
+      LibWGPU.render_pass_encoder_end_pipeline_statistics_query(self)
+    end
+
+    def execute_bundles(bundles : Array(RenderBundle))
+      bundle_ids = bindles.map(&.id)
+      LibWGPU.render_pass_encoder_execute_bundles(
+        self,
+        bundles.size,
+        bundle_ids.to_a.to_unsafe
+      )
+    end
+
+    def insert_debug_marker(label : String)
+      LibWGPU.render_pass_encoder_insert_debug_marker(self, label)
+    end
+
+    def pop_debug_group
+      LibWGPU.render_pass_encoder_pop_debug_group(self)
+    end
+
+    def push_debug_group(label : String)
+      LibWGPU.render_pass_encoder_push_debug_group(self, label)
+    end
+
+    def bind_group
+      LibWGPU.render_pass_encoder_set_bind_group(self)
+    end
+
+    def blend_color=(color : LibWGPU::Color)
+      LibWGPU.render_pass_encoder_set_blend_color(self, pointerof(color))
+    end
+
+    def set_index_buffer(buf : Buffer, format : LibWGPU::IndexFormat, offset : UInt64, size : UInt64)
+      LibWGPU.render_pass_encoder_set_index_buffer(self, buf, format, offset, size)
+    end
+
+    def pipeline=(pipeline : RenderPipeline)
+      LibWGPU.render_pass_encoder_set_pipeline(self, pipeline)
+    end
+
+    # Sets the scissor region.
+    # Subsequent draw calls will discard any fragments that fall outside this region.
+    def scissor_rect=(rect : Rectangle)
+      LibWGPU.render_pass_encoder_set_scissor_rect(self, rect.x, rect.y, rect.width, rect.height)
+    end
+
+    # Subsequent stencil tests will test against this value.
+    def stencil_reference=(ref : UInt32)
+      LibWGPU.render_pass_encoder_set_stencil_reference(self, ref)
+    end
+
+    def set_vertex_buffer(slot : UInt32, buf : Buffer, offset : UInt64, size : UInt64)
+      LibWGPU.render_pass_encoder_set_vertex_buffer(self, slot, buf, offset, size)
+    end
+
+    # Sets the viewport region.
+    # Subsequent draw calls will draw any fragments in this region.
+    def viewport=(view : Viewport)
+      LibWGPU.render_pass_encoder_set_viewport(
+        self, view.x, view.y, view.width, view.height, view.min_depth, view.max_depth
+      )
     end
   end
 
@@ -379,7 +781,7 @@ module WGPU
     end
 
     def begin_render_pass(descriptor : LibWGPU::RenderPassDescriptor)
-      LibWGPU.command_encoder_begin_render_pass(self, pointerof(descriptor))
+      RenderPass.new LibWGPU.command_encoder_begin_render_pass(self, pointerof(descriptor))
     end
 
     def copy_texture_to_buffer(source : LibWGPU::ImageCopyTexture, destination : LibWGPU::ImageCopyBuffer, copy_size : LibWGPU::Extent3D)
