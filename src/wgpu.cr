@@ -164,7 +164,7 @@ module WGPU
       @@callback_box = callback_boxed
 
       puts "Requesting surface preferred texture format…" if @descriptor.label.null?
-      puts "Requesting preferred texture format for #{@descriptor.label} surface…" unless @descriptor.label.null?
+      puts "Requesting preferred texture format for #{String.new @descriptor.label} surface…" unless @descriptor.label.null?
       LibWGPU.surface_get_preferred_format(self, adapter, ->(format : TextureFormat, data : Void*) {
         cb = Box(typeof(callback)).unbox(data)
         cb.call(format)
@@ -174,7 +174,7 @@ module WGPU
         format = @@chan.receive
         @@chan.close
         puts "Received requested surface texture format" if @descriptor.label.null?
-        puts "Received requested texture format for #{@descriptor.label} surface…" unless @descriptor.label.null?
+        puts "Received requested texture format for #{String.new @descriptor.label} surface" unless @descriptor.label.null?
         format
       }
     end
