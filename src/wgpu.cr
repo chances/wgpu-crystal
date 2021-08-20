@@ -35,11 +35,13 @@ module WGPU
   end
   alias TextureFormat = LibWGPU::TextureFormat
   enum TextureUsage : UInt8
-    CopySrc          =  1
-    CopyDst          =  2
-    Sampled          =  4
-    Storage          =  8
-    OutputAttachment = 16
+    CopySrc = LibWGPU::TextureUsage::CopySrc
+    CopyDst = LibWGPU::TextureUsage::CopyDst
+    Sampled = LibWGPU::TextureUsage::Sampled
+    Storage = LibWGPU::TextureUsage::Storage
+    # DEPRECATED: Since wgpu-native `0.7`, use `TextureUsage::RenderAttachment`.
+    OutputAttachment = LibWGPU::TextureUsage::RenderAttachment
+    RenderAttachment = LibWGPU::TextureUsage::RenderAttachment
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
   enum LogLevel : UInt32
