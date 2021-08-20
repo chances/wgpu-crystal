@@ -245,6 +245,10 @@ module WGPU
       ShaderModule.new(self, descriptor)
     end
 
+    def create_swap_chain(surface : Surface, descriptor : SwapChainDescriptor)
+      SwapChain.new(self, surface, descriptor)
+    end
+
     def create_pipeline_layout(layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil)
       PipelineLayout.new(self, layout, label: label)
     end
@@ -262,9 +266,50 @@ module WGPU
     end
   end
 
+  record Size, width : UInt32, height : UInt32 do
+    def initialize(width : UInt32, height : UInt32)
+      @width = width
+      @height = height
+    end
+  end
+
+  alias PresentMode = LibWGPU::PresentMode
+
+  class SwapChainDescriptor < WgpuId
+    private def initialize(descriptor : LibWGPU::SwapChainDescriptor)
+      @id = pointerof(@descriptor)
+    end
+  end
+
   class SwapChain < WgpuId
-    def initialize(device : Device, surface : Surface, descriptor : LibWGPU::SwapChainDescriptor)
-      @id = LibWGPU.device_create_swap_chain(device, surface, pointerof(descriptor))
+    getter descriptor : SwapChainDescriptor
+
+    def initialize(device : Device, surface : Surface, @descriptor : SwapChainDescriptor)
+      @id = LibWGPU.device_create_swap_chain(device, surface, @descriptor)
+    end
+
+    def usage
+      @descriptor.usage
+    end
+
+    def format
+      @descriptor.format
+    end
+
+    def width
+      @descriptor.width
+    end
+
+    def height
+      @descriptor.height
+    end
+
+    def size
+      Size.new(width, height)
+    end
+
+    def present_mode
+      @descriptor.present_mode
     end
   end
 
