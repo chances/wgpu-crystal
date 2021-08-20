@@ -182,6 +182,8 @@ module WGPU
       @id = adapter_id
     end
 
+    # Asynchronously request a graphics Adapter.
+    # Optionally, a `Surface` may be provided such that a compatible Adapter is selected.
     def self.request(compatible_surface : Surface? = nil)
       @@chan = Channel(Adapter).new if @@chan.closed?
       callback = ->(adapter_id : LibWGPU::Adapter) { spawn { @@chan.send self.new(adapter_id) } }
@@ -211,7 +213,7 @@ module WGPU
       @id.null? == false
     end
 
-    # Deprecated: Since wgpu-native 0.7
+    # DEPRECATED: Since wgpu-native `0.7`, use `Adapter.properties`.
     def info
       return self.properties
     end
