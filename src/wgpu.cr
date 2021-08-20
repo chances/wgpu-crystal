@@ -276,39 +276,39 @@ module WGPU
       }
     end
 
-    def queue
+    def queue : Queue
       Queue.new self
     end
 
-    def create_buffer(descriptor : LibWGPU::BufferDescriptor)
+    def create_buffer(descriptor : LibWGPU::BufferDescriptor) : Buffer
       Buffer.new(self, descriptor)
     end
 
-    def create_texture(descriptor : LibWGPU::TextureDescriptor)
+    def create_texture(descriptor : LibWGPU::TextureDescriptor) : Texture
       Texture.new(self, descriptor)
     end
 
-    def create_shader_module(descriptor : LibWGPU::ShaderModuleDescriptor)
+    def create_shader_module(descriptor : LibWGPU::ShaderModuleDescriptor) : ShaderModule
       ShaderModule.new(self, descriptor)
     end
 
-    def create_swap_chain(surface : Surface, descriptor : SwapChainDescriptor)
+    def create_swap_chain(surface : Surface, descriptor : SwapChainDescriptor) : SwapChain
       SwapChain.new(self, surface, descriptor)
     end
 
-    def create_pipeline_layout(layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil)
+    def create_pipeline_layout(layout : Array(BindGroupLayout) = [] of BindGroupLayout, *args, label : String? = nil) : PipelineLayout
       PipelineLayout.new(self, layout, label: label)
     end
 
-    def create_render_pipeline(descriptor : LibWGPU::RenderPipelineDescriptor)
+    def create_render_pipeline(descriptor : LibWGPU::RenderPipelineDescriptor) : RenderPipeline
       RenderPipeline.new(self, descriptor)
     end
 
-    def create_command_encoder(descriptor : LibWGPU::CommandEncoderDescriptor)
+    def create_command_encoder(descriptor : LibWGPU::CommandEncoderDescriptor) : CommandEncoder
       CommandEncoder.new(self, descriptor)
     end
 
-    def poll(*args, force_wait = false)
+    def poll(*args, force_wait = false) : Void
       LibWGPU.device_poll(@id, force_wait)
     end
   end
