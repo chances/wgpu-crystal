@@ -378,6 +378,10 @@ module WGPU
     def present_mode
       @descriptor.present_mode
     end
+
+    def current_texture_view
+      TextureView.from_swap_chain self
+    end
   end
 
   class Buffer < WgpuId
@@ -462,10 +466,17 @@ module WGPU
   end
 
   class TextureView < WgpuId
+    private def initialize(@id : LibWGPU::TextureView)
+    end
+
     def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor? = nil)
       descriptor = LibWGPU::TextureViewDescriptor.new if descriptor.nil?
       tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
       @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
+    end
+
+    def self.from_swap_chain(swap_chain : SwapChain)
+      self.new LibWGPU.swap_chain_get_current_texture_view(swap_chain)
     end
   end
 
