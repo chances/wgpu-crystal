@@ -33,6 +33,7 @@ module WGPU
     Storage  = 128
     Indirect = 256
   end
+  alias TextureFormat = LibWGPU::TextureFormat
   enum TextureUsage : UInt8
     CopySrc          =  1
     CopyDst          =  2
@@ -97,9 +98,13 @@ module WGPU
   #   end
   # end
 
+  alias SurfaceDescriptor = LibWGPU::SurfaceDescriptor
+
   class Surface < WgpuId
-    private def initialize(descriptor : LibWGPU::SurfaceDescriptor)
-      @id = LibWGPU.instance_create_surface(nil, pointerof(descriptor))
+    getter descriptor : LibWGPU::SurfaceDescriptor
+
+    private def initialize(@descriptor : LibWGPU::SurfaceDescriptor)
+      @id = LibWGPU.instance_create_surface(nil, pointerof(@descriptor))
     end
 
     def self.from_metal_layer(label : String, layer : Void*) : Surface
@@ -137,6 +142,33 @@ module WGPU
         label: label
       )
       return self.new(descriptor)
+    end
+
+    @@chan = Channel(TextureFormat).new
+    @@callback_box : Pointer(Void)?
+    getter preferred_format : TextureFormat?
+
+    # Asynchronously retreive the preferred `TextureFormat` for this Surface.
+    def preferred_format(adapter : Adapter)
+      @@chan = Channel(TextureFormat).new if @@chan.closed?
+      callback = ->(format : TextureFormat) { spawn { @@chan.send format } }
+      callback_boxed = Box.box(callback)
+      @@callback_box = callback_boxed
+
+      puts "Requesting surface preferred texture format…" if @descriptor.label.null?
+      puts "Requesting preferred texture format for #{@descriptor.label} surface…" unless @descriptor.label.null?
+      LibWGPU.surface_get_preferred_format(self, adapter, ->(format : TextureFormat, data : Void*) {
+        cb = Box(typeof(callback)).unbox(data)
+        cb.call(format)
+      }, callback_boxed)
+
+      return future {
+        format = @@chan.receive
+        @@chan.close
+        puts "Received requested surface texture format" if @descriptor.label.null?
+        puts "Received requested texture format for #{@descriptor.label} surface…" unless @descriptor.label.null?
+        @preferred_format = format
+      }
     end
   end
 
