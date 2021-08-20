@@ -44,6 +44,8 @@ module WGPU
     RenderAttachment = LibWGPU::TextureUsage::RenderAttachment
   end
   alias BufferMapAsyncStatus = LibWGPU::BufferMapAsyncStatus
+
+  # TODO: Integrate with std lib logging primitives: https://crystal-lang.org/api/1.1.1/Log.html
   enum LogLevel : UInt32
     Off     = LibWGPU::LogLevel::Off
     Error   = LibWGPU::LogLevel::Error
