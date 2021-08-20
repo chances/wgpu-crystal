@@ -323,8 +323,8 @@ module WGPU
   alias PresentMode = LibWGPU::PresentMode
 
   class SwapChainDescriptor < WgpuId
-    private def initialize(descriptor : LibWGPU::SwapChainDescriptor)
-      @id = pointerof(@descriptor)
+    private def initialize(@descriptor : LibWGPU::SwapChainDescriptor)
+      @id = pointerof(@descriptor).as(Void*)
     end
   end
 
