@@ -148,10 +148,16 @@ module WGPU
 
     @@chan = Channel(TextureFormat).new
     @@callback_box : Pointer(Void)?
-    getter preferred_format : TextureFormat?
+    # Lazy getter to retreive the preferred `TextureFormat` for this Surface.
+    # Call `preferred_format(adapter : Adapter)` first.
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    getter preferred_format : Future::Compute(TextureFormat)?
 
     # Asynchronously retreive the preferred `TextureFormat` for this Surface.
-    def preferred_format(adapter : Adapter)
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    def preferred_format(adapter : Adapter) : Future::Compute(TextureFormat)
       @@chan = Channel(TextureFormat).new if @@chan.closed?
       callback = ->(format : TextureFormat) { spawn { @@chan.send format } }
       callback_boxed = Box.box(callback)
@@ -164,12 +170,12 @@ module WGPU
         cb.call(format)
       }, callback_boxed)
 
-      return future {
+      @preferred_format = future {
         format = @@chan.receive
         @@chan.close
         puts "Received requested surface texture format" if @descriptor.label.null?
         puts "Received requested texture format for #{@descriptor.label} surface…" unless @descriptor.label.null?
-        @preferred_format = format
+        format
       }
     end
   end
@@ -186,7 +192,9 @@ module WGPU
 
     # Asynchronously request a graphics Adapter.
     # Optionally, a `Surface` may be provided such that a compatible Adapter is selected.
-    def self.request(compatible_surface : Surface? = nil)
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    def self.request(compatible_surface : Surface? = nil) : Future::Compute(Adapter)
       @@chan = Channel(Adapter).new if @@chan.closed?
       callback = ->(adapter_id : LibWGPU::Adapter) { spawn { @@chan.send self.new(adapter_id) } }
       callback_boxed = Box.box(callback)
@@ -236,7 +244,10 @@ module WGPU
       @id = device_id
     end
 
-    def self.request(adapter : Adapter, label : String? = nil, trace_path : String? = nil)
+    # Asynchronously request a graphics Device.
+    #
+    # See Also: [`Future::Compute`](https://github.com/crystal-community/future.cr/blob/v1.0.0/src/future.cr#L7)
+    def self.request(adapter : Adapter, label : String? = nil, trace_path : String? = nil) : Future::Compute(Device)
       raise ArgumentError.new(message: ADAPTER_MUST_BE_READY) unless adapter && adapter.is_ready?
 
       @@chan = Channel(Device).new if @@chan.closed?
