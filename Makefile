@@ -43,10 +43,14 @@ ${LIBS}:
 vendor-libs: vendor-wgpu
 .PHONY: vendor-libs
 
-# TODO: Add OS checks for Linux and Windows
 ifeq (${OS},Darwin)
+	# TODO: Add checks for ARM mac OS artifacts
 	WGPU_ARTIFACTS += bin/libs/libwgpu_native.dylib
 endif
+ifeq (${OS},Linux)
+	WGPU_ARTIFACTS += bin/libs/libwgpu_native.so
+endif
+# TODO: Add OS checks for Windows artifacts
 vendor-wgpu: ${WGPU_ARTIFACTS}
 .PHONY: vendor-wgpu
 
