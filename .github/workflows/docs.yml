@@ -15,7 +15,9 @@ jobs:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
       - name: Build Documentation
-        run: crystal docs
+        run: |
+          shards install
+          crystal docs
 
       - name: GitHub Pages
         if: success() && github.ref == 'refs/heads/master'
