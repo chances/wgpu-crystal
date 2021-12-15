@@ -37,21 +37,7 @@ module WGPU
     Force32 = LibWGPU::LogLevel::Force32
   end
 
-  # alias PrimitiveState = LibWGPU::PrimitiveState
-  # alias PrimitiveTopology = LibWGPU::PrimitiveTopology
-  # alias IndexFormat = LibWGPU::IndexFormat
-  # alias FrontFace = LibWGPU::FrontFace
-  # alias CullMode = LibWGPU::CullMode
-  # alias MultisampleState = LibWGPU::MultisampleState
-  # alias ColorTargetState = LibWGPU::ColorTargetState
-  # alias ColorWriteMask = LibWGPU::ColorWriteMask
-  # alias CommandEncoderDescriptor = LibWGPU::CommandEncoderDescriptor
-  # alias RenderPassColorAttachmentDescriptor = LibWGPU::RenderPassColorAttachmentDescriptor
-  # alias TextureView = LibWGPU::TextureView
-  # alias LoadOp = LibWGPU::LoadOp
-  # alias StoreOp = LibWGPU::StoreOp
-  # alias RenderPassDescriptor = LibWGPU::RenderPassDescriptor
-
+  # Enumeration aliases for usability
   alias AdapterType = LibWGPU::AdapterType
   alias AddressMode = LibWGPU::AddressMode
   alias BackendType = LibWGPU::BackendType
@@ -89,12 +75,26 @@ module WGPU
   alias VertexFormat = LibWGPU::VertexFormat
   alias BufferUsage = LibWGPU::BufferUsage
   alias BufferUsageFlags = LibWGPU::BufferUsageFlags
+  alias ColorWriteMask = LibWGPU::ColorWriteMask
   alias ColorWriteMaskFlags = LibWGPU::ColorWriteMaskFlags
   alias MapMode = LibWGPU::MapMode
   alias MapModeFlags = LibWGPU::MapModeFlags
   alias ShaderStage = LibWGPU::ShaderStage
   alias ShaderStageFlags = LibWGPU::ShaderStageFlags
   alias TextureUsageFlags = LibWGPU::TextureUsageFlags
+
+  # Structure aliases for usability
+  alias BufferDescriptor = LibWGPU::BufferDescriptor
+  alias Extent3D = LibWGPU::Extent3D
+  alias PrimitiveState = LibWGPU::PrimitiveState
+  alias CommandEncoderDescriptor = LibWGPU::CommandEncoderDescriptor
+  alias ImageCopyBuffer = LibWGPU::ImageCopyBuffer
+  alias ImageCopyTexture = LibWGPU::ImageCopyTexture
+  alias MultisampleState = LibWGPU::MultisampleState
+  alias RenderPassColorAttachmentDescriptor = LibWGPU::RenderPassColorAttachmentDescriptor
+  alias RenderPassDescriptor = LibWGPU::RenderPassDescriptor
+  alias TextureDataLayout = LibWGPU::TextureDataLayout
+  alias TextureDescriptor = LibWGPU::TextureDescriptor
 
   def set_log_level(level : LogLevel)
     LibWGPU.set_log_level LibWGPU::LogLevel.new(level.value)
@@ -511,13 +511,17 @@ module WGPU
   end
 
   class TextureView < WgpuId
-    private def initialize(@id : LibWGPU::TextureView)
+    private def initialize(@id : LibWGPU::TextureView = Pointer(Void).null)
     end
 
     def initialize(texture : Texture, descriptor : LibWGPU::TextureViewDescriptor? = nil)
       descriptor = LibWGPU::TextureViewDescriptor.new if descriptor.nil?
       tex_view_descriptor = descriptor.as(LibWGPU::TextureViewDescriptor)
       @id = LibWGPU.texture_create_view(texture, pointerof(tex_view_descriptor))
+    end
+
+    def self.null
+      self.new
     end
 
     def self.from_swap_chain(swap_chain : SwapChain)

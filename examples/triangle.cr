@@ -22,8 +22,8 @@ WGPU.set_log_callback(->(level : WGPU::LogLevel, message : String) {
 })
 
 # TODO: Create a compatible surface to render to?
-# surface = LibWGPU::Surface.fromBlah
-# adapter = WGPU::Adapter.new(LibWGPU::RequestAdapterOptions.new surface)
+# surface = WGPU::Surface.fromBlah
+# adapter = WGPU::Adapter.new(WGPU::RequestAdapterOptions.new surface)
 
 adapter = WGPU::Adapter.request
 pp adapter.get.info
@@ -36,21 +36,21 @@ dimensions = Dimensions.new(width.to_u32, height.to_u32)
 shader = WGPU::ShaderModule.from_wgsl(device, Assets.shader)
 abort("Could not compile shader", 1) unless shader.is_valid?
 
-output_buffer = device.create_buffer(LibWGPU::BufferDescriptor.new(
+output_buffer = device.create_buffer(WGPU::BufferDescriptor.new(
   label: nil,
   size: dimensions.size_in_bytes,
   usage: WGPU::BufferUsage::MapRead | WGPU::BufferUsage::CopyDst,
   mapped_at_creation: false
 ))
-texture_extent = LibWGPU::Extent3D.new width: width, height: height, depth: 1
+texture_extent = WGPU::Extent3D.new width: width, height: height, depth: 1
 
 # The render pipeline renders data into this texture
-texture = device.create_texture(LibWGPU::TextureDescriptor.new(
+texture = device.create_texture(WGPU::TextureDescriptor.new(
   size: texture_extent,
   mip_level_count: 1,
   sample_count: 1,
-  dimension: LibWGPU::TextureDimension::D2,
-  format: LibWGPU::TextureFormat::RGBA8UnormSrgb,
+  dimension: WGPU::TextureDimension::D2,
+  format: WGPU::TextureFormat::RGBA8UnormSrgb,
   usage: WGPU::TextureUsage::OutputAttachment | WGPU::TextureUsage::CopySrc,
   label: nil
 ))
@@ -62,13 +62,13 @@ pipeline = device.create_render_pipeline WGPU::RenderPipelineDescriptor.new(
   label: pipeline_label,
   layout: pipeline_layout,
   vertex: WGPU::VertexState.from(shader, entry_point: "vs_main"),
-  primitive: LibWGPU::PrimitiveState.new(
-    topology: LibWGPU::PrimitiveTopology::TriangleList,
-    strip_index_format: LibWGPU::IndexFormat::Undefined,
-    front_face: LibWGPU::FrontFace::CCW,
-    cull_mode: LibWGPU::CullMode::None
+  primitive: WGPU::PrimitiveState.new(
+    topology: WGPU::PrimitiveTopology::TriangleList,
+    strip_index_format: WGPU::IndexFormat::Undefined,
+    front_face: WGPU::FrontFace::CCW,
+    cull_mode: WGPU::CullMode::None
   ),
-  multisample: LibWGPU::MultisampleState.new(
+  multisample: WGPU::MultisampleState.new(
     count: 1,
     mask: ~0,
     alpha_to_coverage_enabled: false,
@@ -77,13 +77,13 @@ pipeline = device.create_render_pipeline WGPU::RenderPipelineDescriptor.new(
     shader,
     entry_point: "fs_main",
     targets: [
-      LibWGPU::ColorTargetState.new(
+      WGPU::ColorTargetState.new(
         format: texture.format,
         blend: WGPU::BlendState.new(
           color: WGPU::BlendComponent::SRC_ONE_DST_ZERO_ADD,
           alpha: WGPU::BlendComponent::SRC_ONE_DST_ZERO_ADD
         ),
-        write_mask: LibWGPU::ColorWriteMask::All
+        write_mask: WGPU::ColorWriteMask::All
       ),
     ],
   ),
@@ -91,15 +91,15 @@ pipeline = device.create_render_pipeline WGPU::RenderPipelineDescriptor.new(
 )
 
 # Render a triangle
-encoder = device.create_command_encoder(LibWGPU::CommandEncoderDescriptor.new)
-color_attachment = LibWGPU::RenderPassColorAttachmentDescriptor.new(
+encoder = device.create_command_encoder(WGPU::CommandEncoderDescriptor.new)
+color_attachment = WGPU::RenderPassColorAttachmentDescriptor.new(
   attachment: texture_view,
-  resolve_target: LibWGPU::TextureView.null,
-  load_op: LibWGPU::LoadOp::Clear,
-  store_op: LibWGPU::StoreOp::Store,
+  resolve_target: WGPU::TextureView.null,
+  load_op: WGPU::LoadOp::Clear,
+  store_op: WGPU::StoreOp::Store,
   clear_color: WGPU::Colors::GREEN
 )
-render_pass = encoder.begin_render_pass(LibWGPU::RenderPassDescriptor.new(
+render_pass = encoder.begin_render_pass(WGPU::RenderPassDescriptor.new(
   color_attachments: pointerof(color_attachment),
   color_attachment_count: 1,
   depth_stencil_attachment: nil
@@ -110,13 +110,13 @@ render_pass.draw(3, 1, 0, 0)
 render_pass.end_pass
 
 # Copy the data from the texture to the buffer
-encoder.copy_texture_to_buffer(LibWGPU::ImageCopyTexture.new(
+encoder.copy_texture_to_buffer(WGPU::ImageCopyTexture.new(
   texture: texture,
   mip_level: 0,
   origin: WGPU::Origin3D::ZERO
-), LibWGPU::ImageCopyBuffer.new(
+), WGPU::ImageCopyBuffer.new(
   buffer: output_buffer,
-  layout: LibWGPU::TextureDataLayout.new(
+  layout: WGPU::TextureDataLayout.new(
     offset: 0,
     bytes_per_row: dimensions.padded_bytes_per_row,
     rows_per_image: 0
