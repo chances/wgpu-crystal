@@ -17,7 +17,7 @@ module WGPU
   MAX_VERTEX_BUFFERS           =  16
 
   enum TextureUsage : UInt32
-    None = LibWGPU::TextureUsage::None
+    None    = LibWGPU::TextureUsage::None
     CopySrc = LibWGPU::TextureUsage::CopySrc
     CopyDst = LibWGPU::TextureUsage::CopyDst
     Sampled = LibWGPU::TextureUsage::Sampled
@@ -25,7 +25,7 @@ module WGPU
     # DEPRECATED: Since wgpu-native `0.7`, use `TextureUsage::RenderAttachment`.
     OutputAttachment = LibWGPU::TextureUsage::RenderAttachment
     RenderAttachment = LibWGPU::TextureUsage::RenderAttachment
-    Force32 = LibWGPU::TextureUsage::Force32
+    Force32          = LibWGPU::TextureUsage::Force32
   end
   enum LogLevel : UInt32
     Off     = LibWGPU::LogLevel::Off
