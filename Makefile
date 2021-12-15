@@ -33,8 +33,9 @@ src/lib-wgpu.cr: lib/clang/bin/c2cr ${WGPU_ARTIFACTS}
 lib/clang/bin/c2cr: lib/clang
 	@cd lib/clang && shards build --release --ignore-crystal-version
 
-shards:
+shard.lock:
 	shards install --ignore-crystal-version
+shards: shard.lock
 .PHONY: shards
 
 ${LIBS}:
@@ -63,7 +64,7 @@ ${WGPU_ARTIFACTS}: vendor/wgpu.cr native.lock.yml
 # https://developer.apple.com/forums/thread/656303
 # https://www.oreilly.com/library/view/modding-mac-os/0596007094/ch04s05.html
 
-example-headless: vendor-libs
+example-headless: vendor-libs shard.lock
 	crystal build examples/headless.cr -o examples/headless
 ifeq (${OS},Darwin)
 	@echo "Fixing up libwgpu_native dylib path…"
@@ -81,7 +82,7 @@ else
 endif
 .PHONY: example-headless
 
-example-triangle: vendor-libs
+example-triangle: vendor-libs shard.lock
 	crystal build examples/triangle.cr -o examples/triangle
 ifeq (${OS},Darwin)
 	@echo "Fixing up libwgpu_native dylib path…"
