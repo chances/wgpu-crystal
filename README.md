@@ -36,11 +36,17 @@ TODO: Write development instructions here
 
 `make example-headless`
 
+#### Headless Triangle
+
+`make example-triangle`
+
 #### Windowed Triangle
+
+TODO: Add a windowed example
 
 Ensure [glfw3](https://formulae.brew.sh/formula/glfw) is installed.
 
-`make example-triangle`
+`make example-glfw-triangle`
 
 ## Contributing
 
