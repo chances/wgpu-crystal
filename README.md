@@ -26,6 +26,8 @@ require "wgpu"
 # TODO: Write usage instructions here
 ```
 
+See the [API documentation](https://chances.github.io/wgpu-crystal).
+
 See the [wgpu-native Usage instructions](https://github.com/gfx-rs/wgpu-native#usage).
 
 ## Development
