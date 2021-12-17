@@ -18,6 +18,7 @@ jobs:
         run: |
           shards install
           crystal docs
+      # TODO: Document each release: https://github.com/crystal-lang/crystal-book/issues/538
 
       - name: GitHub Pages
         if: success() && github.ref == 'refs/heads/master'
