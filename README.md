@@ -52,6 +52,10 @@ Ensure [glfw3](https://formulae.brew.sh/formula/glfw) is installed.
 
 `make example-glfw-triangle`
 
+### Alignment with `wgpu-native` Releases
+
+Release tags' __major__ and __minor__ version numbers align with those of `wgpu-native`. For example, the `0.9.*` tags align with one of the `0.9.*` releases of `wgpu-native`. See [`./native.lock.yml`](https://github.com/chances/wgpu-crystal/blob/master/native.lock.yml#L2) for the specific native library target.
+
 ## Contributing
 
 1. Fork it ([https://github.com/chances/wgpu-crystal/fork](https://github.com/chances/wgpu-crystal/fork))
