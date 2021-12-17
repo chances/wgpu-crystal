@@ -12,8 +12,8 @@ Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the 
 
    ```yaml
    dependencies:
-     wgpu-crystal:
-       github: chances/wgpu-crystal
+     wgpu:
+      github: chances/wgpu-crystal
    ```
 
 2. Run `shards install`
