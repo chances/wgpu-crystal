@@ -1,6 +1,8 @@
 # wgpu-crystal
 
+[![wgpu.cr v0.9.1](https://img.shields.io/badge/shards-v0.9.1-important)](https://shards.info/github/chances/wgpu-crystal)
 [![wgpu.cr CI](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml/badge.svg)](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml)
+[![wgpu.cr license: MIT](https://img.shields.io/badge/license-MIT-informational)](https://github.com/chances/wgpu-crystal/blob/master/LICENSE)
 
 Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the [Crystal](https://crystal-lang.org/) programming language.
 
