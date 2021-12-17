@@ -1,6 +1,8 @@
 # wgpu-crystal
 
+[![wgpu.cr v0.9.1](https://img.shields.io/badge/shards-v0.9.1-important)](https://shards.info/github/chances/wgpu-crystal)
 [![wgpu.cr CI](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml/badge.svg)](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml)
+[![wgpu.cr license: MIT](https://img.shields.io/badge/license-MIT-informational)](https://github.com/chances/wgpu-crystal/blob/master/LICENSE)
 
 Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the [Crystal](https://crystal-lang.org/) programming language.
 
@@ -10,8 +12,8 @@ Bindings to [gfx-rs/wgpu-native](https://github.com/gfx-rs/wgpu-native) for the 
 
    ```yaml
    dependencies:
-     wgpu-crystal:
-       github: chances/wgpu-crystal
+     wgpu:
+      github: chances/wgpu-crystal
    ```
 
 2. Run `shards install`
@@ -36,11 +38,17 @@ TODO: Write development instructions here
 
 `make example-headless`
 
+#### Headless Triangle
+
+`make example-triangle`
+
 #### Windowed Triangle
+
+TODO: Add a windowed example
 
 Ensure [glfw3](https://formulae.brew.sh/formula/glfw) is installed.
 
-`make example-triangle`
+`make example-glfw-triangle`
 
 ## Contributing
 
