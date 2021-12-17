@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.1.1">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="wgpu">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="wgpu">
+  <title>WGPU::RenderPass - wgpu master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          wgpu
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="wgpu/WGPU" data-name="wgpu">
+      <a href="../WGPU.html">WGPU</a>
+      
+        <ul>
+  
+  <li class=" " data-id="wgpu/WGPU/Adapter" data-name="wgpu::adapter">
+      <a href="../WGPU/Adapter.html">Adapter</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/AdapterType" data-name="wgpu::adaptertype">
+      <a href="../WGPU/AdapterType.html">AdapterType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/AddressMode" data-name="wgpu::addressmode">
+      <a href="../WGPU/AddressMode.html">AddressMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BackendType" data-name="wgpu::backendtype">
+      <a href="../WGPU/BackendType.html">BackendType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BindGroupLayout" data-name="wgpu::bindgrouplayout">
+      <a href="../WGPU/BindGroupLayout.html">BindGroupLayout</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BindGroupLayoutEntry" data-name="wgpu::bindgrouplayoutentry">
+      <a href="../WGPU/BindGroupLayoutEntry.html">BindGroupLayoutEntry</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BlendComponent" data-name="wgpu::blendcomponent">
+      <a href="../WGPU/BlendComponent.html">BlendComponent</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BlendFactor" data-name="wgpu::blendfactor">
+      <a href="../WGPU/BlendFactor.html">BlendFactor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BlendOperation" data-name="wgpu::blendoperation">
+      <a href="../WGPU/BlendOperation.html">BlendOperation</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BlendState" data-name="wgpu::blendstate">
+      <a href="../WGPU/BlendState.html">BlendState</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Buffer" data-name="wgpu::buffer">
+      <a href="../WGPU/Buffer.html">Buffer</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BufferBindingType" data-name="wgpu::bufferbindingtype">
+      <a href="../WGPU/BufferBindingType.html">BufferBindingType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BufferDescriptor" data-name="wgpu::bufferdescriptor">
+      <a href="../WGPU/BufferDescriptor.html">BufferDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BufferMapAsyncStatus" data-name="wgpu::buffermapasyncstatus">
+      <a href="../WGPU/BufferMapAsyncStatus.html">BufferMapAsyncStatus</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BufferUsage" data-name="wgpu::bufferusage">
+      <a href="../WGPU/BufferUsage.html">BufferUsage</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/BufferUsageFlags" data-name="wgpu::bufferusageflags">
+      <a href="../WGPU/BufferUsageFlags.html">BufferUsageFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Colors" data-name="wgpu::colors">
+      <a href="../WGPU/Colors.html">Colors</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ColorTargetState" data-name="wgpu::colortargetstate">
+      <a href="../WGPU/ColorTargetState.html">ColorTargetState</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ColorWriteMask" data-name="wgpu::colorwritemask">
+      <a href="../WGPU/ColorWriteMask.html">ColorWriteMask</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ColorWriteMaskFlags" data-name="wgpu::colorwritemaskflags">
+      <a href="../WGPU/ColorWriteMaskFlags.html">ColorWriteMaskFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/CommandBuffer" data-name="wgpu::commandbuffer">
+      <a href="../WGPU/CommandBuffer.html">CommandBuffer</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/CommandEncoder" data-name="wgpu::commandencoder">
+      <a href="../WGPU/CommandEncoder.html">CommandEncoder</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/CommandEncoderDescriptor" data-name="wgpu::commandencoderdescriptor">
+      <a href="../WGPU/CommandEncoderDescriptor.html">CommandEncoderDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/CompareFunction" data-name="wgpu::comparefunction">
+      <a href="../WGPU/CompareFunction.html">CompareFunction</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/CreatePipelineAsyncStatus" data-name="wgpu::createpipelineasyncstatus">
+      <a href="../WGPU/CreatePipelineAsyncStatus.html">CreatePipelineAsyncStatus</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/CullMode" data-name="wgpu::cullmode">
+      <a href="../WGPU/CullMode.html">CullMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Device" data-name="wgpu::device">
+      <a href="../WGPU/Device.html">Device</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ErrorFilter" data-name="wgpu::errorfilter">
+      <a href="../WGPU/ErrorFilter.html">ErrorFilter</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ErrorType" data-name="wgpu::errortype">
+      <a href="../WGPU/ErrorType.html">ErrorType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Extent3D" data-name="wgpu::extent3d">
+      <a href="../WGPU/Extent3D.html">Extent3D</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/FilterMode" data-name="wgpu::filtermode">
+      <a href="../WGPU/FilterMode.html">FilterMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/FragmentState" data-name="wgpu::fragmentstate">
+      <a href="../WGPU/FragmentState.html">FragmentState</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/FrontFace" data-name="wgpu::frontface">
+      <a href="../WGPU/FrontFace.html">FrontFace</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ImageCopyBuffer" data-name="wgpu::imagecopybuffer">
+      <a href="../WGPU/ImageCopyBuffer.html">ImageCopyBuffer</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ImageCopyTexture" data-name="wgpu::imagecopytexture">
+      <a href="../WGPU/ImageCopyTexture.html">ImageCopyTexture</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/IndexFormat" data-name="wgpu::indexformat">
+      <a href="../WGPU/IndexFormat.html">IndexFormat</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/InputStepMode" data-name="wgpu::inputstepmode">
+      <a href="../WGPU/InputStepMode.html">InputStepMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/LoadOp" data-name="wgpu::loadop">
+      <a href="../WGPU/LoadOp.html">LoadOp</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/LogCallback" data-name="wgpu::logcallback">
+      <a href="../WGPU/LogCallback.html">LogCallback</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/LogLevel" data-name="wgpu::loglevel">
+      <a href="../WGPU/LogLevel.html">LogLevel</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/MapMode" data-name="wgpu::mapmode">
+      <a href="../WGPU/MapMode.html">MapMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/MapModeFlags" data-name="wgpu::mapmodeflags">
+      <a href="../WGPU/MapModeFlags.html">MapModeFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/MultisampleState" data-name="wgpu::multisamplestate">
+      <a href="../WGPU/MultisampleState.html">MultisampleState</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Origin3D" data-name="wgpu::origin3d">
+      <a href="../WGPU/Origin3D.html">Origin3D</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/PipelineLayout" data-name="wgpu::pipelinelayout">
+      <a href="../WGPU/PipelineLayout.html">PipelineLayout</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/PipelineStatisticName" data-name="wgpu::pipelinestatisticname">
+      <a href="../WGPU/PipelineStatisticName.html">PipelineStatisticName</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/PresentMode" data-name="wgpu::presentmode">
+      <a href="../WGPU/PresentMode.html">PresentMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/PrimitiveState" data-name="wgpu::primitivestate">
+      <a href="../WGPU/PrimitiveState.html">PrimitiveState</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/PrimitiveTopology" data-name="wgpu::primitivetopology">
+      <a href="../WGPU/PrimitiveTopology.html">PrimitiveTopology</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/QueryType" data-name="wgpu::querytype">
+      <a href="../WGPU/QueryType.html">QueryType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Queue" data-name="wgpu::queue">
+      <a href="../WGPU/Queue.html">Queue</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/QueueWorkDoneStatus" data-name="wgpu::queueworkdonestatus">
+      <a href="../WGPU/QueueWorkDoneStatus.html">QueueWorkDoneStatus</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Rectangle" data-name="wgpu::rectangle">
+      <a href="../WGPU/Rectangle.html">Rectangle</a>
+      
+    </li>
+  
+  <li class=" current" data-id="wgpu/WGPU/RenderPass" data-name="wgpu::renderpass">
+      <a href="../WGPU/RenderPass.html">RenderPass</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/RenderPassColorAttachmentDescriptor" data-name="wgpu::renderpasscolorattachmentdescriptor">
+      <a href="../WGPU/RenderPassColorAttachmentDescriptor.html">RenderPassColorAttachmentDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/RenderPassDescriptor" data-name="wgpu::renderpassdescriptor">
+      <a href="../WGPU/RenderPassDescriptor.html">RenderPassDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/RenderPipeline" data-name="wgpu::renderpipeline">
+      <a href="../WGPU/RenderPipeline.html">RenderPipeline</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/RenderPipelineDescriptor" data-name="wgpu::renderpipelinedescriptor">
+      <a href="../WGPU/RenderPipelineDescriptor.html">RenderPipelineDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/SamplerBindingType" data-name="wgpu::samplerbindingtype">
+      <a href="../WGPU/SamplerBindingType.html">SamplerBindingType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ShaderModule" data-name="wgpu::shadermodule">
+      <a href="../WGPU/ShaderModule.html">ShaderModule</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ShaderStage" data-name="wgpu::shaderstage">
+      <a href="../WGPU/ShaderStage.html">ShaderStage</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/ShaderStageFlags" data-name="wgpu::shaderstageflags">
+      <a href="../WGPU/ShaderStageFlags.html">ShaderStageFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Size" data-name="wgpu::size">
+      <a href="../WGPU/Size.html">Size</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/StencilOperation" data-name="wgpu::stenciloperation">
+      <a href="../WGPU/StencilOperation.html">StencilOperation</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/StorageTextureAccess" data-name="wgpu::storagetextureaccess">
+      <a href="../WGPU/StorageTextureAccess.html">StorageTextureAccess</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/StoreOp" data-name="wgpu::storeop">
+      <a href="../WGPU/StoreOp.html">StoreOp</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/SType" data-name="wgpu::stype">
+      <a href="../WGPU/SType.html">SType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Surface" data-name="wgpu::surface">
+      <a href="../WGPU/Surface.html">Surface</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/SurfaceDescriptor" data-name="wgpu::surfacedescriptor">
+      <a href="../WGPU/SurfaceDescriptor.html">SurfaceDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/SwapChain" data-name="wgpu::swapchain">
+      <a href="../WGPU/SwapChain.html">SwapChain</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/SwapChainDescriptor" data-name="wgpu::swapchaindescriptor">
+      <a href="../WGPU/SwapChainDescriptor.html">SwapChainDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Texture" data-name="wgpu::texture">
+      <a href="../WGPU/Texture.html">Texture</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureAspect" data-name="wgpu::textureaspect">
+      <a href="../WGPU/TextureAspect.html">TextureAspect</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureComponentType" data-name="wgpu::texturecomponenttype">
+      <a href="../WGPU/TextureComponentType.html">TextureComponentType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureDataLayout" data-name="wgpu::texturedatalayout">
+      <a href="../WGPU/TextureDataLayout.html">TextureDataLayout</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureDescriptor" data-name="wgpu::texturedescriptor">
+      <a href="../WGPU/TextureDescriptor.html">TextureDescriptor</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureDimension" data-name="wgpu::texturedimension">
+      <a href="../WGPU/TextureDimension.html">TextureDimension</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureFormat" data-name="wgpu::textureformat">
+      <a href="../WGPU/TextureFormat.html">TextureFormat</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureSampleType" data-name="wgpu::texturesampletype">
+      <a href="../WGPU/TextureSampleType.html">TextureSampleType</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureUsage" data-name="wgpu::textureusage">
+      <a href="../WGPU/TextureUsage.html">TextureUsage</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureUsageFlags" data-name="wgpu::textureusageflags">
+      <a href="../WGPU/TextureUsageFlags.html">TextureUsageFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureView" data-name="wgpu::textureview">
+      <a href="../WGPU/TextureView.html">TextureView</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/TextureViewDimension" data-name="wgpu::textureviewdimension">
+      <a href="../WGPU/TextureViewDimension.html">TextureViewDimension</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/VertexBufferLayout" data-name="wgpu::vertexbufferlayout">
+      <a href="../WGPU/VertexBufferLayout.html">VertexBufferLayout</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/VertexFormat" data-name="wgpu::vertexformat">
+      <a href="../WGPU/VertexFormat.html">VertexFormat</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/VertexState" data-name="wgpu::vertexstate">
+      <a href="../WGPU/VertexState.html">VertexState</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/Viewport" data-name="wgpu::viewport">
+      <a href="../WGPU/Viewport.html">Viewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="wgpu/WGPU/WgpuId" data-name="wgpu::wgpuid">
+      <a href="../WGPU/WgpuId.html">WgpuId</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> WGPU::RenderPass
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../WGPU/RenderPass.html">WGPU::RenderPass</a></li><li class="superclass"><a href="../WGPU/WgpuId.html">WGPU::WgpuId</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L689" target="_blank">
+        wgpu.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28encoder%3ALibWGPU%3A%3ARenderPassEncoder%29-class-method" class="signature"><strong>.new</strong>(encoder : LibWGPU::RenderPassEncoder)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#begin_occlusion_query%28index%3AUInt32%29-instance-method" class="signature"><strong>#begin_occlusion_query</strong>(index : UInt32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#begin_pipeline_statistics_query%28set%3ALibWGPU%3A%3AQuerySet%2Cindex%3AUInt32%29-instance-method" class="signature"><strong>#begin_pipeline_statistics_query</strong>(set : LibWGPU::QuerySet, index : UInt32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#bind_group-instance-method" class="signature"><strong>#bind_group</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#blend_color%3D%28color%3ALibWGPU%3A%3AColor%29-instance-method" class="signature"><strong>#blend_color=</strong>(color : LibWGPU::Color)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#draw%28vertex_count%3AUInt32%2Cinstance_count%3AUInt32%2Cfirst_vertex%3AUInt32%2Cfirst_instance%3AUInt32%29-instance-method" class="signature"><strong>#draw</strong>(vertex_count : UInt32, instance_count : UInt32, first_vertex : UInt32, first_instance : UInt32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#draw_indexed%28index_count%3AUInt32%2Cinstance_count%3AUInt32%2Cfirst_index%3AUInt32%2Cbase_vertex%3AInt32%2Cfirst_instance%3AUInt32%29-instance-method" class="signature"><strong>#draw_indexed</strong>(index_count : UInt32, instance_count : UInt32, first_index : UInt32, base_vertex : Int32, first_instance : UInt32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#draw_indexed_indirect%28buf%3ABuffer%2Coffset%3AUInt64%29-instance-method" class="signature"><strong>#draw_indexed_indirect</strong>(buf : Buffer, offset : UInt64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#draw_indirect%28buf%3ABuffer%2Coffset%3AUInt64%29-instance-method" class="signature"><strong>#draw_indirect</strong>(buf : Buffer, offset : UInt64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#end_occlusion_query-instance-method" class="signature"><strong>#end_occlusion_query</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#end_pass-instance-method" class="signature"><strong>#end_pass</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#end_pipeline_statistics_query-instance-method" class="signature"><strong>#end_pipeline_statistics_query</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#execute_bundles%28bundles%3AArray%28RenderBundle%29%29-instance-method" class="signature"><strong>#execute_bundles</strong>(bundles : Array(RenderBundle))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert_debug_marker%28label%3AString%29-instance-method" class="signature"><strong>#insert_debug_marker</strong>(label : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pipeline%3D%28pipeline%3ARenderPipeline%29-instance-method" class="signature"><strong>#pipeline=</strong>(pipeline : RenderPipeline)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pop_debug_group-instance-method" class="signature"><strong>#pop_debug_group</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#push_debug_group%28label%3AString%29-instance-method" class="signature"><strong>#push_debug_group</strong>(label : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#scissor_rect%3D%28rect%3ARectangle%29-instance-method" class="signature"><strong>#scissor_rect=</strong>(rect : Rectangle)</a>
+        
+          <div class="summary"><p>Sets the scissor region.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_index_buffer%28buf%3ABuffer%2Cformat%3ALibWGPU%3A%3AIndexFormat%2Coffset%3AUInt64%2Csize%3AUInt64%29-instance-method" class="signature"><strong>#set_index_buffer</strong>(buf : Buffer, format : LibWGPU::IndexFormat, offset : UInt64, size : UInt64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#set_vertex_buffer%28slot%3AUInt32%2Cbuf%3ABuffer%2Coffset%3AUInt64%2Csize%3AUInt64%29-instance-method" class="signature"><strong>#set_vertex_buffer</strong>(slot : UInt32, buf : Buffer, offset : UInt64, size : UInt64)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stencil_reference%3D%28ref%3AUInt32%29-instance-method" class="signature"><strong>#stencil_reference=</strong>(ref : UInt32)</a>
+        
+          <div class="summary"><p>Subsequent stencil tests will test against this value.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#viewport%3D%28view%3AViewport%29-instance-method" class="signature"><strong>#viewport=</strong>(view : Viewport)</a>
+        
+          <div class="summary"><p>Sets the viewport region.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+  <h3>Instance methods inherited from class <code><a href="../WGPU/WgpuId.html">WGPU::WgpuId</a></code></h3>
+  
+  
+    <a href="../WGPU/WgpuId.html#finalize-instance-method" class="tooltip">
+      <span>finalize</span>
+    finalize</a>, 
+    
+  
+    <a href="../WGPU/WgpuId.html#id%3APointer%28Void%29-instance-method" class="tooltip">
+      <span>id : Pointer(Void)</span>
+    id</a>, 
+    
+  
+    <a href="../WGPU/WgpuId.html#is_valid%3F-instance-method" class="tooltip">
+      <span>is_valid?</span>
+    is_valid?</a>, 
+    
+  
+    <a href="../WGPU/WgpuId.html#to_unsafe%3APointer%28Void%29-instance-method" class="tooltip">
+      <span>to_unsafe : Pointer(Void)</span>
+    to_unsafe</a>
+    
+  
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(encoder:LibWGPU::RenderPassEncoder)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(encoder : LibWGPU::RenderPassEncoder)
+
+        <a class="method-permalink" href="#new%28encoder%3ALibWGPU%3A%3ARenderPassEncoder%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L690" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="begin_occlusion_query(index:UInt32)-instance-method">
+      <div class="signature">
+        
+        def <strong>begin_occlusion_query</strong>(index : UInt32)
+
+        <a class="method-permalink" href="#begin_occlusion_query%28index%3AUInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L694" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="begin_pipeline_statistics_query(set:LibWGPU::QuerySet,index:UInt32)-instance-method">
+      <div class="signature">
+        
+        def <strong>begin_pipeline_statistics_query</strong>(set : LibWGPU::QuerySet, index : UInt32)
+
+        <a class="method-permalink" href="#begin_pipeline_statistics_query%28set%3ALibWGPU%3A%3AQuerySet%2Cindex%3AUInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L698" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="bind_group-instance-method">
+      <div class="signature">
+        
+        def <strong>bind_group</strong>
+
+        <a class="method-permalink" href="#bind_group-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L758" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="blend_color=(color:LibWGPU::Color)-instance-method">
+      <div class="signature">
+        
+        def <strong>blend_color=</strong>(color : LibWGPU::Color)
+
+        <a class="method-permalink" href="#blend_color%3D%28color%3ALibWGPU%3A%3AColor%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L762" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="draw(vertex_count:UInt32,instance_count:UInt32,first_vertex:UInt32,first_instance:UInt32)-instance-method">
+      <div class="signature">
+        
+        def <strong>draw</strong>(vertex_count : UInt32, instance_count : UInt32, first_vertex : UInt32, first_instance : UInt32)
+
+        <a class="method-permalink" href="#draw%28vertex_count%3AUInt32%2Cinstance_count%3AUInt32%2Cfirst_vertex%3AUInt32%2Cfirst_instance%3AUInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L702" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="draw_indexed(index_count:UInt32,instance_count:UInt32,first_index:UInt32,base_vertex:Int32,first_instance:UInt32)-instance-method">
+      <div class="signature">
+        
+        def <strong>draw_indexed</strong>(index_count : UInt32, instance_count : UInt32, first_index : UInt32, base_vertex : Int32, first_instance : UInt32)
+
+        <a class="method-permalink" href="#draw_indexed%28index_count%3AUInt32%2Cinstance_count%3AUInt32%2Cfirst_index%3AUInt32%2Cbase_vertex%3AInt32%2Cfirst_instance%3AUInt32%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L706" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="draw_indexed_indirect(buf:Buffer,offset:UInt64)-instance-method">
+      <div class="signature">
+        
+        def <strong>draw_indexed_indirect</strong>(buf : <a href="../WGPU/Buffer.html">Buffer</a>, offset : UInt64)
+
+        <a class="method-permalink" href="#draw_indexed_indirect%28buf%3ABuffer%2Coffset%3AUInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L717" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="draw_indirect(buf:Buffer,offset:UInt64)-instance-method">
+      <div class="signature">
+        
+        def <strong>draw_indirect</strong>(buf : <a href="../WGPU/Buffer.html">Buffer</a>, offset : UInt64)
+
+        <a class="method-permalink" href="#draw_indirect%28buf%3ABuffer%2Coffset%3AUInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L721" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="end_occlusion_query-instance-method">
+      <div class="signature">
+        
+        def <strong>end_occlusion_query</strong>
+
+        <a class="method-permalink" href="#end_occlusion_query-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L725" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="end_pass-instance-method">
+      <div class="signature">
+        
+        def <strong>end_pass</strong>
+
+        <a class="method-permalink" href="#end_pass-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L729" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="end_pipeline_statistics_query-instance-method">
+      <div class="signature">
+        
+        def <strong>end_pipeline_statistics_query</strong>
+
+        <a class="method-permalink" href="#end_pipeline_statistics_query-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L733" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="execute_bundles(bundles:Array(RenderBundle))-instance-method">
+      <div class="signature">
+        
+        def <strong>execute_bundles</strong>(bundles : Array(RenderBundle))
+
+        <a class="method-permalink" href="#execute_bundles%28bundles%3AArray%28RenderBundle%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L737" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert_debug_marker(label:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>insert_debug_marker</strong>(label : String)
+
+        <a class="method-permalink" href="#insert_debug_marker%28label%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L746" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pipeline=(pipeline:RenderPipeline)-instance-method">
+      <div class="signature">
+        
+        def <strong>pipeline=</strong>(pipeline : <a href="../WGPU/RenderPipeline.html">RenderPipeline</a>)
+
+        <a class="method-permalink" href="#pipeline%3D%28pipeline%3ARenderPipeline%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L770" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pop_debug_group-instance-method">
+      <div class="signature">
+        
+        def <strong>pop_debug_group</strong>
+
+        <a class="method-permalink" href="#pop_debug_group-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L750" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="push_debug_group(label:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>push_debug_group</strong>(label : String)
+
+        <a class="method-permalink" href="#push_debug_group%28label%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L754" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="scissor_rect=(rect:Rectangle)-instance-method">
+      <div class="signature">
+        
+        def <strong>scissor_rect=</strong>(rect : <a href="../WGPU/Rectangle.html">Rectangle</a>)
+
+        <a class="method-permalink" href="#scissor_rect%3D%28rect%3ARectangle%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the scissor region.
+Subsequent draw calls will discard any fragments that fall outside this region.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L776" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_index_buffer(buf:Buffer,format:LibWGPU::IndexFormat,offset:UInt64,size:UInt64)-instance-method">
+      <div class="signature">
+        
+        def <strong>set_index_buffer</strong>(buf : <a href="../WGPU/Buffer.html">Buffer</a>, format : LibWGPU::IndexFormat, offset : UInt64, size : UInt64)
+
+        <a class="method-permalink" href="#set_index_buffer%28buf%3ABuffer%2Cformat%3ALibWGPU%3A%3AIndexFormat%2Coffset%3AUInt64%2Csize%3AUInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L766" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="set_vertex_buffer(slot:UInt32,buf:Buffer,offset:UInt64,size:UInt64)-instance-method">
+      <div class="signature">
+        
+        def <strong>set_vertex_buffer</strong>(slot : UInt32, buf : <a href="../WGPU/Buffer.html">Buffer</a>, offset : UInt64, size : UInt64)
+
+        <a class="method-permalink" href="#set_vertex_buffer%28slot%3AUInt32%2Cbuf%3ABuffer%2Coffset%3AUInt64%2Csize%3AUInt64%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L785" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stencil_reference=(ref:UInt32)-instance-method">
+      <div class="signature">
+        
+        def <strong>stencil_reference=</strong>(ref : UInt32)
+
+        <a class="method-permalink" href="#stencil_reference%3D%28ref%3AUInt32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Subsequent stencil tests will test against this value.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L781" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="viewport=(view:Viewport)-instance-method">
+      <div class="signature">
+        
+        def <strong>viewport=</strong>(view : <a href="../WGPU/Viewport.html">Viewport</a>)
+
+        <a class="method-permalink" href="#viewport%3D%28view%3AViewport%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets the viewport region.
+Subsequent draw calls will draw any fragments in this region.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/chances/wgpu-crystal/blob/0cfc631c8722e5f1d5a73317692b7a10eb2161e6/src/wgpu.cr#L791" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
