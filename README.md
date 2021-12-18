@@ -1,6 +1,6 @@
 # wgpu-crystal
 
-[![wgpu.cr v0.9.1](https://img.shields.io/badge/shards-v0.9.1-important)](https://shards.info/github/chances/wgpu-crystal)
+[![wgpu.cr v0.9.2](https://img.shields.io/badge/shards-v0.9.2-important)](https://shards.info/github/chances/wgpu-crystal)
 [![wgpu.cr CI](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml/badge.svg)](https://github.com/chances/wgpu-crystal/actions/workflows/ci.yml)
 [![wgpu.cr license: MIT](https://img.shields.io/badge/license-MIT-informational)](https://github.com/chances/wgpu-crystal/blob/master/LICENSE)
 
@@ -26,6 +26,8 @@ require "wgpu"
 # TODO: Write usage instructions here
 ```
 
+See the [API documentation](https://chances.github.io/wgpu-crystal).
+
 See the [wgpu-native Usage instructions](https://github.com/gfx-rs/wgpu-native#usage).
 
 ## Development
@@ -49,6 +51,10 @@ TODO: Add a windowed example
 Ensure [glfw3](https://formulae.brew.sh/formula/glfw) is installed.
 
 `make example-glfw-triangle`
+
+### Alignment with `wgpu-native` Releases
+
+Release tags' __major__ and __minor__ version numbers align with those of `wgpu-native`. For example, the `0.9.*` tags align with one of the `0.9.*` releases of `wgpu-native`. See [`./native.lock.yml`](https://github.com/chances/wgpu-crystal/blob/master/native.lock.yml#L2) for the specific native library target.
 
 ## Contributing
 
