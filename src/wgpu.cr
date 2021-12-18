@@ -95,6 +95,7 @@ module WGPU
   alias RenderPassDescriptor = LibWGPU::RenderPassDescriptor
   alias TextureDataLayout = LibWGPU::TextureDataLayout
   alias TextureDescriptor = LibWGPU::TextureDescriptor
+  alias VertexAttribute = LibWGPU::VertexAttribute
 
   def set_log_level(level : LogLevel)
     LibWGPU.set_log_level LibWGPU::LogLevel.new(level.value)
@@ -432,10 +433,14 @@ module WGPU
   class Buffer < WgpuId
     @@callback_boxes : Array(Pointer(Void)?) = [] of Pointer(Void)?
 
+    getter usage : BufferUsageFlags
+    getter size : UInt64
     getter status : BufferMapAsyncStatus
     getter read_only : Bool
 
     def initialize(device : Device, descriptor : LibWGPU::BufferDescriptor)
+      @usage = descriptor.usage
+      @size = descriptor.size
       @status = BufferMapAsyncStatus::Unknown
       @read_only = true
       @id = LibWGPU.device_create_buffer(device, pointerof(descriptor))
