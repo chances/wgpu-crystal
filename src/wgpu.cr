@@ -95,6 +95,7 @@ module WGPU
   alias RenderPassDescriptor = LibWGPU::RenderPassDescriptor
   alias TextureDataLayout = LibWGPU::TextureDataLayout
   alias TextureDescriptor = LibWGPU::TextureDescriptor
+  alias VertexAttribute = LibWGPU::VertexAttribute
 
   def set_log_level(level : LogLevel)
     LibWGPU.set_log_level LibWGPU::LogLevel.new(level.value)
